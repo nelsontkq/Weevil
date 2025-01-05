@@ -1,0 +1,11 @@
+export component Menu {
+    property<string> title;
+    callback start_game();
+    callback exit_game();
+
+    VerticalLayout {
+        Text { text: title; horizontal-alignment: center; }
+        Button { text: "Start Game"; clicked => start_game(); }
+        Button { text: "Exit"; clicked => exit_game(); }
+    }
+}
