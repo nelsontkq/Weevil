@@ -4,9 +4,8 @@
 #include "../Resources/Assets.hpp"
 #include "MenuState.hpp"
 
-MenuState::MenuState(sf::RenderWindow& window)
+MenuState::MenuState(sf::RenderWindow &window)
     : m_startGame(false), m_exitGame(false), m_window(window) {
-    m_nkContext = nk_sfml_init(&m_window);
     nk_sfml_font_stash_begin(&m_nkContext);
     nk_sfml_font_stash_end();
 }

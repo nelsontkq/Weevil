@@ -28,7 +28,7 @@ public:
 private:
     std::unique_ptr<sf::Sprite> m_background;
     sf::RenderWindow& m_window;
-    struct nk_context* m_nkContext;
+    std::unique_ptr<nk_context> m_nkContext;
 
     bool m_startGame;
     bool m_exitGame;
