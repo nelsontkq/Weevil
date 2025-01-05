@@ -15,6 +15,8 @@ add_executable(main src/main.cpp
         src/Entities/Entity.hpp
         src/Resources/Assets.cpp
         src/Resources/Assets.hpp
+        src/States/MainGameState.cpp
+        src/States/MainGameState.hpp
 )
 target_link_libraries(main PRIVATE SFML::Graphics SFML::Audio)
 

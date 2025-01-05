@@ -16,7 +16,7 @@ void MenuState::onEnter() {
     assets.loadFont("main_font", "assets/fonts/VeronaRegular-7Oy8K.ttf");
 
     // Prepare text objects
-    auto& m_font = assets.getFont("main_font");
+    auto &m_font = assets.getFont("main_font");
 
     m_titleText = std::make_unique<sf::Text>(m_font);
     m_titleText->setString("Game of Intrigue");
@@ -45,7 +45,7 @@ void MenuState::onExit() {
 }
 
 void MenuState::handleEvent(const sf::Event &event) {
-    if (auto key = event.getIf<sf::Event::KeyPressed>()) {
+    if (const auto key = event.getIf<sf::Event::KeyPressed>()) {
         if (key->code == sf::Keyboard::Key::Enter) {
             // "Enter" -> Start Game
             m_startGame = true;
@@ -58,16 +58,6 @@ void MenuState::handleEvent(const sf::Event &event) {
 }
 
 void MenuState::update() {
-    if (m_startGame) {
-        // Push gameplay state onto the stack (example only, replace GameplayState with your own class)
-        // auto& game = Game();  // Assuming you have access to the game instance
-        // game.pushState(std::make_unique<GameplayState>());
-    }
-
-    if (m_exitGame) {
-        // auto& game = Game();
-        // game.popState();  // Pop the main menu and exit the game
-    }
 }
 
 void MenuState::render(sf::RenderWindow &window) {
