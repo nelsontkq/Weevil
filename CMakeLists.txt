@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 project(KingsCourt LANGUAGES CXX)
 
-include_directories(external/Nuklear)
-include_directories(external/Nuklear/demo/sfml_opengl2)
+find_package(Slint REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -23,7 +22,7 @@ add_executable(main src/main.cpp
 )
 
 
-target_link_libraries(main PRIVATE SFML::Graphics SFML::Audio)
+target_link_libraries(main PRIVATE SFML::Graphics SFML::Audio Slint::Slint)
 
 add_custom_command(TARGET main POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory

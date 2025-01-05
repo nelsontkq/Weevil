@@ -5,8 +5,7 @@
 #ifndef MENUSTATE_H
 #define MENUSTATE_H
 #include <SFML/Graphics.hpp>
-#include <nuklear.h>
-#include <nuklear_sfml_gl2.h>
+#include <slint.h>
 
 #include "GameState.hpp"
 
@@ -28,10 +27,7 @@ public:
 private:
     std::unique_ptr<sf::Sprite> m_background;
     sf::RenderWindow& m_window;
-    std::unique_ptr<nk_context> m_nkContext;
-
-    bool m_startGame;
-    bool m_exitGame;
+    slint::ComponentHandle<slint::Component> m_ui;
 };
 
 #endif // MENUSTATE_H

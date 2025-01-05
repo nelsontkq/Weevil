@@ -6,8 +6,7 @@
 
 MenuState::MenuState(sf::RenderWindow &window)
     : m_startGame(false), m_exitGame(false), m_window(window) {
-    nk_sfml_font_stash_begin(&m_nkContext);
-    nk_sfml_font_stash_end();
+    m_ui = slint::Component::load_from_path("assets/ui/Menu.slint").unwrap();
 }
 
 void MenuState::onEnter() {
@@ -18,33 +17,20 @@ void MenuState::onEnter() {
     // Preload assets for the main menu
     assets.loadFont("main_font", "assets/fonts/VeronaRegular-7Oy8K.ttf");
 
-    // Nuklear UI
-    if (nk_begin(m_nkContext, "Menu", nk_rect(0, 0, 1920, 1080), NK_WINDOW_BACKGROUND)) {
-        nk_layout_row_dynamic(m_nkContext, 50, 1);
-        nk_label(m_nkContext, "Game of Intrigue", NK_TEXT_CENTERED);
-
-        nk_layout_row_dynamic(m_nkContext, 50, 1);
-        if (nk_button_label(m_nkContext, "Start Game")) {
-            m_startGame = true;
-        }
-
-        nk_layout_row_dynamic(m_nkContext, 50, 1);
-        if (nk_button_label(m_nkContext, "Exit")) {
-            m_exitGame = true;
-        }
-    }
-    nk_end(m_nkContext);
+    m_ui->invoke("set_title", "Game of Intrigue");
+    m_ui->on("start_game", [&]() { m_startGame = true; });
+    m_ui->on("exit_game", [&]() { m_exitGame = true; });
 }
 
 void MenuState::onExit() {
     // Unload assets if necessary (optional optimization)
     auto &assets = Assets::getInstance();
     assets.unloadAll();
-    nk_sfml_shutdown();
+    m_ui = nullptr;
 }
 
 void MenuState::handleEvent(const sf::Event &event) {
-    nk_sfml_handle_event(&event);
+    m_ui->handle_event(event);
 }
 
 void MenuState::update() {
@@ -52,7 +38,7 @@ void MenuState::update() {
 
 void MenuState::render(sf::RenderWindow &window) {
     window.draw(*m_background);
-    nk_sfml_render(NK_ANTI_ALIASING_ON);
+    m_ui->render();
 }
 
 #endif
