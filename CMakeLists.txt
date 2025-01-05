@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.28)
 project(KingsCourt LANGUAGES CXX)
 
+include_directories(external/Nuklear)
+include_directories(external/Nuklear/demo/sfml_opengl2)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(SFML_STATIC_LIBRARIES TRUE)

@@ -6,6 +6,7 @@
 #define MENUSTATE_H
 #include <SFML/Graphics.hpp>
 #include <nuklear.h>
+#include <nuklear_sfml_gl2.h>
 
 #include "GameState.hpp"
 
