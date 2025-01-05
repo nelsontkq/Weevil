@@ -2,10 +2,14 @@
 // Created by nelson on 1/4/25.
 //
 
-#include "Game.h"
+#include "Game.hpp"
 #include <optional>
 
+#include "../States/MenuState.hpp"
+
 Game::Game() : m_window(sf::VideoMode({1920, 1080}), "Game of Intrigue") {
+    m_window.setFramerateLimit(144);
+    pushState(std::make_unique<MenuState>());
 }
 
 void Game::run() {
@@ -17,13 +21,15 @@ void Game::run() {
 }
 
 void Game::handleEvents() {
-    while (const std::optional event = m_window.pollEvent()) {
+    while (const std::optional<sf::Event> event = m_window.pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
             m_window.close();
         }
-
+        if (!event.has_value()) {
+            continue;
+        }
         if (!m_states.empty()) {
-            m_states.top()->handleEvent(event);
+            m_states.top()->handleEvent(event.value());
         }
     }
 }
@@ -44,11 +50,13 @@ void Game::render() {
 }
 
 void Game::pushState(std::unique_ptr<GameState> state) {
+    state->onEnter();
     m_states.push(std::move(state));
 }
 
 void Game::popState() {
     if (!m_states.empty()) {
+        m_states.top()->onExit();
         m_states.pop();
     }
 }
