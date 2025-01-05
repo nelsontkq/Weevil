@@ -1,16 +1,20 @@
 cmake_minimum_required(VERSION 3.28)
-project(CMakeSFMLProject LANGUAGES CXX)
+project(KingsCourt LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-include(FetchContent)
-FetchContent_Declare(SFML
-    GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 3.0.0
-    GIT_SHALLOW ON
-    EXCLUDE_FROM_ALL
-    SYSTEM)
-FetchContent_MakeAvailable(SFML)
+set(SFML_STATIC_LIBRARIES TRUE)
 
-add_executable(main src/main.cpp)
+find_package(SFML 3 REQUIRED COMPONENTS Graphics)
+
+add_executable(main src/main.cpp
+        src/Game/Game.cpp
+        src/Game/Game.h
+        src/Resources/AssetLoader.cpp
+        src/Resources/AssetLoader.h
+        src/States/GameState.hpp
+        src/States/MenuState.cpp
+        src/States/MenuState.h
+        src/Entities/Entity.h
+)
 target_link_libraries(main PRIVATE SFML::Graphics)
