@@ -5,13 +5,14 @@
 #ifndef MENUSTATE_H
 #define MENUSTATE_H
 #include <SFML/Graphics.hpp>
+#include <TGUI/TGUI.hpp>
 
 #include "GameState.hpp"
 
 class MenuState final : public GameState
 {
 public:
-    MenuState();
+    MenuState(sf::RenderWindow& window);
 
     void handleEvent(const sf::Event &event) override;
 
@@ -25,9 +26,8 @@ public:
 
 private:
     std::unique_ptr<sf::Sprite> m_background;
-    std::unique_ptr<sf::Text> m_titleText;
-    std::unique_ptr<sf::Text> m_startGameText;
-    std::unique_ptr<sf::Text> m_exitText;
+    sf::RenderWindow& m_window;
+    tgui::GuiSFML m_gui;
 
     bool m_startGame;
     bool m_exitGame;

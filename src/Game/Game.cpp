@@ -9,7 +9,7 @@
 
 Game::Game() : m_window(sf::VideoMode({1920, 1080}), "Game of Intrigue") {
     m_window.setFramerateLimit(144);
-    pushState(std::make_unique<MenuState>());
+    pushState(std::make_unique<MenuState>(m_window));
 }
 
 void Game::run() {

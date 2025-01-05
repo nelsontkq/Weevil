@@ -3,8 +3,15 @@
 #include "../Resources/Assets.hpp"
 #include "MenuState.hpp"
 
-MenuState::MenuState()
-    : m_startGame(false), m_exitGame(false) {
+MenuState::MenuState(sf::RenderWindow& window)
+    : m_startGame(false), m_exitGame(false), m_window(window), m_gui(window) {
+    if (m_exitGame) {
+        m_window.close();
+    }
+    if (m_startGame) {
+        // Implement transitioning to the main game state
+        m_startGame = false;
+    }
 }
 
 void MenuState::onEnter() {
@@ -15,46 +22,37 @@ void MenuState::onEnter() {
     // Preload assets for the main menu
     assets.loadFont("main_font", "assets/fonts/VeronaRegular-7Oy8K.ttf");
 
-    // Prepare text objects
-    auto &m_font = assets.getFont("main_font");
+    // Create a title label
+    auto titleLabel = tgui::Label::create("Game of Intrigue");
+    titleLabel->setPosition("50%", "20%");
+    titleLabel->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
+    titleLabel->setTextSize(48);
+    m_gui.add(titleLabel);
 
-    m_titleText = std::make_unique<sf::Text>(m_font);
-    m_titleText->setString("Game of Intrigue");
-    m_titleText->setCharacterSize(48);
-    m_titleText->setFillColor(sf::Color::White);
-    m_titleText->setPosition({200, 100});
+    // Create "Start Game" button
+    auto startButton = tgui::Button::create("Start Game");
+    startButton->setPosition("50%", "45%");
+    startButton->setSize(200, 50);
+    startButton->onPress([this]() { m_startGame = true; });
+    m_gui.add(startButton);
 
-    m_startGameText = std::make_unique<sf::Text>(m_font);
-    m_startGameText->setString("Start Game");
-    m_startGameText->setCharacterSize(36);
-    m_startGameText->setFillColor(sf::Color::White);
-    m_startGameText->setPosition({250, 250});
-
-    m_exitText = std::make_unique<sf::Text>(m_font);
-    m_exitText->setString("Exit");
-    m_exitText->setCharacterSize(36);
-    m_exitText->setFillColor(sf::Color::White);
-    m_exitText->setPosition({250, 350});
+    // Create "Exit" button
+    auto exitButton = tgui::Button::create("Exit");
+    exitButton->setPosition("50%", "55%");
+    exitButton->setSize(200, 50);
+    exitButton->onPress([this]() { m_exitGame = true; });
+    m_gui.add(exitButton);
 }
 
 void MenuState::onExit() {
     // Unload assets if necessary (optional optimization)
     auto &assets = Assets::getInstance();
     assets.unloadAll();
-    m_background.reset();
+    m_gui.removeAllWidgets();
 }
 
 void MenuState::handleEvent(const sf::Event &event) {
-    if (const auto key = event.getIf<sf::Event::KeyPressed>()) {
-        if (key->code == sf::Keyboard::Key::Enter) {
-            // "Enter" -> Start Game
-            m_startGame = true;
-        }
-        if (key->code == sf::Keyboard::Key::Escape) {
-            // "Escape" -> Exit Game
-            m_exitGame = true;
-        }
-    }
+    m_gui.handleEvent(event);
 }
 
 void MenuState::update() {
@@ -62,9 +60,7 @@ void MenuState::update() {
 
 void MenuState::render(sf::RenderWindow &window) {
     window.draw(*m_background);
-    window.draw(*m_titleText);
-    window.draw(*m_startGameText);
-    window.draw(*m_exitText);
+    m_gui.draw();
 }
 
 #endif
