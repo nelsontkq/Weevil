@@ -1,17 +1,14 @@
 #ifndef MENUSTATE_HPP
 #define MENUSTATE_HPP
 #include "../Resources/Assets.hpp"
+#include "../Resources/Assets.hpp"
 #include "MenuState.hpp"
 
 MenuState::MenuState(sf::RenderWindow& window)
-    : m_startGame(false), m_exitGame(false), m_window(window), m_gui(window) {
-    if (m_exitGame) {
-        m_window.close();
-    }
-    if (m_startGame) {
-        // Implement transitioning to the main game state
-        m_startGame = false;
-    }
+    : m_startGame(false), m_exitGame(false), m_window(window) {
+    m_nkContext = nk_sfml_init(&m_window);
+    nk_sfml_font_stash_begin(&m_nkContext);
+    nk_sfml_font_stash_end();
 }
 
 void MenuState::onEnter() {
@@ -22,37 +19,33 @@ void MenuState::onEnter() {
     // Preload assets for the main menu
     assets.loadFont("main_font", "assets/fonts/VeronaRegular-7Oy8K.ttf");
 
-    // Create a title label
-    auto titleLabel = tgui::Label::create("Game of Intrigue");
-    titleLabel->setPosition("50%", "20%");
-    titleLabel->setHorizontalAlignment(tgui::Label::HorizontalAlignment::Center);
-    titleLabel->setTextSize(48);
-    m_gui.add(titleLabel);
+    // Nuklear UI
+    if (nk_begin(m_nkContext, "Menu", nk_rect(0, 0, 1920, 1080), NK_WINDOW_BACKGROUND)) {
+        nk_layout_row_dynamic(m_nkContext, 50, 1);
+        nk_label(m_nkContext, "Game of Intrigue", NK_TEXT_CENTERED);
 
-    // Create "Start Game" button
-    auto startButton = tgui::Button::create("Start Game");
-    startButton->setPosition("50%", "45%");
-    startButton->setSize(200, 50);
-    startButton->onPress([this]() { m_startGame = true; });
-    m_gui.add(startButton);
+        nk_layout_row_dynamic(m_nkContext, 50, 1);
+        if (nk_button_label(m_nkContext, "Start Game")) {
+            m_startGame = true;
+        }
 
-    // Create "Exit" button
-    auto exitButton = tgui::Button::create("Exit");
-    exitButton->setPosition("50%", "55%");
-    exitButton->setSize(200, 50);
-    exitButton->onPress([this]() { m_exitGame = true; });
-    m_gui.add(exitButton);
+        nk_layout_row_dynamic(m_nkContext, 50, 1);
+        if (nk_button_label(m_nkContext, "Exit")) {
+            m_exitGame = true;
+        }
+    }
+    nk_end(m_nkContext);
 }
 
 void MenuState::onExit() {
     // Unload assets if necessary (optional optimization)
     auto &assets = Assets::getInstance();
     assets.unloadAll();
-    m_gui.removeAllWidgets();
+    nk_sfml_shutdown();
 }
 
 void MenuState::handleEvent(const sf::Event &event) {
-    m_gui.handleEvent(event);
+    nk_sfml_handle_event(&event);
 }
 
 void MenuState::update() {
@@ -60,7 +53,7 @@ void MenuState::update() {
 
 void MenuState::render(sf::RenderWindow &window) {
     window.draw(*m_background);
-    m_gui.draw();
+    nk_sfml_render(NK_ANTI_ALIASING_ON);
 }
 
 #endif

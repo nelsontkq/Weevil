@@ -5,7 +5,8 @@
 #ifndef MENUSTATE_H
 #define MENUSTATE_H
 #include <SFML/Graphics.hpp>
-#include <TGUI/TGUI.hpp>
+#include <nuklear.h>
+#include <nuklear_sfml_gl3.h>
 
 #include "GameState.hpp"
 
@@ -27,7 +28,7 @@ public:
 private:
     std::unique_ptr<sf::Sprite> m_background;
     sf::RenderWindow& m_window;
-    tgui::GuiSFML m_gui;
+    struct nk_context* m_nkContext;
 
     bool m_startGame;
     bool m_exitGame;
