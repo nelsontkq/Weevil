@@ -6,7 +6,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(SFML_STATIC_LIBRARIES TRUE)
 find_package(SFML 3 REQUIRED COMPONENTS Graphics Audio)
 # Add Nuklear include path
-include_directories(${CMAKE_SOURCE_DIR}/external/Nuklear)
+if(EXISTS ${CMAKE_SOURCE_DIR}/external/Nuklear/CMakeLists.txt)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/external/Nuklear)
+else()
+    include_directories(${CMAKE_SOURCE_DIR}/external/Nuklear)
+endif()
 
 add_executable(main src/main.cpp
         src/Game/Game.cpp
