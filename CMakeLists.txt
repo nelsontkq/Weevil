@@ -4,14 +4,14 @@ project(KingsCourt LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(SFML_STATIC_LIBRARIES TRUE)
-
+set(TGUI_BACKEND SFML_GRAPHICS)
 include(ExternalProject)
 
 # Fetch SFML library
 ExternalProject_Add(
     SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 2.6.x  # Use a specific version or branch
+    GIT_TAG 3.0.0
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/sfml
 )
 
