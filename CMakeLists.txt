@@ -12,7 +12,7 @@ include(ExternalProject)
 ExternalProject_Add(
     TGUI
     GIT_REPOSITORY https://github.com/texus/TGUI.git
-    GIT_TAG v0.9  # Use a specific version or branch
+    GIT_TAG v1.7.0  # Use a specific version or branch
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/tgui
 )
 
