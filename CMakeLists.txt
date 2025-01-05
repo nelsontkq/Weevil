@@ -51,7 +51,9 @@ add_executable(main src/main.cpp
 # Ensure SFML and TGUI are built before the main target
 add_dependencies(main SFML TGUI)
 
-target_link_libraries(main PRIVATE SFML::Graphics SFML::Audio TGUI)
+target_link_libraries(main PRIVATE SFML::Graphics SFML::Audio
+    ${TGUI_LIBRARY_DIR}/libtgui.so  # Adjust for your platform (e.g., .dll, .dylib, or .a)
+)
 
 add_custom_command(TARGET main POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
