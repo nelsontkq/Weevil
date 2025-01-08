@@ -24,10 +24,6 @@ public:
 
     void loadTexture(const std::string &name, const std::filesystem::path &filePath);
 
-    // Load and manage fonts
-    const sf::Font &getFont(const std::string &name);
-
-    void loadFont(const std::string &name, const std::filesystem::path &filePath);
 
     // Load and manage sounds
     const sf::SoundBuffer &getSoundBuffer(const std::string &name);
@@ -46,7 +42,6 @@ private:
     ~Assets() = default;
 
     std::map<std::string, sf::Texture> m_textures;
-    std::map<std::string, sf::Font> m_fonts;
     std::map<std::string, sf::SoundBuffer> m_soundBuffers;
 };
 
