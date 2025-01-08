@@ -37,6 +37,10 @@ public:
     // Clean up unused resources
     void unloadAll();
 
+    // Load and manage ImGui fonts
+    void loadImGuiFont(const std::filesystem::path &filePath, float size);
+    void clearImGuiFonts();
+
 private:
     Assets() = default; // Private constructor
     ~Assets() = default;

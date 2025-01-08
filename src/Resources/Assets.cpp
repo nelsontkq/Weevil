@@ -43,9 +43,26 @@ const sf::SoundBuffer &Assets::getSoundBuffer(const std::string &name) {
     return m_soundBuffers.at(name);
 }
 
+#include <imgui.h>
+#include <imgui-SFML.h>
+
 // Unload all resources
 void Assets::unloadAll() {
     m_textures.clear();
     m_fonts.clear();
     m_soundBuffers.clear();
+}
+
+// Load ImGui font
+void Assets::loadImGuiFont(const std::filesystem::path &filePath, float size) {
+    ImGuiIO &io = ImGui::GetIO();
+    io.Fonts->AddFontFromFileTTF(filePath.string().c_str(), size);
+    ImGui::SFML::UpdateFontTexture(); // Update font texture after loading
+}
+
+// Clear all ImGui fonts
+void Assets::clearImGuiFonts() {
+    ImGuiIO &io = ImGui::GetIO();
+    io.Fonts->Clear();
+    ImGui::SFML::UpdateFontTexture(); // Update font texture after clearing
 }
