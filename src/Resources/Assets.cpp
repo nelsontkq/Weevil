@@ -1,5 +1,7 @@
 #include "Assets.hpp"
 #include <iostream>
+#include <imgui.h>
+#include <imgui-SFML.h>
 
 // Load texture
 void Assets::loadTexture(const std::string &name, const std::filesystem::path &filePath) {
@@ -42,9 +44,6 @@ void Assets::loadSoundBuffer(const std::string &name, const std::filesystem::pat
 const sf::SoundBuffer &Assets::getSoundBuffer(const std::string &name) {
     return m_soundBuffers.at(name);
 }
-
-#include <imgui.h>
-#include <imgui-SFML.h>
 
 // Unload all resources
 void Assets::unloadAll() {
