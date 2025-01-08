@@ -21,8 +21,3 @@ add_executable(main src/main.cpp
 
 
 target_link_libraries(main PRIVATE SFML::Graphics SFML::Audio)
-
-add_custom_command(TARGET main POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:main>/assets
-)
