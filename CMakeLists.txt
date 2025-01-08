@@ -15,4 +15,4 @@ add_executable(main src/main.cpp
 )
 
 
-target_link_libraries(main PRIVATE ImGui-SFML::ImGui-SFML sfml-audio)
+target_link_libraries(main PRIVATE ImGui-SFML::ImGui-SFML SFML::Audio SFML::Graphics)

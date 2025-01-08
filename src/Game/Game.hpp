@@ -6,8 +6,11 @@
 #define GAME_H
 #include <memory>
 #include <stack>
-#include <SFML/Graphics.hpp>
 #include "../States/GameState.hpp"
+
+#include <SFML/Graphics.hpp>
+#include <imgui-SFML.h>
+#include <imgui.h>
 
 
 class Game {

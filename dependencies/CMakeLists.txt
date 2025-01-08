@@ -23,4 +23,6 @@ FetchContent_Declare(
   URL https://github.com/SFML/imgui-sfml/archive/refs/tags/v3.0.tar.gz
   URL_MD5 94ca2010de8745cd2d642d1da1929b17
 )
+set(IMGUI_DIR ${imgui_SOURCE_DIR})
+set(IMGUI_SFML_FIND_SFML OFF)
 FetchContent_MakeAvailable(imgui-sfml)

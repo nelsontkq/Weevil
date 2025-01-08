@@ -5,7 +5,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Launch",
-            "program": "${workspaceFolder}/build/bin/main",
+            "program": "${workspaceFolder}/build/main",
             "args": [],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "CMake: build"
