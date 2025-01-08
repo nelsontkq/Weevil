@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 project(KingsCourt LANGUAGES CXX)
 
-find_package(Slint REQUIRED)
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(SFML_STATIC_LIBRARIES TRUE)
@@ -22,7 +20,7 @@ add_executable(main src/main.cpp
 )
 
 
-target_link_libraries(main PRIVATE SFML::Graphics SFML::Audio Slint::Slint)
+target_link_libraries(main PRIVATE SFML::Graphics SFML::Audio)
 
 add_custom_command(TARGET main POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory

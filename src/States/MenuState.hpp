@@ -5,14 +5,12 @@
 #ifndef MENUSTATE_H
 #define MENUSTATE_H
 #include <SFML/Graphics.hpp>
-#include <slint.h>
 
 #include "GameState.hpp"
 
-class MenuState final : public GameState
-{
+class MenuState final : public GameState {
 public:
-    MenuState(sf::RenderWindow& window);
+    MenuState(sf::RenderWindow &window);
 
     void handleEvent(const sf::Event &event) override;
 
@@ -26,8 +24,7 @@ public:
 
 private:
     std::unique_ptr<sf::Sprite> m_background;
-    sf::RenderWindow& m_window;
-    slint::ComponentHandle<slint::Component> m_ui;
+    sf::RenderWindow &m_window;
 };
 
 #endif // MENUSTATE_H
