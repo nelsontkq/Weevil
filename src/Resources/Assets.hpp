@@ -24,10 +24,6 @@ public:
 
     void loadTexture(const std::string &name, const std::filesystem::path &filePath);
 
-    // Load and manage fonts
-    const sf::Font &getFont(const std::string &name);
-
-    void loadFont(const std::string &name, const std::filesystem::path &filePath);
 
     // Load and manage sounds
     const sf::SoundBuffer &getSoundBuffer(const std::string &name);
@@ -37,12 +33,15 @@ public:
     // Clean up unused resources
     void unloadAll();
 
+    // Load and manage ImGui fonts
+    void loadImGuiFont(const std::filesystem::path &filePath, float size);
+    void clearImGuiFonts();
+
 private:
     Assets() = default; // Private constructor
     ~Assets() = default;
 
     std::map<std::string, sf::Texture> m_textures;
-    std::map<std::string, sf::Font> m_fonts;
     std::map<std::string, sf::SoundBuffer> m_soundBuffers;
 };
 
