@@ -7,7 +7,6 @@
 #include <memory>
 #include <stack>
 #include <SFML/Graphics.hpp>
-
 #include "../States/GameState.hpp"
 
 
