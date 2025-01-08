@@ -39,14 +39,14 @@ void Assets::unloadAll() {
 }
 
 // Load ImGui font
-void Assets::loadImGuiFont(const std::filesystem::path &filePath, float size) {
+void Assets::loadFont(const std::filesystem::path &filePath, float size) {
     ImGuiIO &io = ImGui::GetIO();
     io.Fonts->AddFontFromFileTTF(filePath.string().c_str(), size);
-    ImGui::SFML::UpdateFontTexture(); // Update font texture after loading
+    ImGui::SFML::UpdateFontTexture();
 }
 
 // Clear all ImGui fonts
-void Assets::clearImGuiFonts() {
+void Assets::clearFonts() {
     ImGuiIO &io = ImGui::GetIO();
     io.Fonts->Clear();
     ImGui::SFML::UpdateFontTexture(); // Update font texture after clearing
