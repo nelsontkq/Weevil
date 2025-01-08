@@ -6,7 +6,7 @@ FetchContent_Declare(
   URL https://github.com/SFML/SFML/archive/refs/tags/3.0.0.tar.gz
   URL_MD5 631426f02fb46ccefc896975f9c44c7f
 )
-add_subdirectory(sfml)
+FetchContent_MakeAvailable(sfml)
 
 # Dear ImGui
 FetchContent_Declare(
@@ -23,4 +23,4 @@ FetchContent_Declare(
   URL https://github.com/SFML/imgui-sfml/archive/refs/tags/v3.0.tar.gz
   URL_MD5 94ca2010de8745cd2d642d1da1929b17
 )
-add_subdirectory(imgui-sfml)
+FetchContent_MakeAvailable(imgui-sfml)
