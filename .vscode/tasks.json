@@ -6,9 +6,8 @@
             "type": "shell",
             "command": "cmake",
             "args": [
-                "-B${workspaceFolder}/build",
-                "-H${workspaceFolder}",
-                "-GNinja"
+                "--build",
+                "${workspaceFolder}/build"
             ],
             "group": {
                 "kind": "build",
