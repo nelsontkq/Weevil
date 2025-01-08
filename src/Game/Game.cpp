@@ -9,12 +9,15 @@
 
 Game::Game() : m_window(sf::VideoMode({1920, 1080}), "Game of Intrigue", sf::Style::Close)
 {
-    m_window.setFramerateLimit(144);
-    pushState(std::make_unique<MenuState>(m_window));
 }
 
 void Game::run()
 {
+    m_window.setFramerateLimit(144);
+    pushState(std::make_unique<MenuState>(m_window));
+    ImGui::SFML::Init(m_window);
+
+    
     while (m_window.isOpen())
     {
         handleEvents();
@@ -27,10 +30,7 @@ void Game::handleEvents()
 {
     while (const std::optional event = m_window.pollEvent())
     {
-        if (!event.has_value())
-        {
-            continue;
-        }
+        ImGui::SFML::ProcessEvent(m_window, *event);
         if (event->is<sf::Event::Closed>())
         {
             m_window.close();
@@ -38,13 +38,14 @@ void Game::handleEvents()
         }
         if (!m_states.empty())
         {
-            m_states.top()->handleEvent(event.value());
+            m_states.top()->handleEvent(event);
         }
     }
-}
+} 
 
 void Game::update()
 {
+    ImGui::SFML::Update(m_window, m_deltaClock.restart());
     if (!m_states.empty())
     {
         m_states.top()->update();
@@ -58,6 +59,7 @@ void Game::render()
     {
         m_states.top()->render(m_window);
     }
+    ImGui::SFML::Render(m_window);
     m_window.display();
 }
 

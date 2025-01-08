@@ -33,6 +33,7 @@ private:
     void render();
 
     sf::RenderWindow m_window;
+    sf::Clock m_deltaClock;
     sf::View m_view;
     std::stack<std::unique_ptr<GameState> > m_states;
 };

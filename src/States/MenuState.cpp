@@ -23,7 +23,7 @@ void MenuState::onExit() {
     assets.unloadAll();
 }
 
-void MenuState::handleEvent(const sf::Event &event) {
+void MenuState::handleEvent(const std::optional<sf::Event> event) {
 }
 
 void MenuState::update() {
