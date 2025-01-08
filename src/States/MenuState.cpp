@@ -11,6 +11,8 @@ void MenuState::onEnter() {
     auto &assets = Assets::getInstance();
     assets.loadTexture("menu_background", "assets/textures/menu_background.png");
     m_background = std::make_unique<sf::Sprite>(assets.getTexture("menu_background"));
+    m_background->setScale({m_window.getSize().x / m_background->getLocalBounds().size.x,
+                            m_window.getSize().y / m_background->getLocalBounds().size.y});
     // Preload assets for the main menu
     assets.loadFont("main_font", "assets/fonts/VeronaRegular-7Oy8K.ttf");
 }
