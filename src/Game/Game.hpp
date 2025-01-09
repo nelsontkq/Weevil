@@ -32,6 +32,7 @@ private:
 
     void render();
 
+    bool m_debugMode = false;
     sf::RenderWindow m_window;
     sf::Clock m_deltaClock;
     sf::View m_view;

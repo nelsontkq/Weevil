@@ -3,46 +3,33 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-#include <map>
 #include <memory>
+#include <unordered_map>
 #include <string>
+#include <imgui.h>
+#include <imgui-SFML.h>
 
 class Assets {
 public:
-    static Assets &getInstance() {
-        static Assets instance;
-        return instance;
-    }
+    static Assets& getInstance();
 
-    // No copy or move allowed
-    Assets(const Assets &) = delete;
+    std::shared_ptr<sf::Texture> loadTexture(const std::string& filePath);
+    std::shared_ptr<sf::SoundBuffer> loadSoundBuffer(const std::string& filePath);
+    // ORDER MATTERS
+    enum FontType {
+        Menu = 0,
+    };
 
-    Assets &operator=(const Assets &) = delete;
-
-    // Load and manage textures
-    const sf::Texture &getTexture(const std::string &name);
-
-    void loadTexture(const std::string &name, const std::filesystem::path &filePath);
-
-
-    // Load and manage sounds
-    const sf::SoundBuffer &getSoundBuffer(const std::string &name);
-
-    void loadSoundBuffer(const std::string &name, const std::filesystem::path &filePath);
-
-    // Clean up unused resources
-    void unloadAll();
-
-    // Load and manage ImGui fonts
-    void loadFont(const std::filesystem::path &filePath, float size);
-    void clearFonts();
+    void loadDebugMode();
+    ImFont* getFont(FontType fontType);
 
 private:
-    Assets() = default; // Private constructor
-    ~Assets() = default;
+    Assets();
+    Assets(const Assets&) = delete;
+    Assets& operator=(const Assets&) = delete;
 
-    std::map<std::string, sf::Texture> m_textures;
-    std::map<std::string, sf::SoundBuffer> m_soundBuffers;
+    std::unordered_map<std::string, std::weak_ptr<sf::Texture>> m_textures;
+    std::unordered_map<std::string, std::weak_ptr<sf::SoundBuffer>> m_soundBuffers;
 };
 
 #endif
