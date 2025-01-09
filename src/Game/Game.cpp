@@ -96,6 +96,7 @@ void Game::render()
         {
             Logger::getInstance().clear();
         }
+        ImGui::SetScrollHereY(1.0f);
 
         ImGui::End();
     }
