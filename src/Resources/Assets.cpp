@@ -1,53 +1,78 @@
 #include "Assets.hpp"
 #include <iostream>
-#include <imgui.h>
-#include <imgui-SFML.h>
+#include <filesystem>
 
-// Load texture
-void Assets::loadTexture(const std::string &name, const std::filesystem::path &filePath) {
-    sf::Texture texture;
-    if (!texture.loadFromFile(filePath)) {
+Assets &Assets::getInstance()
+{
+    static Assets instance;
+    return instance;
+}
+
+Assets::Assets()
+{
+    loadDebugMode();
+}
+
+std::shared_ptr<sf::Texture> Assets::loadTexture(const std::string &filePath)
+{
+    auto it = m_textures.find(filePath);
+    if (it != m_textures.end())
+    {
+        if (auto sharedTex = it->second.lock())
+        {
+            return sharedTex;
+        }
+    }
+
+    auto texture = std::make_shared<sf::Texture>();
+    if (!texture->loadFromFile(filePath))
+    {
         std::cerr << "Error loading texture: " << filePath << std::endl;
-        return;
+        return nullptr;
     }
-    m_textures[name] = std::move(texture);
+
+    m_textures[filePath] = texture;
+    return texture;
 }
 
-const sf::Texture &Assets::getTexture(const std::string &name) {
-    return m_textures.at(name);
-}
-
-
-// Load sound
-void Assets::loadSoundBuffer(const std::string &name, const std::filesystem::path &filePath) {
-    sf::SoundBuffer soundBuffer;
-    if (!soundBuffer.loadFromFile(filePath)) {
-        std::cerr << "Error loading sound: " << filePath << std::endl;
-        return;
+std::shared_ptr<sf::SoundBuffer> Assets::loadSoundBuffer(const std::string &filePath)
+{
+    auto it = m_soundBuffers.find(filePath);
+    if (it != m_soundBuffers.end())
+    {
+        if (auto sharedBuffer = it->second.lock())
+        {
+            return sharedBuffer;
+        }
     }
-    m_soundBuffers[name] = soundBuffer;
+
+    auto soundBuffer = std::make_shared<sf::SoundBuffer>();
+    if (!soundBuffer->loadFromFile(filePath))
+    {
+        std::cerr << "Error loading sound buffer: " << filePath << std::endl;
+        return nullptr;
+    }
+
+    m_soundBuffers[filePath] = soundBuffer;
+    return soundBuffer;
 }
 
-const sf::SoundBuffer &Assets::getSoundBuffer(const std::string &name) {
-    return m_soundBuffers.at(name);
-}
-
-// Unload all resources
-void Assets::unloadAll() {
-    m_textures.clear();
-    m_soundBuffers.clear();
-}
-
-// Load ImGui font
-void Assets::loadFont(const std::filesystem::path &filePath, float size) {
-    ImGuiIO &io = ImGui::GetIO();
-    io.Fonts->AddFontFromFileTTF(filePath.string().c_str(), size);
+void Assets::loadDebugMode()
+{
+    // fonts
+    auto &io = ImGui::GetIO();
+    io.Fonts->Clear();
+    io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans-Variable.ttf", 24.0f);
     ImGui::SFML::UpdateFontTexture();
 }
 
-// Clear all ImGui fonts
-void Assets::clearFonts() {
-    ImGuiIO &io = ImGui::GetIO();
-    io.Fonts->Clear();
-    ImGui::SFML::UpdateFontTexture(); // Update font texture after clearing
+ImFont* Assets::getFont(FontType fontType)
+{
+    switch (fontType)
+    {
+    case FontType::Menu:
+        return ImGui::GetIO().Fonts->Fonts[0];
+    default:
+        return nullptr;
+    }
 }

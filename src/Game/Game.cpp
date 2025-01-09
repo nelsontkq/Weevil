@@ -13,11 +13,11 @@ Game::Game() : m_window(sf::VideoMode({1920, 1080}), "Game of Intrigue", sf::Sty
 
 void Game::run()
 {
+    if(!ImGui::SFML::Init(m_window)) {
+        throw std::runtime_error("Failed to initialize ImGui-SFML");
+    }
     m_window.setFramerateLimit(144);
     pushState(std::make_unique<MenuState>(m_window));
-    ImGui::SFML::Init(m_window);
-
-    
     while (m_window.isOpen())
     {
         handleEvents();
