@@ -22,7 +22,7 @@ public:
     void onExit() override;
 
 private:
-    sf::Sprite m_background;
+    std::unique_ptr<sf::Sprite> m_background;
     std::shared_ptr<sf::Texture> m_texture;
     sf::RenderWindow &m_window;
 };

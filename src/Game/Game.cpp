@@ -18,7 +18,6 @@ void Game::run()
         throw std::runtime_error("Failed to initialize ImGui-SFML");
     }
     Logger::getInstance().log("Game started");
-    Assets::getInstance().loadDebugMode();
     m_window.setFramerateLimit(144);
     pushState(std::make_unique<MenuState>(m_window));
     while (m_window.isOpen())
@@ -31,19 +30,17 @@ void Game::run()
 
 void Game::handleEvents()
 {
-    sf::Event event;
-    while (m_window.pollEvent(event))
+    while (const std::optional event = m_window.pollEvent())
     {
-        ImGui::SFML::ProcessEvent(event);
-
-        if (event.type == sf::Event::Closed)
+        ImGui::SFML::ProcessEvent(m_window, *event);
+        if (event->is<sf::Event::Closed>())
         {
             m_window.close();
             break;
         }
-        else if (event.type == sf::Event::KeyPressed)
+        else if (auto *ev = event->getIf<sf::Event::KeyPressed>())
         {
-            if (event.key.code == sf::Keyboard::F3)
+            if (ev->code == sf::Keyboard::Key::F3)
             {
                 m_debugMode = !m_debugMode;
                 if (m_debugMode)
@@ -54,7 +51,7 @@ void Game::handleEvents()
         }
         if (!m_states.empty())
         {
-            m_states.top()->handleEvent(event);
+            m_states.top()->handleEvent(event.value());
         }
     }
 } 
@@ -99,6 +96,7 @@ void Game::render()
         {
             Logger::getInstance().clear();
         }
+        ImGui::SetScrollHereY(1.0f);
 
         ImGui::End();
     }

@@ -66,6 +66,8 @@
         "__verbose_abort": "cpp",
         "execution": "cpp",
         "ios": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "future": "cpp",
+        "regex": "cpp"
     }
 }
