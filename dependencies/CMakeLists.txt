@@ -8,6 +8,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sfml)
 
+set(TGUI_BACKEND "SFML_GRAPHICS")
+# TGUI
+FetchContent_Declare(
+  tgui
+  URL https://github.com/texus/TGUI/archive/refs/tags/v1.7.0.tar.gz
+  URL_MD5 0fff787484f6966adb3be4d21bf0d2f3
+)
+FetchContent_MakeAvailable(tgui)
+
+
 # Dear ImGui
 FetchContent_Declare(
   imgui
