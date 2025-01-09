@@ -9,7 +9,7 @@
 
 class MainGameState : public GameState {
 public:
-    void handleEvent(const std::optional<sf::Event> &event) override;
+    void handleEvent(const sf::Event &event) override;
 
     void update() override;
 
