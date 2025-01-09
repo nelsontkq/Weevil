@@ -10,6 +10,8 @@ add_executable(main src/main.cpp
         src/Entities/Entity.hpp
         src/Resources/Assets.cpp
         src/Resources/Assets.hpp
+        src/Resources/Logger.cpp
+        src/Resources/Logger.hpp
         src/States/MainGameState.cpp
         src/States/MainGameState.hpp
 )

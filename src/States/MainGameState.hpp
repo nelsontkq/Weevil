@@ -7,7 +7,7 @@
 #include "GameState.hpp"
 
 
-class MainGameState : GameState {
+class MainGameState : public GameState {
 public:
     void handleEvent(const std::optional<sf::Event> &event) override;
 

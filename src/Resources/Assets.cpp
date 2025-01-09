@@ -1,4 +1,5 @@
 #include "Assets.hpp"
+#include "Logger.hpp"
 #include <iostream>
 #include <filesystem>
 
@@ -10,7 +11,6 @@ Assets &Assets::getInstance()
 
 Assets::Assets()
 {
-    loadDebugMode();
 }
 
 std::shared_ptr<sf::Texture> Assets::loadTexture(const std::string &filePath)
@@ -27,7 +27,7 @@ std::shared_ptr<sf::Texture> Assets::loadTexture(const std::string &filePath)
     auto texture = std::make_shared<sf::Texture>();
     if (!texture->loadFromFile(filePath))
     {
-        std::cerr << "Error loading texture: " << filePath << std::endl;
+        Logger::getInstance().log("Error loading texture: " + filePath);
         return nullptr;
     }
 
@@ -49,7 +49,7 @@ std::shared_ptr<sf::SoundBuffer> Assets::loadSoundBuffer(const std::string &file
     auto soundBuffer = std::make_shared<sf::SoundBuffer>();
     if (!soundBuffer->loadFromFile(filePath))
     {
-        std::cerr << "Error loading sound buffer: " << filePath << std::endl;
+        Logger::getInstance().log("Error loading sound buffer: " + filePath);
         return nullptr;
     }
 
