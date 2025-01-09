@@ -12,6 +12,8 @@ add_executable(main src/main.cpp
         src/Resources/Assets.hpp
         src/States/MainGameState.cpp
         src/States/MainGameState.hpp
+        src/Utils/Logger.cpp
+        src/Utils/Logger.hpp
 )
 
 
