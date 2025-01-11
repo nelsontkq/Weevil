@@ -1,16 +1,16 @@
 include(FetchContent)
 
 set(OpenGL_GL_PREFERENCE GLVND)
-# OpenGL (optional, as it's usually provided by the system)
-# You can keep using find_package if preferred
+find_package(OpenGL REQUIRED)
+find_package(SDL2 REQUIRED)
 
-# SDL2
-FetchContent_Declare(
-  SDL2
-  GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-  GIT_TAG release-2.30.11
-)
-FetchContent_MakeAvailable(SDL2)
+if (CMAKE_SYSTEM_NAME STREQUAL Linux)
+  find_package(X11 REQUIRED)
+
+  if (NOT X11_Xi_FOUND)
+    message(FATAL_ERROR "X11 Xi library is required")
+  endif ()
+endif ()
 
 # ImGui
 FetchContent_Declare(
@@ -27,6 +27,7 @@ FetchContent_Declare(
   GIT_TAG v3.14.0
 )
 FetchContent_MakeAvailable(EnTT)
+set(ENTT_LIBRARIES EnTT::EnTT)
 
 FetchContent_Declare(
   glad
@@ -34,3 +35,19 @@ FetchContent_Declare(
   GIT_TAG v2.0.8
 )
 FetchContent_MakeAvailable(glad)
+
+set(IMGUI_INCLUDE_DIR ${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends)
+set(IMGUI_LIBRARIES imgui)
+file(GLOB IMGUI_SOURCES ${IMGUI_INCLUDE_DIR}/*.cpp)
+file(GLOB IMGUI_HEADERS ${IMGUI_INCLUDE_DIR}/*.h)
+                 
+add_library(imgui STATIC ${IMGUI_HEADERS} ${IMGUI_SOURCES})
+
+add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLAD)
+    
+target_link_libraries(imgui
+    ${OPENGL_LIBRARIES}
+    ${SDL2_LIBRARIES})
+    
+set_target_properties(imgui PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(imgui PROPERTIES FOLDER 3rdparty)

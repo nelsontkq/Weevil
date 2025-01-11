@@ -36,6 +36,7 @@ macro(make_executable)
     make_project_()
     
     add_executable(${PROJECT} ${HEADERS} ${SOURCES})
+    target_compile_features(${PROJECT} PRIVATE cxx_std_17)
 endmacro()
 
 function(add_all_subdirectories)
