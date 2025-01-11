@@ -1,16 +1,12 @@
 #pragma once
 
-#include <entt/entt.hpp>
-#include <entt/process/process.hpp>
+#include <memory>
 #include "../Utils/SDL_Deleter.hpp"
 #include "../ECS.hpp"
-#include "../Processes/InputProcess.hpp"
-#include "../Processes/UpdateProcess.hpp"
-#include "../Processes/RenderProcess.hpp"
 
 #include <SDL2/SDL.h>
-#include <memory>
 #include <imgui.h>
+#include <entt/entt.hpp>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_sdlrenderer2.h>
 
