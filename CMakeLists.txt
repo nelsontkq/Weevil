@@ -1,14 +1,24 @@
 cmake_minimum_required(VERSION 3.28)
 project(KingsCourt LANGUAGES CXX)
-# 3rd party libraries
-include(cmake/3rdparty.cmake)
-# macro and configurations
-include(cmake/config.cmake)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Enable clang-tidy analysis
-find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
-if (CLANG_TIDY_EXE)
-    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
-endif()
+add_subdirectory(dependencies)
 
-add_subdirectory(src)
+
+target_include_directories(main PRIVATE ${3RD_PARTY_INCLUDE_DIRS})
+
+# Add the executable and include the necessary source files
+add_executable(main 
+    src/main.cpp 
+    src/Game/Game.cpp 
+    src/Game/Game.hpp 
+    src/Utils/SDL_Deleter.hpp
+)
+
+
+target_compile_features(main PRIVATE cxx_std_20)
+# Link libs
+target_link_libraries(main PRIVATE ${3RD_PARTY_LIBS})

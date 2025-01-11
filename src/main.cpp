@@ -1,5 +1,5 @@
 
-#include "Game.hpp"
+#include "Game/Game.hpp"
 
 auto main() -> int
 {
