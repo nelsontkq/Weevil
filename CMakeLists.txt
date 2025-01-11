@@ -17,36 +17,7 @@ if (CLANG_TIDY_EXE)
         --extra-arg=-std=c++20")
 endif()
 
-add_executable(main src/main.cpp
-        src/Game/Game.cpp
-        src/Game/Game.hpp
-        src/States/MenuState.cpp
-        src/States/MenuState.hpp
-        src/Entities/Entity.hpp
-        src/Resources/Assets.cpp
-        src/Resources/Assets.hpp
-        src/Resources/Logger.cpp
-        src/Resources/Logger.hpp
-        src/States/MainGameState.cpp
-        src/States/MainGameState.hpp
-)
-
-# Add new ECS files
-# Components
-src/Components/PositionComponent.hpp
-src/Components/RenderComponent.hpp
-# Systems
-src/Systems/RenderSystem.cpp
-src/Systems/RenderSystem.hpp
-
-# Add EnTT as a dependency
-add_subdirectory(dependencies/entt)
-
-# Include directories for EnTT
-target_include_directories(main PRIVATE dependencies/entt/src)
-
-# Link EnTT to your executable
-target_link_libraries(main PRIVATE EnTT)
+add_executable(main src/main.cpp)
 
 
-target_link_libraries(main PRIVATE ImGui-SFML::ImGui-SFML SFML::Audio SFML::Graphics)
+target_link_libraries(main PRIVATE EnTT::EnTT)
