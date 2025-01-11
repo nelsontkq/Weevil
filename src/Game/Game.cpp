@@ -44,7 +44,7 @@ void Game::run()
     SDL_Event event;
 
     // Create EnTT process scheduler
-    entt::scheduler<float> scheduler;
+    entt::scheduler scheduler;
 
     auto &updateProcess = scheduler.attach<UpdateProcess>(registry_);
     auto &renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_.get());
