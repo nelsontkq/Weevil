@@ -2,7 +2,7 @@
 
 #include <entt/process/process.hpp>
 
-class UpdateProcess : public entt::process<UpdateProcess, Uint64> {
+class UpdateProcess : public entt::process<UpdateProcess, float> {
 public:
     UpdateProcess(entt::registry& registry)
         : registry_(registry) {}

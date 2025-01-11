@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include "../Components/RenderableComponent.hpp"
 
-class RenderProcess : public entt::process<RenderProcess, Uint64> {
+class RenderProcess : public entt::process<RenderProcess, float> {
 public:
     RenderProcess(entt::registry& registry, SDL_Renderer* renderer)
         : registry_(registry), renderer_(renderer) {}
