@@ -17,5 +17,5 @@ include_directories(include)
 add_executable(main src/main.cpp src/Game/Game.cpp)
 
 target_compile_features(main PRIVATE cxx_std_20)
-# Link SDL2 and EnTT libraries
-target_link_libraries(main PRIVATE EnTT::EnTT ${SDL2_LIBRARIES})
+# Link libs
+target_link_libraries(main PRIVATE EnTT::EnTT ${SDL2_LIBRARIES} imgui)
