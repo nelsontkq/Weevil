@@ -1,7 +1,7 @@
 #pragma once
 
 #include <entt/entt.hpp>
-#include <entt/process.hpp>
+#include <entt/process/process.hpp>
 #include "../../include/SDL_Deleter.hpp"
 
 #include <SDL2/SDL.h>

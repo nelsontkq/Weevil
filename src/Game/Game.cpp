@@ -1,6 +1,11 @@
 #include "Game.hpp"
-#include "Components/RenderableComponent.hpp"
 #include <coroutine>
+
+struct RenderableComponent
+{
+    SDL_Rect rect;
+    SDL_Color color;
+};
 
 Game::Game()
 {
@@ -61,7 +66,8 @@ void Game::run()
         }
 
         // --- Attach a process for rendering ---
-        scheduler_.attach([&](auto delta, void*, auto succeed, auto fail) {
+        scheduler_.attach([&](auto delta, void *, auto succeed, auto fail)
+                          {
             // Clear the renderer
             SDL_SetRenderDrawColor(renderer_.get(), 0, 0, 0, 255);
             SDL_RenderClear(renderer_.get());
@@ -73,8 +79,7 @@ void Game::run()
             });
 
             // Present the renderer
-            SDL_RenderPresent(renderer_.get());
-        });
+            SDL_RenderPresent(renderer_.get()); });
 
         // --- Main game loop ---
         while (isRunning)
@@ -86,4 +91,6 @@ void Game::run()
 
             // Update the scheduler
             scheduler_.update(static_cast<uint32_t>(deltaTime));
+        }
+    }
 }
