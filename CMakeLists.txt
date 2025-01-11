@@ -31,5 +31,22 @@ add_executable(main src/main.cpp
         src/States/MainGameState.hpp
 )
 
+# Add new ECS files
+# Components
+src/Components/PositionComponent.hpp
+src/Components/RenderComponent.hpp
+# Systems
+src/Systems/RenderSystem.cpp
+src/Systems/RenderSystem.hpp
+
+# Add EnTT as a dependency
+add_subdirectory(dependencies/entt)
+
+# Include directories for EnTT
+target_include_directories(main PRIVATE dependencies/entt/src)
+
+# Link EnTT to your executable
+target_link_libraries(main PRIVATE EnTT)
+
 
 target_link_libraries(main PRIVATE ImGui-SFML::ImGui-SFML SFML::Audio SFML::Graphics)

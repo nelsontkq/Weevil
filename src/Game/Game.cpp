@@ -19,7 +19,7 @@ void Game::run()
     }
     Logger::getInstance().log("Game started");
     m_window.setFramerateLimit(144);
-    pushState(std::make_unique<MenuState>(m_window));
+    pushState(std::make_unique<MenuState>(m_window, m_registry));
     while (m_window.isOpen())
     {
         handleEvents();
@@ -59,6 +59,7 @@ void Game::handleEvents()
 void Game::update()
 {
     ImGui::SFML::Update(m_window, m_deltaClock.restart());
+    m_renderSystem.render(m_registry, m_window);
     if (!m_states.empty())
     {
         m_states.top()->update();

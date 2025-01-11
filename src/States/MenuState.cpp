@@ -3,7 +3,7 @@
 #include <imgui.h>
 #include "../Resources/Logger.hpp"
 
-MenuState::MenuState(sf::RenderWindow &window) : m_window(window)
+MenuState::MenuState(sf::RenderWindow &window, entt::registry &registry) : m_window(window), m_registry(registry)
 {
 }
 
@@ -13,10 +13,21 @@ void MenuState::onEnter()
     auto &assets = Assets::getInstance();
     assets.loadDebugMode();
     Logger::getInstance().log("Entered MenuState");
-    m_texture = assets.loadTexture("assets/textures/menu_background.png");
-    m_background = std::make_unique<sf::Sprite>(*m_texture);
-    m_background->setScale({m_window.getSize().x / m_background->getLocalBounds().size.x,
-                            m_window.getSize().y / m_background->getLocalBounds().size.y});
+    auto texture = assets.loadTexture("assets/textures/menu_background.png");
+    if (!texture) {
+        Logger::getInstance().log("Failed to load background texture");
+        return;
+    }
+
+    auto backgroundEntity = m_registry.create();
+    auto& renderComp = m_registry.emplace<RenderComponent>(backgroundEntity);
+    renderComp.sprite.setTexture(*texture);
+    renderComp.sprite.setScale(
+        static_cast<float>(m_window.getSize().x) / renderComp.sprite.getLocalBounds().width,
+        static_cast<float>(m_window.getSize().y) / renderComp.sprite.getLocalBounds().height
+    );
+
+    m_registry.emplace<PositionComponent>(backgroundEntity, 0.0f, 0.0f);
 }
 
 void MenuState::onExit()
@@ -33,5 +44,5 @@ void MenuState::update()
 
 void MenuState::render(sf::RenderWindow &window)
 {
-    window.draw(*m_background);
+    // Rendering will be handled by systems
 }

@@ -9,8 +9,10 @@
 #include "../States/GameState.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <entt/entt.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
+#include "../Systems/RenderSystem.hpp"
 
 
 class Game {
@@ -36,6 +38,8 @@ private:
     sf::RenderWindow m_window;
     sf::Clock m_deltaClock;
     sf::View m_view;
+    RenderSystem m_renderSystem;
+    entt::registry m_registry;
     std::stack<std::unique_ptr<GameState> > m_states;
 };
 

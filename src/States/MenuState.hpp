@@ -6,10 +6,13 @@
 #define MENUSTATE_H
 #include <SFML/Graphics.hpp>
 #include "GameState.hpp"
+#include <entt/entt.hpp>
+#include "../Components/PositionComponent.hpp"
+#include "../Components/RenderComponent.hpp"
 
 class MenuState final : public GameState {
 public:
-    MenuState(sf::RenderWindow &window);
+    MenuState(sf::RenderWindow &window, entt::registry &registry);
 
     void handleEvent(const sf::Event& event) override;
 
@@ -22,8 +25,7 @@ public:
     void onExit() override;
 
 private:
-    std::unique_ptr<sf::Sprite> m_background;
-    std::shared_ptr<sf::Texture> m_texture;
+    entt::registry &m_registry;
     sf::RenderWindow &m_window;
 };
 
