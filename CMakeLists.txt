@@ -17,7 +17,7 @@ if (CLANG_TIDY_EXE)
         --extra-arg=-std=c++20")
 endif()
 
-add_executable(main src/main.cpp)
+add_executable(main src/main.cpp src/Game/Game.cpp)
 
 
 target_link_libraries(main PRIVATE EnTT::EnTT)
