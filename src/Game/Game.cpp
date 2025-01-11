@@ -86,5 +86,4 @@ void Game::run()
 
             // Update the scheduler
             scheduler_.update(static_cast<uint32_t>(deltaTime));
-    }
 }
