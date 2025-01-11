@@ -15,11 +15,9 @@ struct SDL_Deleter {
         }
     }
 
-    // Add deleters for other SDL types if needed
-    // For example:
-    // void operator()(SDL_Texture* ptr) const {
-    //     if (ptr) {
-    //         SDL_DestroyTexture(ptr);
-    //     }
-    // }
+    void operator()(SDL_Texture* ptr) const {
+        if (ptr) {
+            SDL_DestroyTexture(ptr);
+        }
+    }
 };

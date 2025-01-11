@@ -6,8 +6,8 @@
 #include "../Processes/RenderProcess.hpp"
 
 #include <SDL2/SDL.h>
-#include <memory>            // Include for smart pointers
-#include "../SDL_Deleter.hpp" // Include your custom deleter
+#include <memory>
+#include "SDL_Deleter.hpp"
 
 class Game
 {

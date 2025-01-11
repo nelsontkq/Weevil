@@ -11,7 +11,7 @@ Game::Game()
     // Create SDL window using smart pointer
     window_.reset(SDL_CreateWindow("Courtly Intrigues",
                                    SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                   800, 600,
+                                   1920, 1080,
                                    SDL_WINDOW_SHOWN));
     if (!window_)
     {
@@ -19,8 +19,8 @@ Game::Game()
         throw std::runtime_error("Failed to create SDL Window: " + std::string(SDL_GetError()));
     }
 
-    // Create SDL renderer using smart pointer
-    renderer_.reset(SDL_CreateRenderer(window_.get(), -1, SDL_RENDERER_ACCELERATED));
+    const auto rendererFlags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+    renderer_.reset(SDL_CreateRenderer(window_.get(), -1, rendererFlags));
     if (!renderer_)
     {
         SDL_Quit();
@@ -34,7 +34,6 @@ Game::Game()
 
 Game::~Game()
 {
-    // Clean up SDL resources
     // No need to manually destroy renderer_ or window_
     SDL_Quit();
 }
@@ -47,39 +46,33 @@ void Game::run()
     // Create EnTT process scheduler
     entt::scheduler scheduler;
 
-    // Create and attach processes
     auto &updateProcess = scheduler.attach<UpdateProcess>(registry_);
     auto &renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_.get());
-    // You can also attach InputProcess if needed
 
     // Time management
-    Uint32 frameStart = 0;
+    Uint64 previousTicks = SDL_GetTicks64();
     float deltaTime = 0.0f;
 
     while (isRunning)
     {
-        Uint32 currentTicks = SDL_GetTicks();
-        deltaTime = (currentTicks - frameStart) / 1000.0f; // Convert milliseconds to seconds
-        frameStart = currentTicks;
-
-        // Handle SDL events
+        // --- Handle SDL events ---
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
             {
                 isRunning = false;
             }
-            // Handle other events if necessary
+            // Handle other events (e.g., input) if necessary
         }
 
-        // Update EnTT processes with the calculated deltaTime
+        // --- Calculate deltaTime ---
+        {
+            Uint64 currentTicks = SDL_GetTicks64();
+            deltaTime = static_cast<float>(currentTicks - previousTicks) / 1000.0f;
+            previousTicks = currentTicks;
+        }
+        // --- Update processes (logic, rendering, etc.) ---
         scheduler.update(deltaTime);
 
-        // Frame rate control
-        frameTime = SDL_GetTicks() - frameStart;
-        if (frameDelay > frameTime)
-        {
-            SDL_Delay(frameDelay - frameTime);
-        }
     }
 }
