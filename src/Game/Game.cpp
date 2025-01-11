@@ -44,14 +44,14 @@ void Game::run()
     SDL_Event event;
 
     // Create EnTT process scheduler
-    entt::scheduler scheduler;
+    entt::scheduler<Uint64> scheduler;
 
     auto &updateProcess = scheduler.attach<UpdateProcess>(registry_);
     auto &renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_.get());
 
     // Time management
     Uint64 previousTicks = SDL_GetTicks64();
-    float deltaTime = 0.0f;
+    Uint64 deltaTime = 0;
 
     while (isRunning)
     {
