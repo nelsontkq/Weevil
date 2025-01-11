@@ -8,7 +8,7 @@ set(OpenGL_GL_PREFERENCE GLVND)
 FetchContent_Declare(
   SDL2
   GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-  GIT_TAG release-2.28.2  # Replace with the desired version
+  GIT_TAG release-2.30.11
 )
 FetchContent_MakeAvailable(SDL2)
 
@@ -16,7 +16,7 @@ FetchContent_MakeAvailable(SDL2)
 FetchContent_Declare(
   imgui
   GIT_REPOSITORY https://github.com/ocornut/imgui.git
-  GIT_TAG v1.89.9  # Replace with the desired version
+  GIT_TAG v1.91.6
 )
 FetchContent_MakeAvailable(imgui)
 
@@ -24,14 +24,13 @@ FetchContent_MakeAvailable(imgui)
 FetchContent_Declare(
   EnTT
   GIT_REPOSITORY https://github.com/skypjack/entt.git
-  GIT_TAG v3.11.1  # Replace with the desired version
+  GIT_TAG v3.14.0
 )
 FetchContent_MakeAvailable(EnTT)
 
-# GLAD (optional)
 FetchContent_Declare(
   glad
   GIT_REPOSITORY https://github.com/Dav1dde/glad.git
-  GIT_TAG v0.1.36  # Replace with the desired version
+  GIT_TAG v2.0.8
 )
 FetchContent_MakeAvailable(glad)
