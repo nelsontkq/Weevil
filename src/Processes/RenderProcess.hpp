@@ -4,17 +4,21 @@
 #include <entt/process/process.hpp>
 #include <SDL2/SDL.h>
 #include "../ECS.hpp"
+#include <imgui.h>
+#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_sdlrenderer2.h>
+
 
 /**
  * A process that runs render systems and handles rendering.
  */
-class RenderProcess : public entt::process<RenderProcess, float> {
+class RenderProcess : public entt::process<RenderProcess, u_int64_t> {
 public:
     RenderProcess(ECS &ecs, SDL_Window *window, SDL_Renderer *renderer)
         : ecs_(ecs), window_(window), renderer_(renderer)
     {}
 
-    void update(float dt, void *data, auto succeed, auto fail) {
+    void update(u_int64_t dt) {
         // Start ImGui frame
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();
@@ -34,7 +38,7 @@ public:
         ecs_.run_render(dt);
 
         // Render ImGui data
-        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer_);
 
         // Present
         SDL_RenderPresent(renderer_);

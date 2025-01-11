@@ -46,14 +46,13 @@ Game::Game()
 
     // Register systems
     // Register render system
-    ecs_->add_render_system([this](entt::registry &registry, float dt) {
+    ecs_->add_render_system([this](entt::registry &registry, u_int64_t dt)
+                            {
         // Render entities with RenderableComponent
         registry.view<RenderableComponent>().each([this](auto entity, RenderableComponent& renderable) {
             SDL_SetRenderDrawColor(renderer_.get(), renderable.color.r, renderable.color.g, renderable.color.b, renderable.color.a);
             SDL_RenderFillRect(renderer_.get(), &renderable.rect);
-        });
-    });
-    registry_.emplace<RenderableComponent>(entity, SDL_Rect{100, 100, 50, 50}, SDL_Color{255, 0, 0, 255});
+        }); });
 }
 
 Game::~Game()
@@ -72,23 +71,21 @@ void Game::run()
 
     // Time management
     uint64_t previousTicks = SDL_GetTicks64();
-    float deltaTime = 0.0f;
+    u_int64_t deltaTime = 0.0f;
 
     // --- Attach a process for rendering ---
     // Attach processes to the scheduler
-    scheduler_.attach<InputProcess>(*ecs_, window_.get());
-    scheduler_.then<UpdateProcess>(*ecs_);
-    scheduler_.then<RenderProcess>(*ecs_, window_.get(), renderer_.get());
+    scheduler_.attach<InputProcess>(ecs_, window_.get()).then<UpdateProcess>(ecs_).then<RenderProcess>(ecs_, window_.get(), renderer_.get());
 
     // --- Main game loop ---
     while (isRunning)
     {
         // Calculate deltaTime
         uint64_t currentTicks = SDL_GetTicks64();
-        deltaTime = (currentTicks - previousTicks) / 1000.0f;
+        deltaTime = currentTicks - previousTicks;
         previousTicks = currentTicks;
 
         // Update the scheduler
-        scheduler_.update(static_cast<uint32_t>(deltaTime));
+        scheduler_.update(deltaTime);
     }
 }

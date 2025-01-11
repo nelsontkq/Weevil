@@ -4,11 +4,14 @@
 #include <entt/process/process.hpp>
 #include <SDL2/SDL.h>
 #include "../ECS.hpp"
+#include <imgui.h>
+#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_sdlrenderer2.h>
 
 /**
  * A process that handles SDL events and runs input systems.
  */
-class InputProcess : public entt::process<InputProcess, float> {
+class InputProcess : public entt::process<InputProcess, u_int64_t> {
 public:
     InputProcess(ECS &ecs, SDL_Window *window)
         : ecs_(ecs), window_(window)
@@ -18,7 +21,7 @@ public:
         // Initialization if needed
     }
 
-    void update(float dt, void *data, auto succeed, auto fail) {
+    void update(u_int64_t dt) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             // Pass events to ImGui
