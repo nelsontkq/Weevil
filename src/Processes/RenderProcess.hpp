@@ -9,7 +9,7 @@ public:
     RenderProcess(entt::registry& registry, SDL_Renderer* renderer)
         : registry_(registry), renderer_(renderer) {}
 
-    entt::process_status update() {
+    void update() {
         while (true) {
             // Clear the renderer
             SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
@@ -31,7 +31,7 @@ public:
             SDL_RenderPresent(renderer_);
 
             // Yield control back to the scheduler
-            co_yield entt::process_status::running;
+            co_yield;
         }
     }
 
