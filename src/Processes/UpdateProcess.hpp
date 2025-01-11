@@ -1,6 +1,6 @@
 #pragma once
 
-#include <entt/process.hpp>
+#include <entt/process/process.hpp>
 
 class UpdateProcess : public entt::process<UpdateProcess, float> {
 public:
