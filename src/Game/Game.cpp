@@ -1,8 +1,10 @@
 #include "Game.hpp"
 
-Game::Game() {
+Game::Game()
+{
     // Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0)
+    {
         throw std::runtime_error("Failed to initialize SDL: " + std::string(SDL_GetError()));
     }
 
@@ -11,14 +13,16 @@ Game::Game() {
                                SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                800, 600,
                                SDL_WINDOW_SHOWN);
-    if (!window_) {
+    if (!window_)
+    {
         SDL_Quit();
         throw std::runtime_error("Failed to create SDL Window: " + std::string(SDL_GetError()));
     }
 
     // Create SDL renderer
     renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer_) {
+    if (!renderer_)
+    {
         SDL_DestroyWindow(window_);
         SDL_Quit();
         throw std::runtime_error("Failed to create SDL Renderer: " + std::string(SDL_GetError()));
@@ -29,20 +33,24 @@ Game::Game() {
     registry_.emplace<RenderableComponent>(entity, SDL_Rect{100, 100, 50, 50}, SDL_Color{255, 0, 0, 255});
 }
 
-Game::~Game() {
+Game::~Game()
+{
     // Clean up SDL resources
-    if (renderer_) {
+    if (renderer_)
+    {
         SDL_DestroyRenderer(renderer_);
         renderer_ = nullptr;
     }
-    if (window_) {
+    if (window_)
+    {
         SDL_DestroyWindow(window_);
         window_ = nullptr;
     }
     SDL_Quit();
 }
 
-void Game::run() {
+void Game::run()
+{
     bool isRunning = true;
     SDL_Event event;
 
@@ -50,22 +58,25 @@ void Game::run() {
     entt::scheduler scheduler;
 
     // Create and attach processes
-    auto& updateProcess = scheduler.attach<UpdateProcess>(registry_);
-    auto& renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_);
+    auto &updateProcess = scheduler.attach<UpdateProcess>(registry_);
+    auto &renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_);
     // You can also attach InputProcess if needed
 
     // Time management
-    const Uint32 frameDelay = 1000 / 60;  // For 60 FPS
+    const Uint32 frameDelay = 1000 / 60; // For 60 FPS
     Uint32 frameStart;
     int frameTime;
-    const float deltaTime = 1.0f / 60.0f;  // Consistent deltaTime for processes
+    const float deltaTime = 1.0f / 60.0f; // Consistent deltaTime for processes
 
-    while (isRunning) {
+    while (isRunning)
+    {
         frameStart = SDL_GetTicks();
 
         // Handle SDL events
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+            {
                 isRunning = false;
             }
             // Handle other events if necessary
@@ -76,7 +87,8 @@ void Game::run() {
 
         // Frame rate control
         frameTime = SDL_GetTicks() - frameStart;
-        if (frameDelay > frameTime) {
+        if (frameDelay > frameTime)
+        {
             SDL_Delay(frameDelay - frameTime);
         }
     }
