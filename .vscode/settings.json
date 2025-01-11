@@ -68,6 +68,8 @@
         "ios": "cpp",
         "locale": "cpp",
         "future": "cpp",
-        "regex": "cpp"
+        "regex": "cpp",
+        "*.ipp": "cpp",
+        "semaphore": "cpp"
     }
 }
