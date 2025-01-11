@@ -58,8 +58,7 @@ void Game::run()
             {
                 isRunning = false;
             }
-            }
-        });
+        }
 
         // --- Attach a process for rendering ---
         scheduler_.attach([&](auto delta, void*, auto succeed, auto fail) {
