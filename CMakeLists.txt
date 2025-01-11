@@ -17,7 +17,15 @@ if (CLANG_TIDY_EXE)
         --extra-arg=-std=c++20")
 endif()
 
-add_executable(main src/main.cpp)
+# Find SDL2
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
+
+# Add the executable and include the necessary source files
+add_executable(main src/main.cpp src/Game/Game.cpp)
+
+# Link SDL2 and EnTT libraries
+target_link_libraries(main PRIVATE EnTT::EnTT ${SDL2_LIBRARIES})
 
 
 target_link_libraries(main PRIVATE EnTT::EnTT)
