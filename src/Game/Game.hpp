@@ -2,6 +2,7 @@
 
 #include <entt/entt.hpp>
 #include "../Processes/UpdateProcess.hpp"
+#include "../../include/SDL_Deleter.hpp"
 #include "../Processes/RenderProcess.hpp"
 
 #include <SDL2/SDL.h>

@@ -36,16 +36,7 @@ Game::Game()
 Game::~Game()
 {
     // Clean up SDL resources
-    if (renderer_)
-    {
-        SDL_DestroyRenderer(renderer_);
-        renderer_ = nullptr;
-    }
-    if (window_)
-    {
-        SDL_DestroyWindow(window_);
-        window_ = nullptr;
-    }
+    // No need to manually destroy renderer_ or window_
     SDL_Quit();
 }
 
@@ -59,7 +50,7 @@ void Game::run()
 
     // Create and attach processes
     auto &updateProcess = scheduler.attach<UpdateProcess>(registry_);
-    auto &renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_);
+    auto &renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_.get());
     // You can also attach InputProcess if needed
 
     // Time management
