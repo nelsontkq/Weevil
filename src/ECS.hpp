@@ -6,7 +6,6 @@
 
 /**
  * An ECS "manager" that allows you to add systems for Input, Update, and Render.
- * Each system is a function or lambda that takes (entt::registry&, float dt).
  */
 class ECS {
 public:
@@ -53,7 +52,7 @@ public:
 private:
     entt::registry &registry_;
 
-    std::vector<std::function<void(entt::registry&, float)>> inputSystems_;
-    std::vector<std::function<void(entt::registry&, float)>> updateSystems_;
-    std::vector<std::function<void(entt::registry&, float)>> renderSystems_;
+    std::vector<std::function<void(entt::registry&, u_int64_t)>> inputSystems_;
+    std::vector<std::function<void(entt::registry&, u_int64_t)>> updateSystems_;
+    std::vector<std::function<void(entt::registry&, u_int64_t)>> renderSystems_;
 };

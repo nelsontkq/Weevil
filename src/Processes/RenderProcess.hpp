@@ -4,6 +4,10 @@
 #include <entt/process/process.hpp>
 #include <SDL2/SDL.h>
 #include "../ECS.hpp"
+#include <imgui.h>
+#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_sdlrenderer2.h>
+
 
 /**
  * A process that runs render systems and handles rendering.
@@ -34,7 +38,7 @@ public:
         ecs_.run_render(dt);
 
         // Render ImGui data
-        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer_);
 
         // Present
         SDL_RenderPresent(renderer_);

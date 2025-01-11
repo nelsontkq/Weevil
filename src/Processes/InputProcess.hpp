@@ -4,6 +4,9 @@
 #include <entt/process/process.hpp>
 #include <SDL2/SDL.h>
 #include "../ECS.hpp"
+#include <imgui.h>
+#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_sdlrenderer2.h>
 
 /**
  * A process that handles SDL events and runs input systems.
