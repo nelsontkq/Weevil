@@ -14,4 +14,5 @@ target_link_libraries(${PROJECT}
     ${SDL2_LIBRARIES}
     ${IMGUI_LIBRARIES}
     ${ENTT_LIBRARIES}
+    glad
     )
