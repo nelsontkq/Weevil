@@ -41,7 +41,18 @@ Game::Game()
     // Initialize ImGui SDL2 and SDL Renderer backends
     ImGui_ImplSDL2_InitForSDLRenderer(window_.get(), renderer_.get());
     ImGui_ImplSDLRenderer2_Init(renderer_.get());
-    auto entity = registry_.create();
+    // Initialize ECS
+    ecs_ = std::make_unique<ECS>(registry_);
+
+    // Register systems
+    // Register render system
+    ecs_->add_render_system([this](entt::registry &registry, float dt) {
+        // Render entities with RenderableComponent
+        registry.view<RenderableComponent>().each([this](auto entity, RenderableComponent& renderable) {
+            SDL_SetRenderDrawColor(renderer_.get(), renderable.color.r, renderable.color.g, renderable.color.b, renderable.color.a);
+            SDL_RenderFillRect(renderer_.get(), &renderable.rect);
+        });
+    });
     registry_.emplace<RenderableComponent>(entity, SDL_Rect{100, 100, 50, 50}, SDL_Color{255, 0, 0, 255});
 }
 
@@ -61,53 +72,20 @@ void Game::run()
 
     // Time management
     uint64_t previousTicks = SDL_GetTicks64();
-    uint64_t deltaTime = 0;
+    float deltaTime = 0.0f;
 
     // --- Attach a process for rendering ---
-    scheduler_.attach([this](auto delta, void *, auto succeed, auto fail)
-                      {
-            ImGui_ImplSDLRenderer2_NewFrame();
-            ImGui_ImplSDL2_NewFrame();
-            ImGui::NewFrame();
-
-            // [Optional] Show the ImGui demo window for testing
-            ImGui::ShowDemoWindow();
-
-            // [Add your custom ImGui debug tools here]
-
-            // Rendering
-            ImGui::Render();
-
-            // Rendering
-            ImGui::Render();
-            SDL_SetRenderDrawColor(renderer_.get(), 0, 0, 0, 255);
-            SDL_RenderClear(renderer_.get());
-
-            // Render entities with RenderableComponent
-            registry_.view<RenderableComponent>().each([&](auto entity, RenderableComponent& renderable) {
-                SDL_SetRenderDrawColor(renderer_.get(), renderable.color.r, renderable.color.g, renderable.color.b, renderable.color.a);
-                SDL_RenderFillRect(renderer_.get(), &renderable.rect);
-            });
-            ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer_.get());
-            SDL_RenderPresent(renderer_.get()); });
+    // Attach processes to the scheduler
+    scheduler_.attach<InputProcess>(*ecs_, window_.get());
+    scheduler_.then<UpdateProcess>(*ecs_);
+    scheduler_.then<RenderProcess>(*ecs_, window_.get(), renderer_.get());
 
     // --- Main game loop ---
     while (isRunning)
     {
-        // --- Handle SDL events ---
-        while (SDL_PollEvent(&event))
-        {
-            // Pass events to ImGui
-            ImGui_ImplSDL2_ProcessEvent(&event);
-
-            if (event.type == SDL_QUIT)
-            {
-                isRunning = false;
-            }
-        }
         // Calculate deltaTime
         uint64_t currentTicks = SDL_GetTicks64();
-        deltaTime = currentTicks - previousTicks;
+        deltaTime = (currentTicks - previousTicks) / 1000.0f;
         previousTicks = currentTicks;
 
         // Update the scheduler
