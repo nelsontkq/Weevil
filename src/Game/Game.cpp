@@ -63,10 +63,8 @@ void Game::run()
     // You can also attach InputProcess if needed
 
     // Time management
-    const Uint32 frameDelay = 1000 / 60; // For 60 FPS
-    Uint32 frameStart;
-    int frameTime;
-    const float deltaTime = 1.0f / 60.0f; // Consistent deltaTime for processes
+    Uint32 frameStart = 0;
+    float deltaTime = 0.0f;
 
     while (isRunning)
     {
