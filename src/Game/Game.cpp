@@ -47,6 +47,7 @@ Game::Game()
 
 Game::~Game()
 {
+    ImGui_ImplSDLRenderer2_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
 
@@ -62,23 +63,9 @@ void Game::run()
     uint64_t previousTicks = SDL_GetTicks64();
     uint64_t deltaTime = 0;
 
-    while (isRunning)
-    {
-        // --- Handle SDL events ---
-        while (SDL_PollEvent(&event))
-        {
-            // Pass events to ImGui
-            ImGui_ImplSDL2_ProcessEvent(&event);
-
-            if (event.type == SDL_QUIT)
-            {
-                isRunning = false;
-            }
-        }
-
-        // --- Attach a process for rendering ---
-        scheduler_.attach([this](auto delta, void*, auto succeed, auto fail)
-                          {
+    // --- Attach a process for rendering ---
+    scheduler_.attach([this](auto delta, void *, auto succeed, auto fail)
+                      {
             ImGui_ImplSDLRenderer2_NewFrame();
             ImGui_ImplSDL2_NewFrame();
             ImGui::NewFrame();
@@ -97,24 +84,33 @@ void Game::run()
             SDL_RenderClear(renderer_.get());
 
             // Render entities with RenderableComponent
-            // registry_.view<RenderableComponent>().each([&](auto entity, RenderableComponent& renderable) {
-            //     SDL_SetRenderDrawColor(renderer_.get(), renderable.color.r, renderable.color.g, renderable.color.b, renderable.color.a);
-            //     SDL_RenderFillRect(renderer_.get(), &renderable.rect);
-            // });
+            registry_.view<RenderableComponent>().each([&](auto entity, RenderableComponent& renderable) {
+                SDL_SetRenderDrawColor(renderer_.get(), renderable.color.r, renderable.color.g, renderable.color.b, renderable.color.a);
+                SDL_RenderFillRect(renderer_.get(), &renderable.rect);
+            });
             ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer_.get());
-            SDL_RenderPresent(renderer_.get()); 
-        });
+            SDL_RenderPresent(renderer_.get()); });
 
-        // --- Main game loop ---
-        while (isRunning)
+    // --- Main game loop ---
+    while (isRunning)
+    {
+        // --- Handle SDL events ---
+        while (SDL_PollEvent(&event))
         {
-            // Calculate deltaTime
-            uint64_t currentTicks = SDL_GetTicks64();
-            deltaTime = currentTicks - previousTicks;
-            previousTicks = currentTicks;
+            // Pass events to ImGui
+            ImGui_ImplSDL2_ProcessEvent(&event);
 
-            // Update the scheduler
-            scheduler_.update(static_cast<uint32_t>(deltaTime));
+            if (event.type == SDL_QUIT)
+            {
+                isRunning = false;
+            }
         }
+        // Calculate deltaTime
+        uint64_t currentTicks = SDL_GetTicks64();
+        deltaTime = currentTicks - previousTicks;
+        previousTicks = currentTicks;
+
+        // Update the scheduler
+        scheduler_.update(static_cast<uint32_t>(deltaTime));
     }
 }
