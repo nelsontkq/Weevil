@@ -10,6 +10,7 @@ endif()
 # Find SDL2
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
+find_package(EnTT REQUIRED CONFIG)
 include_directories(include)
 
 # Add the executable and include the necessary source files

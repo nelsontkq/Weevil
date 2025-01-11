@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "Components/RenderableComponent.hpp"
 #include <coroutine>
 
 Game::Game()
@@ -57,14 +58,34 @@ void Game::run()
             {
                 isRunning = false;
             }
-            // Handle other events (e.g., input) if necessary
-        }
+            }
+        });
 
-        // --- Calculate deltaTime ---
+        // --- Attach a process for rendering ---
+        scheduler_.attach([&](auto delta, void*, auto succeed, auto fail) {
+            // Clear the renderer
+            SDL_SetRenderDrawColor(renderer_.get(), 0, 0, 0, 255);
+            SDL_RenderClear(renderer_.get());
+
+            // Render entities with RenderableComponent
+            registry_.view<RenderableComponent>().each([&](auto entity, RenderableComponent& renderable) {
+                SDL_SetRenderDrawColor(renderer_.get(), renderable.color.r, renderable.color.g, renderable.color.b, renderable.color.a);
+                SDL_RenderFillRect(renderer_.get(), &renderable.rect);
+            });
+
+            // Present the renderer
+            SDL_RenderPresent(renderer_.get());
+        });
+
+        // --- Main game loop ---
+        while (isRunning)
         {
+            // Calculate deltaTime
             uint64_t currentTicks = SDL_GetTicks64();
             deltaTime = currentTicks - previousTicks;
             previousTicks = currentTicks;
-        }
+
+            // Update the scheduler
+            scheduler_.update(static_cast<uint32_t>(deltaTime));
     }
 }
