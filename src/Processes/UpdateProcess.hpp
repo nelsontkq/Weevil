@@ -7,13 +7,13 @@
 /**
  * A process that runs update systems.
  */
-class UpdateProcess : public entt::process<UpdateProcess, u_int64_t> {
+class UpdateProcess : public entt::process<UpdateProcess, float> {
 public:
     explicit UpdateProcess(ECS &ecs)
         : ecs_(ecs)
     {}
 
-    void update(u_int64_t dt) {
+    void update(float dt, void *data, auto succeed, auto fail) {
         // Run all update systems
         ecs_.run_update(dt);
     }

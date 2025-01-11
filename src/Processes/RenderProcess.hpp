@@ -12,13 +12,13 @@
 /**
  * A process that runs render systems and handles rendering.
  */
-class RenderProcess : public entt::process<RenderProcess, u_int64_t> {
+class RenderProcess : public entt::process<RenderProcess, float> {
 public:
     RenderProcess(ECS &ecs, SDL_Window *window, SDL_Renderer *renderer)
         : ecs_(ecs), window_(window), renderer_(renderer)
     {}
 
-    void update(u_int64_t dt) {
+    void update(float dt, void *data, auto succeed, auto fail) {
         // Start ImGui frame
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();

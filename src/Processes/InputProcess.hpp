@@ -11,7 +11,7 @@
 /**
  * A process that handles SDL events and runs input systems.
  */
-class InputProcess : public entt::process<InputProcess, u_int64_t> {
+class InputProcess : public entt::process<InputProcess, float> {
 public:
     InputProcess(ECS &ecs, SDL_Window *window)
         : ecs_(ecs), window_(window)
@@ -21,7 +21,7 @@ public:
         // Initialization if needed
     }
 
-    void update(u_int64_t dt) {
+    void update(float dt, void *data, auto succeed, auto fail) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             // Pass events to ImGui

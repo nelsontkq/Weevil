@@ -14,36 +14,36 @@ public:
     {}
 
     // Add an "input system"
-    void add_input_system(std::function<void(entt::registry&, u_int64_t)> system) {
+    void add_input_system(std::function<void(entt::registry&, float)> system) {
         inputSystems_.push_back(system);
     }
 
     // Add an "update system"
-    void add_update_system(std::function<void(entt::registry&, u_int64_t)> system) {
+    void add_update_system(std::function<void(entt::registry&, float)> system) {
         updateSystems_.push_back(system);
     }
 
     // Add a "render system"
-    void add_render_system(std::function<void(entt::registry&, u_int64_t)> system) {
+    void add_render_system(std::function<void(entt::registry&, float)> system) {
         renderSystems_.push_back(system);
     }
 
     // Run all input systems
-    void run_input(u_int64_t dt) {
+    void run_input(float dt) {
         for (auto &system : inputSystems_) {
             system(registry_, dt);
         }
     }
 
     // Run all update systems
-    void run_update(u_int64_t dt) {
+    void run_update(float dt) {
         for (auto &system : updateSystems_) {
             system(registry_, dt);
         }
     }
 
     // Run all render systems
-    void run_render(u_int64_t dt) {
+    void run_render(float dt) {
         for (auto &system : renderSystems_) {
             system(registry_, dt);
         }
