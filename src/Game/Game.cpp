@@ -1,4 +1,6 @@
 #include "Game.hpp"
+#include "Components/RenderableComponent.hpp"
+#include <coroutine>
 
 Game::Game()
 {
@@ -11,7 +13,7 @@ Game::Game()
     // Create SDL window using smart pointer
     window_.reset(SDL_CreateWindow("Courtly Intrigues",
                                    SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                   800, 600,
+                                   1920, 1080,
                                    SDL_WINDOW_SHOWN));
     if (!window_)
     {
@@ -19,8 +21,7 @@ Game::Game()
         throw std::runtime_error("Failed to create SDL Window: " + std::string(SDL_GetError()));
     }
 
-    // Create SDL renderer using smart pointer
-    renderer_.reset(SDL_CreateRenderer(window_.get(), -1, SDL_RENDERER_ACCELERATED));
+    renderer_.reset(SDL_CreateRenderer(window_.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
     if (!renderer_)
     {
         SDL_Quit();
@@ -34,8 +35,8 @@ Game::Game()
 
 Game::~Game()
 {
-    // Clean up SDL resources
     // No need to manually destroy renderer_ or window_
+
     SDL_Quit();
 }
 
@@ -44,42 +45,45 @@ void Game::run()
     bool isRunning = true;
     SDL_Event event;
 
-    // Create EnTT process scheduler
-    entt::scheduler scheduler;
-
-    // Create and attach processes
-    auto &updateProcess = scheduler.attach<UpdateProcess>(registry_);
-    auto &renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_.get());
-    // You can also attach InputProcess if needed
-
     // Time management
-    Uint32 frameStart = 0;
-    float deltaTime = 0.0f;
+    uint64_t previousTicks = SDL_GetTicks64();
+    uint64_t deltaTime = 0;
 
     while (isRunning)
     {
-        Uint32 currentTicks = SDL_GetTicks();
-        deltaTime = (currentTicks - frameStart) / 1000.0f; // Convert milliseconds to seconds
-        frameStart = currentTicks;
-
-        // Handle SDL events
+        // --- Handle SDL events ---
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
             {
                 isRunning = false;
             }
-            // Handle other events if necessary
         }
 
-        // Update EnTT processes with the calculated deltaTime
-        scheduler.update(deltaTime);
+        // --- Attach a process for rendering ---
+        scheduler_.attach([&](auto delta, void*, auto succeed, auto fail) {
+            // Clear the renderer
+            SDL_SetRenderDrawColor(renderer_.get(), 0, 0, 0, 255);
+            SDL_RenderClear(renderer_.get());
 
-        // Frame rate control
-        frameTime = SDL_GetTicks() - frameStart;
-        if (frameDelay > frameTime)
+            // Render entities with RenderableComponent
+            registry_.view<RenderableComponent>().each([&](auto entity, RenderableComponent& renderable) {
+                SDL_SetRenderDrawColor(renderer_.get(), renderable.color.r, renderable.color.g, renderable.color.b, renderable.color.a);
+                SDL_RenderFillRect(renderer_.get(), &renderable.rect);
+            });
+
+            // Present the renderer
+            SDL_RenderPresent(renderer_.get());
+        });
+
+        // --- Main game loop ---
+        while (isRunning)
         {
-            SDL_Delay(frameDelay - frameTime);
-        }
-    }
+            // Calculate deltaTime
+            uint64_t currentTicks = SDL_GetTicks64();
+            deltaTime = currentTicks - previousTicks;
+            previousTicks = currentTicks;
+
+            // Update the scheduler
+            scheduler_.update(static_cast<uint32_t>(deltaTime));
 }

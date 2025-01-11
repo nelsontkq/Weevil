@@ -5,21 +5,13 @@ add_subdirectory(dependencies)
 # Enable clang-tidy analysis
 find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
 if (CLANG_TIDY_EXE)
-    # Set clang-tidy to use the most opinionated level
-    set(CLANG_TIDY_CHECKS "*,clang-analyzer-*,modernize-*,performance-*,readability-*,portability-*")
-    set(CLANG_TIDY_WARNINGS_AS_ERRORS "*,clang-analyzer-*")
-
-    # Configure clang-tidy as a compiler launcher
-    set(CMAKE_CXX_CLANG_TIDY
-        "${CLANG_TIDY_EXE};
-        -checks=${CLANG_TIDY_CHECKS};
-        -warnings-as-errors=${CLANG_TIDY_WARNINGS_AS_ERRORS};
-        --extra-arg=-std=c++20")
+    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
 endif()
-
 # Find SDL2
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
+find_package(EnTT REQUIRED CONFIG)
+include_directories(include)
 
 # Add the executable and include the necessary source files
 add_executable(main src/main.cpp src/Game/Game.cpp)

@@ -1,7 +1,7 @@
 
 #include "Game/Game.hpp"
 
-int main()
+auto main() -> int
 {
     Game game;
     game.run();
