@@ -70,7 +70,9 @@ void Game::run()
 
     while (isRunning)
     {
-        frameStart = SDL_GetTicks();
+        Uint32 currentTicks = SDL_GetTicks();
+        deltaTime = (currentTicks - frameStart) / 1000.0f; // Convert milliseconds to seconds
+        frameStart = currentTicks;
 
         // Handle SDL events
         while (SDL_PollEvent(&event))
@@ -82,7 +84,7 @@ void Game::run()
             // Handle other events if necessary
         }
 
-        // Update EnTT processes
+        // Update EnTT processes with the calculated deltaTime
         scheduler.update(deltaTime);
 
         // Frame rate control
