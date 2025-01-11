@@ -40,15 +40,13 @@ Game::Game()
 
     // Initialize ImGui SDL2 and SDL Renderer backends
     ImGui_ImplSDL2_InitForSDLRenderer(window_.get(), renderer_.get());
-    ImGui_ImplSDLRenderer_Init(renderer_.get());
+    ImGui_ImplSDLRenderer2_Init(renderer_.get());
     auto entity = registry_.create();
     registry_.emplace<RenderableComponent>(entity, SDL_Rect{100, 100, 50, 50}, SDL_Color{255, 0, 0, 255});
 }
 
 Game::~Game()
 {
-    // Shutdown ImGui
-    ImGui_ImplSDLRenderer_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
 
@@ -81,8 +79,7 @@ void Game::run()
         // --- Attach a process for rendering ---
         scheduler_.attach([this](auto delta, void*, auto succeed, auto fail)
                           {
-            // Start the Dear ImGui frame
-            ImGui_ImplSDLRenderer_NewFrame();
+            ImGui_ImplSDLRenderer2_NewFrame();
             ImGui_ImplSDL2_NewFrame();
             ImGui::NewFrame();
 
@@ -100,15 +97,11 @@ void Game::run()
             SDL_RenderClear(renderer_.get());
 
             // Render entities with RenderableComponent
-            registry_.view<RenderableComponent>().each([&](auto entity, RenderableComponent& renderable) {
-                SDL_SetRenderDrawColor(renderer_.get(), renderable.color.r, renderable.color.g, renderable.color.b, renderable.color.a);
-                SDL_RenderFillRect(renderer_.get(), &renderable.rect);
-            });
-
-            // Render ImGui on top of everything else
-            ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
-            // Render ImGui on top of everything else
-            ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+            // registry_.view<RenderableComponent>().each([&](auto entity, RenderableComponent& renderable) {
+            //     SDL_SetRenderDrawColor(renderer_.get(), renderable.color.r, renderable.color.g, renderable.color.b, renderable.color.a);
+            //     SDL_RenderFillRect(renderer_.get(), &renderable.rect);
+            // });
+            ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer_.get());
             SDL_RenderPresent(renderer_.get()); 
         });
 
