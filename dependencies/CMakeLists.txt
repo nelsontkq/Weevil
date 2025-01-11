@@ -21,6 +21,7 @@ FetchContent_Declare(
   URL_MD5 dfb9f81fae974fa7cfcca12d1f690c49
 )
 FetchContent_MakeAvailable(entt)
+list(APPEND 3RD_PARTY_INCLUDE_DIRS ${entt_SOURCE_DIR}/src)
 
 
 # Dear ImGui
