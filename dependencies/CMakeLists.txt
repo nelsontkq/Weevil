@@ -1,4 +1,6 @@
 include(FetchContent)
+find_package(OpenGL REQUIRED)
+find_package(SDL2 REQUIRED)
 
 if (CMAKE_SYSTEM_NAME STREQUAL Linux)
   find_package(X11 REQUIRED)
@@ -8,11 +10,11 @@ if (CMAKE_SYSTEM_NAME STREQUAL Linux)
   endif ()
 endif ()
 
-# Enable clang-tidy analysis
-find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
-if (CLANG_TIDY_EXE)
-    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
-endif()
+# # Enable clang-tidy analysis
+# find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+# if (CLANG_TIDY_EXE)
+#     set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
+# endif()
 
 # EnTT
 FetchContent_Declare(
@@ -21,22 +23,26 @@ FetchContent_Declare(
   URL_MD5 dfb9f81fae974fa7cfcca12d1f690c49
 )
 FetchContent_MakeAvailable(entt)
-list(APPEND 3RD_PARTY_INCLUDE_DIRS ${entt_SOURCE_DIR}/src)
 
 
 # Dear ImGui
 FetchContent_Declare(
-  imgui
+  imgui_external
   URL https://github.com/ocornut/imgui/archive/refs/tags/v1.91.6.tar.gz
   URL_MD5 9df042eef9394fb91251a7c196eaa13b
 )
 
-FetchContent_MakeAvailable(imgui)
+FetchContent_MakeAvailable(imgui_external)
+include_directories(${SDL2_INCLUDE_DIRS}/SDL2 ${SDL2_INCLUDE_DIRS} ${imgui_external_SOURCE_DIR})
+add_library(imgui
+	${imgui_external_SOURCE_DIR}/imgui.cpp
+	${imgui_external_SOURCE_DIR}/imgui_draw.cpp
+	${imgui_external_SOURCE_DIR}/imgui_tables.cpp
+	${imgui_external_SOURCE_DIR}/imgui_widgets.cpp
+  ${imgui_external_SOURCE_DIR}/imgui_demo.cpp
+	${imgui_external_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
+  ${imgui_external_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp
+)
 
-find_package(OpenGL REQUIRED)
-find_package(SDL2 REQUIRED)
-
-set(3RD_PARTY_LIBS EnTT::EnTT ${SDL2_LIBRARIES} imgui)
-set(3RD_PARTY_INCLUDE_DIRS ${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${imgui_SOURCE_DIR})
-# print 3RD_PARTY_LIBS
-message(STATUS "3RD_PARTY_LIBS: ${3RD_PARTY_LIBS}")
+set(3RD_PARTY_LIBS EnTT::EnTT ${SDL2_LIBRARIES} imgui PARENT_SCOPE)
+set(3RD_PARTY_INCLUDE_DIRS ${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${imgui_external_SOURCE_DIR}/backends ${imgui_external_SOURCE_DIR} PARENT_SCOPE)
