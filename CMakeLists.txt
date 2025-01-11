@@ -10,14 +10,12 @@ endif()
 # Find SDL2
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
-find_package(EnTT REQUIRED CONFIG)
 include_directories(include)
+
 
 # Add the executable and include the necessary source files
 add_executable(main src/main.cpp src/Game/Game.cpp)
 
-# Link SDL2 and EnTT libraries
-target_link_libraries(main PRIVATE EnTT::EnTT ${SDL2_LIBRARIES})
-
-
-target_link_libraries(main PRIVATE EnTT::EnTT)
+target_compile_features(main PRIVATE cxx_std_20)
+# Link libs
+target_link_libraries(main PRIVATE EnTT::EnTT ${SDL2_LIBRARIES} imgui_library)
