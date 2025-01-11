@@ -44,12 +44,15 @@ void Game::run()
     SDL_Event event;
 
     // Create EnTT process scheduler
-    entt::scheduler<> scheduler;
+    entt::scheduler<float> scheduler;
 
     auto &updateProcess = scheduler.attach<UpdateProcess>(registry_);
     auto &renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_.get());
 
     // Time management
+    Uint64 previousTicks = SDL_GetTicks64();
+    Uint64 deltaTime = 0;
+
     while (isRunning)
     {
         // --- Handle SDL events ---
@@ -62,7 +65,14 @@ void Game::run()
             // Handle other events (e.g., input) if necessary
         }
 
+        // --- Calculate deltaTime ---
+        {
+            Uint64 currentTicks = SDL_GetTicks64();
+            deltaTime = static_cast<float>(currentTicks - previousTicks) / 1000.0f;
+            previousTicks = currentTicks;
+        }
         // --- Update processes (logic, rendering, etc.) ---
-        scheduler.update();
+        scheduler.update(deltaTime);
+
     }
 }
