@@ -3,14 +3,10 @@ target_compile_features(main PRIVATE cxx_std_20)
 
 make_executable()
 
-include_directories(
-    ${OPENGL_INCLUDE_DIR}
-    ${SDL2_INCLUDE_DIR}
-    ${IMGUI_INCLUDE_DIR}
-    )
-    
 target_link_libraries(${PROJECT}
-    ${OPENGL_LIBRARIES}
-    ${SDL2_LIBRARIES}
-    ${IMGUI_LIBRARIES}
-    )
+    EnTT::EnTT
+    imgui
+    SDL2-static  # Use SDL2-static if SDL2 provides a static library target
+    glad  # If you're using GLAD
+    ${OPENGL_LIBRARIES}  # If you're still using system OpenGL
+)
