@@ -47,8 +47,8 @@ void Game::run()
     // Create EnTT process scheduler
     entt::scheduler scheduler;
 
-    scheduler.attach<UpdateProcess>(registry_);
-    scheduler.attach<RenderProcess>(registry_, renderer_.get());
+    scheduler.attach<UpdateProcess>(registry_).during();
+    scheduler.attach<RenderProcess>(registry_, renderer_.get()).during();
 
     // Time management
     Uint64 previousTicks = SDL_GetTicks64();

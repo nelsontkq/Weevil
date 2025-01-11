@@ -9,7 +9,7 @@ public:
     RenderProcess(entt::registry& registry, SDL_Renderer* renderer)
         : registry_(registry), renderer_(renderer) {}
 
-    void update() {
+    void update() override {
         while (true) {
             // Clear the renderer
             SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);

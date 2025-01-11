@@ -7,7 +7,7 @@ public:
     UpdateProcess(entt::registry& registry)
         : registry_(registry) {}
 
-    void update() {
+    void update() override {
         while (true) {
             // Update game logic, e.g., systems that update entity components
             // Example: movement systems, AI behavior systems, etc.

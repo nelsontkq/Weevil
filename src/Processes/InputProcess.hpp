@@ -8,7 +8,7 @@ public:
     InputProcess(entt::registry& registry)
         : registry_(registry) {}
 
-    void update() {
+    void update() override {
         while (true) {
             // Process input
             // Example: update entity components based on input
