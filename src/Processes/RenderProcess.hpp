@@ -1,7 +1,8 @@
 #pragma once
 
-#include <entt/process.hpp>
+#include <entt/process/process.hpp>
 #include <SDL2/SDL.h>
+#include "../Components/RenderableComponent.hpp"
 
 class RenderProcess : public entt::process<RenderProcess, float> {
 public:

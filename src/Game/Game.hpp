@@ -1,10 +1,16 @@
 #pragma once
 
 #include <entt/entt.hpp>
+#include "../Processes/UpdateProcess.hpp"
+#include "../../include/SDL_Deleter.hpp"
+#include "../Processes/RenderProcess.hpp"
 
-#include <SDL2/SDL.h>  // Include SDL2 header
+#include <SDL2/SDL.h>
+#include <memory>            // Include for smart pointers
+#include "../SDL_Deleter.hpp" // Include your custom deleter
 
-class Game {
+class Game
+{
 public:
     Game();
     ~Game();
@@ -14,6 +20,6 @@ public:
 private:
     entt::registry registry_;
     // Add SDL window and renderer
-    SDL_Window* window_;
-    SDL_Renderer* renderer_;
+    std::unique_ptr<SDL_Window, SDL_Deleter> window_;
+    std::unique_ptr<SDL_Renderer, SDL_Deleter> renderer_;
 };

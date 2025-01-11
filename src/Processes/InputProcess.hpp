@@ -1,6 +1,6 @@
 #pragma once
 
-#include <entt/process.hpp>
+#include <entt/process/process.hpp>
 #include <SDL2/SDL.h>
 
 class InputProcess : public entt::process<InputProcess, float> {

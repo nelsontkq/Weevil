@@ -8,22 +8,21 @@ Game::Game()
         throw std::runtime_error("Failed to initialize SDL: " + std::string(SDL_GetError()));
     }
 
-    // Create SDL window
-    window_ = SDL_CreateWindow("Courtly Intrigues",
-                               SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                               800, 600,
-                               SDL_WINDOW_SHOWN);
+    // Create SDL window using smart pointer
+    window_.reset(SDL_CreateWindow("Courtly Intrigues",
+                                   SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                   800, 600,
+                                   SDL_WINDOW_SHOWN));
     if (!window_)
     {
         SDL_Quit();
         throw std::runtime_error("Failed to create SDL Window: " + std::string(SDL_GetError()));
     }
 
-    // Create SDL renderer
-    renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED);
+    // Create SDL renderer using smart pointer
+    renderer_.reset(SDL_CreateRenderer(window_.get(), -1, SDL_RENDERER_ACCELERATED));
     if (!renderer_)
     {
-        SDL_DestroyWindow(window_);
         SDL_Quit();
         throw std::runtime_error("Failed to create SDL Renderer: " + std::string(SDL_GetError()));
     }
@@ -36,16 +35,7 @@ Game::Game()
 Game::~Game()
 {
     // Clean up SDL resources
-    if (renderer_)
-    {
-        SDL_DestroyRenderer(renderer_);
-        renderer_ = nullptr;
-    }
-    if (window_)
-    {
-        SDL_DestroyWindow(window_);
-        window_ = nullptr;
-    }
+    // No need to manually destroy renderer_ or window_
     SDL_Quit();
 }
 
@@ -59,7 +49,7 @@ void Game::run()
 
     // Create and attach processes
     auto &updateProcess = scheduler.attach<UpdateProcess>(registry_);
-    auto &renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_);
+    auto &renderProcess = scheduler.attach<RenderProcess>(registry_, renderer_.get());
     // You can also attach InputProcess if needed
 
     // Time management
