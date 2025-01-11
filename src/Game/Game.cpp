@@ -20,8 +20,7 @@ Game::Game()
         throw std::runtime_error("Failed to create SDL Window: " + std::string(SDL_GetError()));
     }
 
-    const auto rendererFlags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-    renderer_.reset(SDL_CreateRenderer(window_.get(), -1, rendererFlags));
+    renderer_.reset(SDL_CreateRenderer(window_.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
     if (!renderer_)
     {
         SDL_Quit();
@@ -36,6 +35,7 @@ Game::Game()
 Game::~Game()
 {
     // No need to manually destroy renderer_ or window_
+
     SDL_Quit();
 }
 
@@ -44,15 +44,9 @@ void Game::run()
     bool isRunning = true;
     SDL_Event event;
 
-    // Create EnTT process scheduler
-    entt::scheduler scheduler;
-
-    scheduler.attach<UpdateProcess>(registry_).during();
-    scheduler.attach<RenderProcess>(registry_, renderer_.get()).during();
-
     // Time management
-    Uint64 previousTicks = SDL_GetTicks64();
-    Uint64 deltaTime = 0;
+    uint64_t previousTicks = SDL_GetTicks64();
+    uint64_t deltaTime = 0;
 
     while (isRunning)
     {
@@ -68,12 +62,9 @@ void Game::run()
 
         // --- Calculate deltaTime ---
         {
-            Uint64 currentTicks = SDL_GetTicks64();
-            deltaTime = static_cast<float>(currentTicks - previousTicks) / 1000.0f;
+            uint64_t currentTicks = SDL_GetTicks64();
+            deltaTime = currentTicks - previousTicks;
             previousTicks = currentTicks;
         }
-        // --- Update processes (logic, rendering, etc.) ---
-        scheduler.update(deltaTime);
-
     }
 }
