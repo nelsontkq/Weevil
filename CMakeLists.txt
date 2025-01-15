@@ -10,15 +10,26 @@ find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 
 # Add the executable and include the necessary source files
-add_executable(main 
-    src/main.cpp 
-    src/Game/Game.cpp 
-    src/Game/Game.hpp 
-    src/Utils/SDL_Deleter.hpp
+# Add the executable
+add_executable(KingsCourt)
+
+# Specify source files
+target_sources(KingsCourt PRIVATE
+    src/main.cpp
+    src/Game/Game.cpp
+    src/Utils/UUID.cpp
+    src/Core/Log.cpp
+    # Add other source files as needed
 )
-target_compile_features(main PRIVATE cxx_std_20)
 
-target_include_directories(main PRIVATE ${3RD_PARTY_INCLUDE_DIRS})
+# Include directories
+target_include_directories(KingsCourt PRIVATE src ${3RD_PARTY_INCLUDE_DIRS})
 
-# Link libs
-target_link_libraries(main PRIVATE ${3RD_PARTY_LIBS})
+# Link libraries
+target_link_libraries(KingsCourt PRIVATE ${3RD_PARTY_LIBS})
+
+# Enable precompiled headers
+target_precompile_headers(KingsCourt PRIVATE src/wvpch.hpp)
+
+# Ensure that the compiler supports C++20 features
+target_compile_features(KingsCourt PRIVATE cxx_std_20)
