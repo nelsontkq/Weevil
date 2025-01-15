@@ -8,9 +8,6 @@
 #include <vector>
 #include <functional>
 
-/**
- * An ECS "manager" that allows you to add systems for Input, Update, and Render.
- */
 namespace wv {
 
 /**

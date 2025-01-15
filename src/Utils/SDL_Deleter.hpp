@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SDL2/SDL.h>
-
 struct SDL_Deleter {
     void operator()(SDL_Window* ptr) const {
         if (ptr) {

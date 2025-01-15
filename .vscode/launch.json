@@ -5,7 +5,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Launch",
-            "program": "${workspaceFolder}/build/main",
+            "program": "${workspaceFolder}/build/KingsCourt",
             "args": [],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "CMake: build",

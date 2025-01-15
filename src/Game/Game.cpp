@@ -1,7 +1,6 @@
-#include "Game.hpp"
 #include <coroutine>
-
-namespace wv {
+#include "Game.hpp"
+using namespace wv;
 
 Game::Game()
 {
@@ -80,5 +79,3 @@ void Game::run()
         ecs_->run_render(deltaTime);
     }
 }
-
-} // namespace wv

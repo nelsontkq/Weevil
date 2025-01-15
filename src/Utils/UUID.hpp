@@ -1,20 +1,19 @@
 #pragma once
 
 #include <cstdint>
-
-namespace wv {
-
-class UUID
+namespace wv
 {
-public:
-    UUID();
-    explicit UUID(uint64_t uuid);
-    UUID(const UUID &other);
 
-    operator uint64_t() const { return uuid_; }
+    class UUID
+    {
+    public:
+        UUID();
+        explicit UUID(uint64_t uuid);
+        UUID(const UUID &other);
 
-private:
-    uint64_t uuid_;
-};
+        operator uint64_t() const { return uuid_; }
 
-} // namespace wv
+    private:
+        uint64_t uuid_;
+    };
+}

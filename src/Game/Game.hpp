@@ -4,7 +4,8 @@
 #include "../Utils/SDL_Deleter.hpp"
 #include "../ECS.hpp"
 
-namespace wv {
+namespace wv
+{
 
 class Game
 {
@@ -22,5 +23,4 @@ private:
     std::unique_ptr<SDL_Renderer, SDL_Deleter> renderer_;
     std::unique_ptr<ECS> ecs_;
 };
-
-} // namespace wv
+}
