@@ -1,11 +1,7 @@
 #include "Game.hpp"
 #include <coroutine>
 
-struct RenderableComponent
-{
-    SDL_Rect rect;
-    SDL_Color color;
-};
+namespace wv {
 
 Game::Game()
 {
@@ -43,18 +39,6 @@ Game::Game()
     ImGui_ImplSDLRenderer2_Init(renderer_.get());
     // Initialize ECS
     ecs_ = std::make_unique<ECS>(registry_, renderer_.get());
-
-    // Register systems
-    // Register render system
-    ecs_->add_render_system([this](entt::registry &registry, u_int64_t dt)
-                            {
-        // Render entities with RenderableComponent
-        registry.view<RenderableComponent>().each([this](auto /*entity*/, RenderableComponent& renderable) {
-            SDL_SetRenderDrawColor(renderer_.get(), renderable.color.r, renderable.color.g, renderable.color.b, renderable.color.a);
-            SDL_RenderFillRect(renderer_.get(), &renderable.rect);
-        }); });
-
-    registry_.emplace<RenderableComponent>(registry_.create(), SDL_Rect{ 100, 100, 100, 100 }, SDL_Color{ 255, 0, 0, 255 });
 }
 
 Game::~Game()
@@ -96,3 +80,5 @@ void Game::run()
         ecs_->run_render(deltaTime);
     }
 }
+
+} // namespace wv

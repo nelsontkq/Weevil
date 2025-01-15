@@ -5,8 +5,13 @@
 #include <entt/entt.hpp>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_sdlrenderer2.h>
-#include <functional>
 #include <vector>
+#include <functional>
+
+/**
+ * An ECS "manager" that allows you to add systems for Input, Update, and Render.
+ */
+namespace wv {
 
 /**
  * An ECS "manager" that allows you to add systems for Input, Update, and Render.
@@ -66,12 +71,14 @@ public:
         // [Optional] Show the ImGui demo window for testing
         ImGui::ShowDemoWindow();
 
-        // Rendering
+        // Prepare ImGui for rendering
         ImGui::Render();
 
         // Clear the screen
         SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
         SDL_RenderClear(renderer_);
+
+        // Run ECS-based render systems
         for (auto &system : renderSystems_)
         {
             system(registry_, dt);
@@ -92,3 +99,5 @@ private:
     std::vector<std::function<void(entt::registry &, u_int64_t)>> updateSystems_;
     std::vector<std::function<void(entt::registry &, u_int64_t)>> renderSystems_;
 };
+
+} // namespace wv

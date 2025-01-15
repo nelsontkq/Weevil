@@ -10,11 +10,13 @@ if (CMAKE_SYSTEM_NAME STREQUAL Linux)
   endif ()
 endif ()
 
-# # Enable clang-tidy analysis
-# find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
-# if (CLANG_TIDY_EXE)
-#     set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
-# endif()
+# spdlog
+FetchContent_Declare(
+  spdlog
+  URL https://github.com/gabime/spdlog/archive/refs/tags/v1.15.0.tar.gz
+  URL_MD5 822878647de9eacfe43695a674fb551f
+)
+FetchContent_MakeAvailable(spdlog)
 
 # EnTT
 FetchContent_Declare(
@@ -24,7 +26,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(entt)
 
-
 # Dear ImGui
 FetchContent_Declare(
   imgui_external
@@ -33,16 +34,48 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(imgui_external)
-include_directories(${SDL2_INCLUDE_DIRS}/SDL2 ${SDL2_INCLUDE_DIRS} ${imgui_external_SOURCE_DIR})
+
+# Build imgui library
 add_library(imgui
-	${imgui_external_SOURCE_DIR}/imgui.cpp
-	${imgui_external_SOURCE_DIR}/imgui_draw.cpp
-	${imgui_external_SOURCE_DIR}/imgui_tables.cpp
-	${imgui_external_SOURCE_DIR}/imgui_widgets.cpp
-  ${imgui_external_SOURCE_DIR}/imgui_demo.cpp
-	${imgui_external_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
-  ${imgui_external_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp
+    ${imgui_external_SOURCE_DIR}/imgui.cpp
+    ${imgui_external_SOURCE_DIR}/imgui_draw.cpp
+    ${imgui_external_SOURCE_DIR}/imgui_tables.cpp
+    ${imgui_external_SOURCE_DIR}/imgui_widgets.cpp
+    ${imgui_external_SOURCE_DIR}/imgui_demo.cpp
+    ${imgui_external_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
+    ${imgui_external_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp
 )
 
-set(3RD_PARTY_LIBS EnTT::EnTT ${SDL2_LIBRARIES} imgui PARENT_SCOPE)
-set(3RD_PARTY_INCLUDE_DIRS ${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR} ${imgui_external_SOURCE_DIR}/backends ${imgui_external_SOURCE_DIR} PARENT_SCOPE)
+# Include directories for imgui
+target_include_directories(imgui PUBLIC
+    ${imgui_external_SOURCE_DIR}
+    ${imgui_external_SOURCE_DIR}/backends
+    ${SDL2_INCLUDE_DIRS}
+)
+
+# Link SDL2 libraries to imgui
+target_link_libraries(imgui PUBLIC
+    SDL2::SDL2
+    SDL2::SDL2main
+)
+
+# Set third-party include directories
+set(3RD_PARTY_INCLUDE_DIRS
+    ${SDL2_INCLUDE_DIRS}
+    ${OPENGL_INCLUDE_DIR}
+    ${spdlog_SOURCE_DIR}/include
+    ${entt_SOURCE_DIR}/src
+    ${imgui_external_SOURCE_DIR}
+    ${imgui_external_SOURCE_DIR}/backends
+    PARENT_SCOPE
+)
+
+# Set third-party libraries
+set(3RD_PARTY_LIBS
+    EnTT::EnTT
+    spdlog::spdlog
+    SDL2::SDL2
+    SDL2::SDL2main
+    imgui
+    PARENT_SCOPE
+)
