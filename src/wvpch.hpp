@@ -19,5 +19,5 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 
-// Your Logger
+// Logger
 #include "Core/Log.hpp"

@@ -14,7 +14,6 @@ endif ()
 FetchContent_Declare(
   spdlog
   URL https://github.com/gabime/spdlog/archive/refs/tags/v1.15.0.tar.gz
-  URL_MD5 822878647de9eacfe43695a674fb551f
 )
 FetchContent_MakeAvailable(spdlog)
 

@@ -1,7 +1,7 @@
 #include "UUID.hpp"
 #include <random>
 
-namespace wv {
+using namespace wv;
 
 UUID::UUID()
 {
@@ -17,5 +17,3 @@ UUID::UUID(uint64_t uuid)
 
 UUID::UUID(const UUID &other)
     : uuid_(other.uuid_) {}
-
-} // namespace wv
