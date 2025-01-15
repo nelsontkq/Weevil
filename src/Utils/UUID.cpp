@@ -1,6 +1,8 @@
 #include "UUID.hpp"
 #include <random>
 
+namespace wv {
+
 UUID::UUID()
 {
     static std::random_device rd;
@@ -15,3 +17,5 @@ UUID::UUID(uint64_t uuid)
 
 UUID::UUID(const UUID &other)
     : uuid_(other.uuid_) {}
+
+} // namespace wv

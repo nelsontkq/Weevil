@@ -1,11 +1,14 @@
 
 #include "Game/Game.hpp"
-#include "Core/Log.hpp"  // Include the Log header
+#include "wvpch.hpp"
+#include "Game/Game.hpp"
 
-auto main() -> int
+int main()
 {
-    Log::Init();  // Initialize the logging system
+    wv::Log::Init();  // Initialize the logging system
     CORE_INFO("Logger initialized!");
+
+    wv::Game game;
     game.run();
     return 0;
 }

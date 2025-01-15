@@ -5,6 +5,8 @@
 #include <spdlog/fmt/ostr.h>
 
 // Log is a singleton class that wraps spdlog logger
+namespace wv {
+
 class Log {
 public:
     static void Init();
@@ -18,15 +20,17 @@ private:
 };
 
 // Core log macros
-#define CORE_TRACE(...)    ::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define CORE_INFO(...)     ::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define CORE_WARN(...)     ::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define CORE_ERROR(...)    ::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define CORE_CRITICAL(...) ::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define CORE_TRACE(...)    ::wv::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define CORE_INFO(...)     ::wv::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define CORE_WARN(...)     ::wv::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define CORE_ERROR(...)    ::wv::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define CORE_CRITICAL(...) ::wv::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client log macros
-#define LOG_TRACE(...)     ::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define LOG_INFO(...)      ::Log::GetClientLogger()->info(__VA_ARGS__)
-#define LOG_WARN(...)      ::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define LOG_ERROR(...)     ::Log::GetClientLogger()->error(__VA_ARGS__)
-#define LOG_CRITICAL(...)  ::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define LOG_TRACE(...)     ::wv::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define LOG_INFO(...)      ::wv::Log::GetClientLogger()->info(__VA_ARGS__)
+#define LOG_WARN(...)      ::wv::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define LOG_ERROR(...)     ::wv::Log::GetClientLogger()->error(__VA_ARGS__)
+#define LOG_CRITICAL(...)  ::wv::Log::GetClientLogger()->critical(__VA_ARGS__)
+
+} // namespace wv

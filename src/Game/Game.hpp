@@ -1,14 +1,10 @@
 #pragma once
 
-#include <memory>
+#include "wvpch.hpp"
 #include "../Utils/SDL_Deleter.hpp"
 #include "../ECS.hpp"
 
-#include <SDL2/SDL.h>
-#include <imgui.h>
-#include <entt/entt.hpp>
-#include <backends/imgui_impl_sdl2.h>
-#include <backends/imgui_impl_sdlrenderer2.h>
+namespace wv {
 
 class Game
 {
@@ -26,3 +22,5 @@ private:
     std::unique_ptr<SDL_Renderer, SDL_Deleter> renderer_;
     std::unique_ptr<ECS> ecs_;
 };
+
+} // namespace wv

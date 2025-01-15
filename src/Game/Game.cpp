@@ -1,6 +1,8 @@
 #include "Game.hpp"
 #include <coroutine>
 
+namespace wv {
+
 Game::Game()
 {
     // Initialize SDL
@@ -78,3 +80,5 @@ void Game::run()
         ecs_->run_render(deltaTime);
     }
 }
+
+} // namespace wv

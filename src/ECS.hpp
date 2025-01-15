@@ -11,6 +11,11 @@
 /**
  * An ECS "manager" that allows you to add systems for Input, Update, and Render.
  */
+namespace wv {
+
+/**
+ * An ECS "manager" that allows you to add systems for Input, Update, and Render.
+ */
 class ECS
 {
 public:
@@ -94,3 +99,5 @@ private:
     std::vector<std::function<void(entt::registry &, u_int64_t)>> updateSystems_;
     std::vector<std::function<void(entt::registry &, u_int64_t)>> renderSystems_;
 };
+
+} // namespace wv

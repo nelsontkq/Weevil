@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+namespace wv {
+
 class UUID
 {
 public:
@@ -14,3 +16,5 @@ public:
 private:
     uint64_t uuid_;
 };
+
+} // namespace wv
