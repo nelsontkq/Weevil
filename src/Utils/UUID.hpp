@@ -2,11 +2,12 @@
 
 #include <cstdint>
 
-class UUID {
+class UUID
+{
 public:
     UUID();
     explicit UUID(uint64_t uuid);
-    UUID(const UUID& other);
+    UUID(const UUID &other);
 
     operator uint64_t() const { return uuid_; }
 

@@ -1,7 +1,8 @@
 #include "UUID.hpp"
 #include <random>
 
-UUID::UUID() {
+UUID::UUID()
+{
     static std::random_device rd;
     static std::mt19937_64 generator(rd());
     static std::uniform_int_distribution<uint64_t> distribution;
@@ -12,5 +13,5 @@ UUID::UUID() {
 UUID::UUID(uint64_t uuid)
     : uuid_(uuid) {}
 
-UUID::UUID(const UUID& other)
+UUID::UUID(const UUID &other)
     : uuid_(other.uuid_) {}
