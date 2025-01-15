@@ -9,7 +9,13 @@ if (CMAKE_SYSTEM_NAME STREQUAL Linux)
     message(FATAL_ERROR "X11 Xi library is required")
   endif ()
 endif ()
-
+# spdlog
+FetchContent_Declare(
+  spdlog
+  URL https://github.com/gabime/spdlog/archive/refs/tags/v1.15.0.tar.gz
+  URL_MD5 822878647de9eacfe43695a674fb551f
+)
+FetchContent_MakeAvailable(spdlog)
 # # Enable clang-tidy analysis
 # find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
 # if (CLANG_TIDY_EXE)
