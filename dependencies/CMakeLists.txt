@@ -1,6 +1,7 @@
 include(FetchContent)
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(nlohmann_json 3.2.0 REQUIRED)
 
 if (CMAKE_SYSTEM_NAME STREQUAL Linux)
   find_package(X11 REQUIRED)
@@ -66,6 +67,7 @@ set(3RD_PARTY_INCLUDE_DIRS
     ${entt_SOURCE_DIR}/src
     ${imgui_external_SOURCE_DIR}
     ${imgui_external_SOURCE_DIR}/backends
+    ${nlohmann_json_INCLUDE_DIRS}
     PARENT_SCOPE
 )
 
@@ -76,5 +78,6 @@ set(3RD_PARTY_LIBS
     SDL2::SDL2
     SDL2::SDL2main
     imgui
+    nlohmann_json::nlohmann_json
     PARENT_SCOPE
 )
