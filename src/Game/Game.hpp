@@ -19,6 +19,8 @@ namespace wv
 
 
     private:
+        static bool logInitialized_;
+        static bool initializeLog();
         AppSettings settings_;
         SDLContext sdlContext_;
         entt::registry registry_;

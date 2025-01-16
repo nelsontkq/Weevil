@@ -14,7 +14,7 @@ SDLContext::SDLContext(AppSettings &settings)
     Uint32 flags = SDL_WINDOW_SHOWN;
     if (settings.fullscreen)
     {
-        flags |= SDL_WINDOW_FULLSCREEN;
+        flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     }
     window_.reset(SDL_CreateWindow(settings.title.c_str(),
                                    SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
