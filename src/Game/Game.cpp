@@ -2,42 +2,20 @@
 #include "Game.hpp"
 using namespace wv;
 
-Game::Game()
+Game::Game() : settings_(AppSettings::load()), sdlContext_(settings_)
 {
-    // Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    {
-        throw std::runtime_error("Failed to initialize SDL: " + std::string(SDL_GetError()));
-    }
-
-    // Create SDL window using smart pointer
-    window_.reset(SDL_CreateWindow("Courtly Intrigues",
-                                   SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                   1920, 1080,
-                                   SDL_WINDOW_SHOWN));
-    if (!window_)
-    {
-        SDL_Quit();
-        throw std::runtime_error("Failed to create SDL Window: " + std::string(SDL_GetError()));
-    }
-
-    renderer_.reset(SDL_CreateRenderer(window_.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
-    if (!renderer_)
-    {
-        SDL_Quit();
-        throw std::runtime_error("Failed to create SDL Renderer: " + std::string(SDL_GetError()));
-    }
-
+    Log::Init();
+    LOG_INFO("Initializing Game");
     // Initialize ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
 
     // Initialize ImGui SDL2 and SDL Renderer backends
-    ImGui_ImplSDL2_InitForSDLRenderer(window_.get(), renderer_.get());
-    ImGui_ImplSDLRenderer2_Init(renderer_.get());
+    ImGui_ImplSDL2_InitForSDLRenderer(sdlContext_.get_window(), sdlContext_.get_renderer());
+    ImGui_ImplSDLRenderer2_Init(sdlContext_.get_renderer());
     // Initialize ECS
-    ecs_ = std::make_unique<ECS>(registry_, renderer_.get());
+    ecs_ = std::make_unique<ECS>(registry_, sdlContext_.get_renderer());
 }
 
 Game::~Game()
@@ -45,12 +23,11 @@ Game::~Game()
     ImGui_ImplSDLRenderer2_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
-
-    SDL_Quit();
 }
 
 void Game::run()
 {
+    LOG_INFO("Running Game");
     bool isRunning = true;
     ecs_->add_input_system([this, &isRunning](entt::registry &registry, u_int64_t dt)
                            {
