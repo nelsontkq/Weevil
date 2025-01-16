@@ -2,9 +2,20 @@
 #include "Game.hpp"
 using namespace wv;
 
+bool Game::logInitialized_ = Game::initializeLog();
+
+auto Game::initializeLog() -> bool
+{
+    if (Game::logInitialized_)
+    {
+        return false;
+    }
+    Log::Init();
+    return true;
+}
+
 Game::Game() : settings_(AppSettings::load()), sdlContext_(settings_)
 {
-    Log::Init();
     LOG_INFO("Initializing Game");
     // Initialize ImGui context
     IMGUI_CHECKVERSION();
@@ -37,6 +48,7 @@ void Game::run()
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
             {
+                LOG_INFO("Quit event received");
                 isRunning = false;
             }
         } });
