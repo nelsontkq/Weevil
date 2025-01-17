@@ -39,9 +39,12 @@ Game::~Game()
 void Game::run()
 {
     LOG_INFO("Running Game");
+
+    uint64_t previousTicks = SDL_GetTicks64();
+    uint64_t deltaTime = 0;
     bool isRunning = true;
-    ecs_->add_input_system([this, &isRunning](entt::registry &registry, u_int64_t dt)
-                           {
+    while (isRunning)
+    {
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
@@ -51,19 +54,13 @@ void Game::run()
                 LOG_INFO("Quit event received");
                 isRunning = false;
             }
-        } });
-
-    uint64_t previousTicks = SDL_GetTicks64();
-    uint64_t deltaTime = 0;
-    while (isRunning)
-    {
+        }
         // Calculate deltaTime
         uint64_t currentTicks = SDL_GetTicks64();
         deltaTime = currentTicks - previousTicks;
         previousTicks = currentTicks;
 
         // Update the scheduler
-        ecs_->run_input(deltaTime);
         ecs_->run_update(deltaTime);
         ecs_->run_render(deltaTime);
     }

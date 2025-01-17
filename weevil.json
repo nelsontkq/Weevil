@@ -1,7 +1,8 @@
 {
     "title": "KingsCourt",
-    "width": 1920,
+    "width": 1080,
     "height": 1080,
+    "keep_aspect_ratio": false,
     "fullscreen": true,
     "asset_path": "/home/nelson/Development/KingsCourt/assets"
   }

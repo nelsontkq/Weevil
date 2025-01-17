@@ -11,7 +11,7 @@ SDLContext::SDLContext(AppSettings &settings)
     }
 
     // Create SDL window using smart pointer
-    Uint32 flags = SDL_WINDOW_SHOWN;
+    uint32_t flags = SDL_WINDOW_SHOWN;
     if (settings.fullscreen)
     {
         flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;

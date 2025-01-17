@@ -1,8 +1,9 @@
 #include "AppSettings.hpp"
+#include "wvpch.hpp"
 #include <filesystem>
 #include <fstream>
 namespace fs = std::filesystem;
-
+using namespace wv;
 auto AppSettings::load() -> AppSettings
 {
     fs::path current_dir = fs::current_path();
@@ -31,7 +32,11 @@ auto AppSettings::load(const std::string &string) -> AppSettings
     {
         throw std::runtime_error("Failed to open file: " + string);
     }
+    
     nlohmann::json j;
     file >> j;
-    return j.get<AppSettings>();
+    AppSettings result = j.get<AppSettings>();
+    LOG_INFO("Loaded settings from {0}", string);
+    LOG_TRACE("AppSettings: {0}", j.dump(2));
+    return result;
 }

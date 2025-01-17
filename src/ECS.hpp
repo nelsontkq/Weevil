@@ -21,11 +21,6 @@ public:
     {
     }
 
-    void add_input_system(const std::function<void(entt::registry &, uint64_t)>& system)
-    {
-        inputSystems_.push_back(system);
-    }
-
     // Add an "update system"
     void add_update_system(const std::function<void(entt::registry &, uint64_t)>& system)
     {
@@ -35,14 +30,6 @@ public:
     void add_render_system(const std::function<void(entt::registry &, uint64_t)>& system)
     {
         renderSystems_.push_back(system);
-    }
-
-    void run_input(uint64_t dt)
-    {
-        for (auto &system : inputSystems_)
-        {
-            system(registry_, dt);
-        }
     }
 
     void run_update(uint64_t dt)

@@ -1,6 +1,5 @@
 #include "Log.hpp"
 #include <spdlog/sinks/stdout_color_sinks.h>
-
 namespace wv {
 
 std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
