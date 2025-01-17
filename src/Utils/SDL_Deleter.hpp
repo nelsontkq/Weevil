@@ -1,23 +1,26 @@
-#pragma once
+#ifndef WV_SDL_DELETER_HPP
+#define WV_SDL_DELETER_HPP
 
 struct SDL_Deleter {
-    void operator()(SDL_Window* ptr) const {
-        if (ptr) {
-            SDL_DestroyWindow(ptr);
-            LOG_TRACE("Window destroyed");
-        }
+  void operator()(SDL_Window *ptr) const {
+    if (ptr) {
+      SDL_DestroyWindow(ptr);
+      LOG_TRACE("Window destroyed");
     }
+  }
 
-    void operator()(SDL_Renderer* ptr) const {
-        if (ptr) {
-            SDL_DestroyRenderer(ptr);
-            LOG_TRACE("Renderer destroyed");
-        }
+  void operator()(SDL_Renderer *ptr) const {
+    if (ptr) {
+      SDL_DestroyRenderer(ptr);
+      LOG_TRACE("Renderer destroyed");
     }
+  }
 
-    void operator()(SDL_Texture* ptr) const {
-        if (ptr) {
-            SDL_DestroyTexture(ptr);
-        }
+  void operator()(SDL_Texture *ptr) const {
+    if (ptr) {
+      SDL_DestroyTexture(ptr);
     }
+  }
 };
+
+#endif // WV_SDL_DELETER_HPP

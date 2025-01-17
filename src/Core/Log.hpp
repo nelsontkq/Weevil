@@ -1,4 +1,7 @@
-#pragma once
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedMacroInspection"
+#ifndef WV_LOG_HPP
+#define WV_LOG_HPP
 
 #include <memory>
 #include <spdlog/spdlog.h>
@@ -8,15 +11,16 @@
 namespace wv {
 
 class Log {
-public:
-    static void Init();
+ public:
+  static void Init();
 
-    inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-    inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+  inline static std::shared_ptr<spdlog::logger> &GetCoreLogger() { return s_CoreLogger; }
 
-private:
-    static std::shared_ptr<spdlog::logger> s_CoreLogger;
-    static std::shared_ptr<spdlog::logger> s_ClientLogger;
+  inline static std::shared_ptr<spdlog::logger> &GetClientLogger() { return s_ClientLogger; }
+
+ private:
+  static std::shared_ptr<spdlog::logger> s_CoreLogger;
+  static std::shared_ptr<spdlog::logger> s_ClientLogger;
 };
 
 // Core log macros
@@ -34,3 +38,7 @@ private:
 #define LOG_CRITICAL(...)  ::wv::Log::GetClientLogger()->critical(__VA_ARGS__)
 
 } // namespace wv
+
+#endif // WV_LOG_HPP
+
+#pragma clang diagnostic pop
