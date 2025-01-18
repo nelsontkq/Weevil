@@ -31,10 +31,10 @@ add_executable(WeevilTest
 target_link_libraries(WeevilTest PRIVATE WeevilEngine)
 
 # Include directories for the engine library
-target_include_directories(WeevilEngine PUBLIC src ${3RD_PARTY_INCLUDE_DIRS})
+target_include_directories(WeevilEngine PUBLIC include)
 
 # Include directories for the test executable
-target_include_directories(WeevilTest PRIVATE src)
+target_include_directories(WeevilTest PRIVATE ${3RD_PARTY_INCLUDE_DIRS})
 
 # Link third-party libraries to the engine library
 target_link_libraries(WeevilEngine PUBLIC ${3RD_PARTY_LIBS})
