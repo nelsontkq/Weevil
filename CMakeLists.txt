@@ -41,7 +41,15 @@ target_include_directories(WeevilTest PRIVATE
 )
 
 # Link third-party libraries to the engine library
-target_link_libraries(WeevilEngine PUBLIC ${3RD_PARTY_LIBS})
+target_link_libraries(WeevilEngine PUBLIC
+    spdlog::spdlog
+    imgui::imgui
+    entt::entt
+    nlohmann_json::nlohmann_json
+    SDL2::SDL2
+    SDL2::SDL2main
+    OpenGL::GL
+)
 
 # Set C++ standards and features for the engine library
 target_compile_features(WeevilEngine PUBLIC cxx_std_20)
@@ -56,7 +64,7 @@ target_precompile_headers(WeevilEngine PRIVATE src/wvpch.h)
 target_precompile_headers(WeevilTest PRIVATE src/wvpch.h)
 
 # Installation rules (optional)
-install(TARGETS WeevilEngine
+install(TARGETS WeevilEngine spdlog imgui
     EXPORT WeevilEngineTargets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib

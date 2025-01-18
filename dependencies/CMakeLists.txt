@@ -13,8 +13,28 @@ endif ()
 # spdlog
 add_subdirectory(spdlog)
 
-# EnTT
-set(ENTT_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/entt/src")
+# EnTT (header-only library)
+add_library(entt INTERFACE)
+target_include_directories(entt INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/entt/src>
+    $<INSTALL_INTERFACE:include>
+)
+
+# Install EnTT headers
+install(DIRECTORY entt/src/entt
+    DESTINATION include/entt
+)
+
+# Install and export entt
+install(TARGETS entt
+    EXPORT enttTargets
+)
+
+install(EXPORT enttTargets
+    FILE enttTargets.cmake
+    NAMESPACE entt::
+    DESTINATION lib/cmake/entt
+)
 
 # ImGui
 add_subdirectory(imgui)
