@@ -31,7 +31,12 @@ add_executable(WeevilTest
 target_link_libraries(WeevilTest PRIVATE WeevilEngine)
 
 # Include directories for the engine library
-target_include_directories(WeevilEngine PUBLIC include)
+target_include_directories(WeevilEngine
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+        ${3RD_PARTY_INCLUDE_DIRS}
+)
 
 # Include directories for the test executable
 target_include_directories(WeevilTest PRIVATE ${3RD_PARTY_INCLUDE_DIRS})
@@ -60,10 +65,7 @@ install(TARGETS WeevilEngine spdlog imgui
     INCLUDES DESTINATION include
 )
 
-install(DIRECTORY src/
-    DESTINATION include/WeevilEngine
-    FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
-)
+install(DIRECTORY include/ DESTINATION include)
 
 # Remove or comment out the export command
 # export(TARGETS WeevilEngine FILE WeevilEngineTargets.cmake)
