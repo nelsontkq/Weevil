@@ -35,7 +35,6 @@ target_include_directories(WeevilEngine
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
-        ${3RD_PARTY_INCLUDE_DIRS}
 )
 
 # Include directories for the test executable
