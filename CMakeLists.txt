@@ -14,13 +14,11 @@ find_package(nlohmann_json 3.2.0 REQUIRED)
 # Create a library target for your engine
 add_library(WeevilEngine STATIC
     src/System/SystemManager.cpp
-    src/System/System.cpp
     src/Utils/UUID.cpp
     src/Core/Log.cpp
     src/Core/AppSettings.cpp
     src/Core/SDLContext.cpp
     src/Game/Game.cpp
-    src/System/Scheduler.cpp
     # Add other engine source files as needed
 )
 
