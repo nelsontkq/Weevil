@@ -19,26 +19,6 @@ set(ENTT_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/entt/src")
 # ImGui
 add_subdirectory(imgui)
 
-# Build imgui library
-add_library(imgui
-    ${imgui_external_SOURCE_DIR}/imgui.cpp
-    ${imgui_external_SOURCE_DIR}/imgui_draw.cpp
-    ${imgui_external_SOURCE_DIR}/imgui_tables.cpp
-    ${imgui_external_SOURCE_DIR}/imgui_widgets.cpp
-    ${imgui_external_SOURCE_DIR}/imgui_demo.cpp
-    ${imgui_external_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
-    ${imgui_external_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp
-)
-
-# Include directories for imgui
-target_include_directories(imgui PUBLIC
-    $<BUILD_INTERFACE:${imgui_external_SOURCE_DIR}>
-    $<INSTALL_INTERFACE:include/imgui>
-    $<BUILD_INTERFACE:${imgui_external_SOURCE_DIR}/backends>
-    $<INSTALL_INTERFACE:include/imgui/backends>
-    ${SDL2_INCLUDE_DIRS}
-)
-
 # Link SDL2 libraries to imgui
 target_link_libraries(imgui PUBLIC
     SDL2::SDL2
@@ -64,7 +44,6 @@ set(3RD_PARTY_LIBS
     SDL2::SDL2
     SDL2::SDL2main
     nlohmann_json::nlohmann_json
-    OpenGL::GL
     PARENT_SCOPE
 )
 install(FILES
