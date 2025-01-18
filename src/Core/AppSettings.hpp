@@ -3,8 +3,9 @@
 #include <nlohmann/json.hpp>
 namespace wv
 {
-    struct AppSettings
+    class AppSettings
     {
+    public:
         static auto load() -> AppSettings;
         static auto load(const std::string &string) -> AppSettings;
         std::string title;
