@@ -52,7 +52,7 @@ target_precompile_headers(WeevilEngine PRIVATE src/wvpch.h)
 target_precompile_headers(WeevilTest PRIVATE src/wvpch.h)
 
 # Installation rules (optional)
-install(TARGETS WeevilEngine
+install(TARGETS WeevilEngine spdlog imgui
     EXPORT WeevilEngineTargets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
@@ -65,4 +65,12 @@ install(DIRECTORY src/
     FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
 )
 
-export(TARGETS WeevilEngine FILE WeevilEngineTargets.cmake)
+# Remove or comment out the export command
+# export(TARGETS WeevilEngine FILE WeevilEngineTargets.cmake)
+
+# Use install(EXPORT ...) to export the targets during installation
+install(EXPORT WeevilEngineTargets
+    FILE WeevilEngineTargets.cmake
+    NAMESPACE WeevilEngine::
+    DESTINATION lib/cmake/WeevilEngine
+)
