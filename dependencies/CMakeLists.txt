@@ -1,4 +1,3 @@
-include(FetchContent)
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
@@ -12,28 +11,13 @@ if (CMAKE_SYSTEM_NAME STREQUAL Linux)
 endif ()
 
 # spdlog
-FetchContent_Declare(
-  spdlog
-  URL https://github.com/gabime/spdlog/archive/refs/tags/v1.15.0.tar.gz
-)
-FetchContent_MakeAvailable(spdlog)
+add_subdirectory(spdlog)
 
 # EnTT
-FetchContent_Declare(
-  entt
-  URL https://github.com/skypjack/entt/archive/refs/tags/v3.14.0.tar.gz
-  URL_MD5 dfb9f81fae974fa7cfcca12d1f690c49
-)
-FetchContent_MakeAvailable(entt)
+set(ENTT_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/entt/src")
 
-# Dear ImGui
-FetchContent_Declare(
-  imgui_external
-  URL https://github.com/ocornut/imgui/archive/refs/tags/v1.91.6.tar.gz
-  URL_MD5 9df042eef9394fb91251a7c196eaa13b
-)
-
-FetchContent_MakeAvailable(imgui_external)
+# ImGui
+add_subdirectory(imgui)
 
 # Build imgui library
 add_library(imgui
@@ -61,26 +45,26 @@ target_link_libraries(imgui PUBLIC
     SDL2::SDL2main
 )
 
-# Set third-party include directories
+# Collect third-party include directories
 set(3RD_PARTY_INCLUDE_DIRS
     ${SDL2_INCLUDE_DIRS}
     ${OPENGL_INCLUDE_DIR}
-    ${spdlog_SOURCE_DIR}/include
-    ${entt_SOURCE_DIR}/src
-    ${imgui_external_SOURCE_DIR}
-    ${imgui_external_SOURCE_DIR}/backends
+    ${CMAKE_CURRENT_SOURCE_DIR}/spdlog/include
+    ${ENTT_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends
     ${nlohmann_json_INCLUDE_DIRS}
     PARENT_SCOPE
 )
 
-# Set third-party libraries
+# Collect third-party libraries
 set(3RD_PARTY_LIBS
-    EnTT::EnTT
     spdlog::spdlog
+    imgui
     SDL2::SDL2
     SDL2::SDL2main
-    imgui
     nlohmann_json::nlohmann_json
+    OpenGL::GL
     PARENT_SCOPE
 )
 install(FILES

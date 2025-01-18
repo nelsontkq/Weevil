@@ -35,10 +35,14 @@ target_include_directories(WeevilEngine
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
+        ${3RD_PARTY_INCLUDE_DIRS}
 )
 
 # Include directories for the test executable
-target_include_directories(WeevilTest PRIVATE ${3RD_PARTY_INCLUDE_DIRS})
+target_include_directories(WeevilTest PRIVATE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    ${3RD_PARTY_INCLUDE_DIRS}
+)
 
 # Link third-party libraries to the engine library
 target_link_libraries(WeevilEngine PUBLIC ${3RD_PARTY_LIBS})
