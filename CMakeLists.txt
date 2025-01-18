@@ -56,12 +56,11 @@ target_precompile_headers(WeevilEngine PRIVATE src/wvpch.h)
 target_precompile_headers(WeevilTest PRIVATE src/wvpch.h)
 
 # Installation rules (optional)
-install(TARGETS WeevilEngine spdlog imgui
+install(TARGETS WeevilEngine
     EXPORT WeevilEngineTargets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include
 )
 
 install(DIRECTORY include/ DESTINATION include)

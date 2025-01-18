@@ -48,8 +48,10 @@ add_library(imgui
 
 # Include directories for imgui
 target_include_directories(imgui PUBLIC
-    ${imgui_external_SOURCE_DIR}
-    ${imgui_external_SOURCE_DIR}/backends
+    $<BUILD_INTERFACE:${imgui_external_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:include/imgui>
+    $<BUILD_INTERFACE:${imgui_external_SOURCE_DIR}/backends>
+    $<INSTALL_INTERFACE:include/imgui/backends>
     ${SDL2_INCLUDE_DIRS}
 )
 
@@ -80,4 +82,22 @@ set(3RD_PARTY_LIBS
     imgui
     nlohmann_json::nlohmann_json
     PARENT_SCOPE
+)
+install(FILES
+    ${imgui_external_SOURCE_DIR}/imgui.h
+    ${imgui_external_SOURCE_DIR}/imconfig.h
+    DESTINATION include/imgui
+)
+
+install(DIRECTORY
+    ${imgui_external_SOURCE_DIR}/backends
+    DESTINATION include/imgui/backends
+    FILES_MATCHING PATTERN "*.h"
+)
+
+install(TARGETS imgui
+    EXPORT imguiTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
 )
