@@ -1,5 +1,5 @@
 #include <coroutine>
-#include "Game.hpp"
+#include "WeevilEngine/Game.h"
 
 bool wv::Game::logInitialized_ = Game::initializeLog();
 

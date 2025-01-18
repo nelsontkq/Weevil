@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_subdirectory(dependencies)
-find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
 
@@ -19,7 +18,6 @@ add_library(WeevilEngine STATIC
     src/Core/AppSettings.cpp
     src/Core/SDLContext.cpp
     src/Game/Game.cpp
-    # Add other engine source files as needed
 )
 
 # Create an executable target for testing
@@ -35,17 +33,23 @@ target_include_directories(WeevilEngine
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
-        ${3RD_PARTY_INCLUDE_DIRS}
 )
 
 # Include directories for the test executable
 target_include_directories(WeevilTest PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    ${3RD_PARTY_INCLUDE_DIRS}
 )
 
 # Link third-party libraries to the engine library
-target_link_libraries(WeevilEngine PUBLIC ${3RD_PARTY_LIBS})
+target_link_libraries(WeevilEngine PUBLIC
+    spdlog::spdlog
+    imgui::imgui
+    entt::entt
+    nlohmann_json::nlohmann_json
+    SDL2::SDL2
+    SDL2::SDL2main
+    OpenGL::GL
+)
 
 # Set C++ standards and features for the engine library
 target_compile_features(WeevilEngine PUBLIC cxx_std_20)
@@ -60,7 +64,7 @@ target_precompile_headers(WeevilEngine PRIVATE src/wvpch.h)
 target_precompile_headers(WeevilTest PRIVATE src/wvpch.h)
 
 # Installation rules (optional)
-install(TARGETS WeevilEngine
+install(TARGETS WeevilEngine spdlog imgui
     EXPORT WeevilEngineTargets
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib

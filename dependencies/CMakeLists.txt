@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
+
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
@@ -13,36 +15,62 @@ endif ()
 # spdlog
 add_subdirectory(spdlog)
 
-# EnTT
-set(ENTT_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/entt/src")
+# EnTT (header-only library)
+add_library(entt INTERFACE)
+target_include_directories(entt INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/entt/src>
+    $<INSTALL_INTERFACE:include>
+)
+
+# Install EnTT headers
+install(DIRECTORY entt/src/entt
+    DESTINATION include/entt
+)
+
+# Install and export entt
+install(TARGETS entt
+    EXPORT enttTargets
+)
+
+install(EXPORT enttTargets
+    FILE enttTargets.cmake
+    NAMESPACE entt::
+    DESTINATION lib/cmake/entt
+)
 
 # ImGui
 add_subdirectory(imgui)
-
-# Build imgui library
-add_library(imgui
-    ${imgui_external_SOURCE_DIR}/imgui.cpp
-    ${imgui_external_SOURCE_DIR}/imgui_draw.cpp
-    ${imgui_external_SOURCE_DIR}/imgui_tables.cpp
-    ${imgui_external_SOURCE_DIR}/imgui_widgets.cpp
-    ${imgui_external_SOURCE_DIR}/imgui_demo.cpp
-    ${imgui_external_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
-    ${imgui_external_SOURCE_DIR}/backends/imgui_impl_sdlrenderer2.cpp
-)
-
-# Include directories for imgui
-target_include_directories(imgui PUBLIC
-    $<BUILD_INTERFACE:${imgui_external_SOURCE_DIR}>
-    $<INSTALL_INTERFACE:include/imgui>
-    $<BUILD_INTERFACE:${imgui_external_SOURCE_DIR}/backends>
-    $<INSTALL_INTERFACE:include/imgui/backends>
-    ${SDL2_INCLUDE_DIRS}
-)
 
 # Link SDL2 libraries to imgui
 target_link_libraries(imgui PUBLIC
     SDL2::SDL2
     SDL2::SDL2main
+)
+
+# Installation Rules for imgui
+install(TARGETS imgui
+    EXPORT imguiTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include/imgui
+)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/imgui/
+    DESTINATION include/imgui
+    FILES_MATCHING PATTERN "*.h"
+    PATTERN "backends" EXCLUDE
+)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/
+    DESTINATION include/imgui/backends
+    FILES_MATCHING PATTERN "*.h"
+)
+
+install(EXPORT imguiTargets
+    FILE imguiTargets.cmake
+    NAMESPACE imgui::
+    DESTINATION lib/cmake/imgui
 )
 
 # Collect third-party include directories
@@ -64,7 +92,6 @@ set(3RD_PARTY_LIBS
     SDL2::SDL2
     SDL2::SDL2main
     nlohmann_json::nlohmann_json
-    OpenGL::GL
     PARENT_SCOPE
 )
 install(FILES

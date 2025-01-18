@@ -4,8 +4,8 @@
 #define WV_LOG_HPP
 
 #include <memory>
-#include <spdlog/spdlog.h>
-#include <spdlog/fmt/ostr.h>
+#include "spdlog/spdlog.h"
+#include "spdlog/fmt/ostr.h"
 
 // Log is a singleton class that wraps spdlog logger
 namespace wv {
