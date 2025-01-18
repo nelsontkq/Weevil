@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(KingsCourt LANGUAGES CXX)
+project(Weevil LANGUAGES CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,28 +10,29 @@ find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
 
-# Add the executable and include the necessary source files
 # Add the executable
-add_executable(KingsCourt)
+add_executable(Weevil)
 
 # Specify source files
-target_sources(KingsCourt PRIVATE
+target_sources(Weevil PRIVATE
     src/main.cpp
     src/Game/Game.cpp
     src/Utils/UUID.cpp
     src/Core/Log.cpp
     src/Core/AppSettings.cpp
     src/Core/SDLContext.cpp
+    src/System/Scheduler.cpp
+    src/System/Scheduler.h
 )
 
 # Include directories
-target_include_directories(KingsCourt PRIVATE src ${3RD_PARTY_INCLUDE_DIRS})
+target_include_directories(Weevil PRIVATE src ${3RD_PARTY_INCLUDE_DIRS})
 
 # Link libraries
-target_link_libraries(KingsCourt PRIVATE ${3RD_PARTY_LIBS})
+target_link_libraries(Weevil PRIVATE ${3RD_PARTY_LIBS})
 
 # Enable precompiled headers
-target_precompile_headers(KingsCourt PRIVATE src/wvpch.hpp)
+target_precompile_headers(Weevil PRIVATE src/wvpch.hpp)
 
 # Ensure that the compiler supports C++20 features
-target_compile_features(KingsCourt PRIVATE cxx_std_20)
+target_compile_features(Weevil PRIVATE cxx_std_20)

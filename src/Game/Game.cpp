@@ -51,7 +51,6 @@ void wv::Game::run() {
     deltaTime = currentTicks - previousTicks;
     previousTicks = currentTicks;
 
-    // Update the scheduler
     ecs_->run_update(deltaTime);
     ecs_->run_render(deltaTime);
   }
