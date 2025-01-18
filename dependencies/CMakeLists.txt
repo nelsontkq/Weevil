@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
+
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
@@ -43,6 +45,32 @@ add_subdirectory(imgui)
 target_link_libraries(imgui PUBLIC
     SDL2::SDL2
     SDL2::SDL2main
+)
+
+# Installation Rules for imgui
+install(TARGETS imgui
+    EXPORT imguiTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include/imgui
+)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/imgui/
+    DESTINATION include/imgui
+    FILES_MATCHING PATTERN "*.h"
+    PATTERN "backends" EXCLUDE
+)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/
+    DESTINATION include/imgui/backends
+    FILES_MATCHING PATTERN "*.h"
+)
+
+install(EXPORT imguiTargets
+    FILE imguiTargets.cmake
+    NAMESPACE imgui::
+    DESTINATION lib/cmake/imgui
 )
 
 # Collect third-party include directories
