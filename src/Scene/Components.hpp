@@ -6,12 +6,12 @@
 
 using namespace wv;
 
-struct IDComponent
-{
-    UUID ID;
+struct IDComponent {
+  UUID ID;
 
-    IDComponent() = default;
-    IDComponent(const IDComponent &) = default;
+  IDComponent() = default;
+
+  IDComponent(const IDComponent &) = default;
 };
 
 #endif // WV_COMPONENTS_HPP
