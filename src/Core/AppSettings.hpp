@@ -17,3 +17,5 @@ namespace wv
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AppSettings, title, width, height, fullscreen, keep_aspect_ratio, asset_path);
 }
+
+#endif // WV_APPSETTINGS_HPP

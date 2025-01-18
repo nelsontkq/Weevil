@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WV_LOG_HPP
+#define WV_LOG_HPP
 
 #include <memory>
 #include <spdlog/spdlog.h>

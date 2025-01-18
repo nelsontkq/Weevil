@@ -29,3 +29,5 @@ namespace wv
         std::unique_ptr<ECS> ecs_;
     };
 }
+
+#endif // WV_GAME_HPP

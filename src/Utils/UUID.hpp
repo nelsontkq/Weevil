@@ -18,3 +18,5 @@ namespace wv
         uint64_t uuid_;
     };
 }
+
+#endif // WV_UUID_HPP

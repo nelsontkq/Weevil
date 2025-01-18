@@ -13,3 +13,5 @@ struct IDComponent
     IDComponent() = default;
     IDComponent(const IDComponent &) = default;
 };
+
+#endif // WV_COMPONENTS_HPP
