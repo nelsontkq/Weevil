@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(KingsCourt LANGUAGES CXX)
+project(Weevil LANGUAGES CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,28 +10,71 @@ find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
 
-# Add the executable and include the necessary source files
 # Add the executable
-add_executable(KingsCourt)
-
-# Specify source files
-target_sources(KingsCourt PRIVATE
-    src/main.cpp
-    src/Game/Game.cpp
+# Create a library target for your engine
+add_library(WeevilEngine STATIC
+    src/System/SystemManager.cpp
     src/Utils/UUID.cpp
     src/Core/Log.cpp
     src/Core/AppSettings.cpp
     src/Core/SDLContext.cpp
+    src/Game/Game.cpp
+    # Add other engine source files as needed
 )
 
-# Include directories
-target_include_directories(KingsCourt PRIVATE src ${3RD_PARTY_INCLUDE_DIRS})
+# Create an executable target for testing
+add_executable(WeevilTest
+    src/main.cpp
+)
 
-# Link libraries
-target_link_libraries(KingsCourt PRIVATE ${3RD_PARTY_LIBS})
+# Link the test executable against your engine library
+target_link_libraries(WeevilTest PRIVATE WeevilEngine)
 
-# Enable precompiled headers
-target_precompile_headers(KingsCourt PRIVATE src/wvpch.hpp)
+# Include directories for the engine library
+target_include_directories(WeevilEngine
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+        ${3RD_PARTY_INCLUDE_DIRS}
+)
 
-# Ensure that the compiler supports C++20 features
-target_compile_features(KingsCourt PRIVATE cxx_std_20)
+# Include directories for the test executable
+target_include_directories(WeevilTest PRIVATE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    ${3RD_PARTY_INCLUDE_DIRS}
+)
+
+# Link third-party libraries to the engine library
+target_link_libraries(WeevilEngine PUBLIC ${3RD_PARTY_LIBS})
+
+# Set C++ standards and features for the engine library
+target_compile_features(WeevilEngine PUBLIC cxx_std_20)
+
+# Set C++ standards and features for the test executable
+target_compile_features(WeevilTest PRIVATE cxx_std_20)
+
+# Enable precompiled headers for the engine library
+target_precompile_headers(WeevilEngine PRIVATE src/wvpch.h)
+
+# Enable precompiled headers for the test executable
+target_precompile_headers(WeevilTest PRIVATE src/wvpch.h)
+
+# Installation rules (optional)
+install(TARGETS WeevilEngine
+    EXPORT WeevilEngineTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+install(DIRECTORY include/ DESTINATION include)
+
+# Remove or comment out the export command
+# export(TARGETS WeevilEngine FILE WeevilEngineTargets.cmake)
+
+# Use install(EXPORT ...) to export the targets during installation
+install(EXPORT WeevilEngineTargets
+    FILE WeevilEngineTargets.cmake
+    NAMESPACE WeevilEngine::
+    DESTINATION lib/cmake/WeevilEngine
+)
