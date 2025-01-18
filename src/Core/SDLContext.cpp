@@ -1,5 +1,5 @@
 
-#include "SDLContext.hpp"
+#include "WeevilEngine/SDLContext.h"
 
 wv::SDLContext::SDLContext(AppSettings &settings) {
   // Initialize SDL

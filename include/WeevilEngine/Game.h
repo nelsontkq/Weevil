@@ -1,11 +1,10 @@
 #ifndef WV_GAME_HPP
 #define WV_GAME_HPP
 
-#include "wvpch.hpp"
-#include "../Utils/SDL_Deleter.hpp"
-#include "../ECS.hpp"
-#include "../Core/AppSettings.hpp"
-#include "../Core/SDLContext.hpp"
+#include "wvpch.h"
+#include "Utils/SDL_Deleter.hpp"
+#include "AppSettings.h"
+#include "SDLContext.h"
 
 namespace wv {
 

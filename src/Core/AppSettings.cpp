@@ -1,5 +1,5 @@
-#include "AppSettings.hpp"
-#include "wvpch.hpp"
+#include "WeevilEngine/AppSettings.h"
+#include "wvpch.h"
 #include <filesystem>
 #include <fstream>
 

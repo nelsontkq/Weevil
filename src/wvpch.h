@@ -56,7 +56,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 
-#include "Core/Log.hpp"
+#include "../include/WeevilEngine/Log.h"
 
 // macros
 #define BIT(x) (1 << x)
