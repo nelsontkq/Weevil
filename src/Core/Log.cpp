@@ -19,3 +19,5 @@ void Log::Init() {
 }
 
 } // namespace wv
+
+#endif // WV_SDLCONTEXT_HPP

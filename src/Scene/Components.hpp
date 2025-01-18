@@ -1,3 +1,6 @@
+#ifndef WV_COMPONENTS_HPP
+#define WV_COMPONENTS_HPP
+
 #include <../Utils/UUID.hpp>
 #include <string>
 

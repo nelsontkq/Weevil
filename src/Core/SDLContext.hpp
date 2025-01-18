@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WV_SDLCONTEXT_HPP
+#define WV_SDLCONTEXT_HPP
 #include "wvpch.hpp"
 #include "../Utils/SDL_Deleter.hpp"
 #include "Core/AppSettings.hpp"

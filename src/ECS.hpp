@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WV_ECS_HPP
+#define WV_ECS_HPP
 
 #include <SDL2/SDL.h>
 #include <imgui.h>
@@ -80,3 +81,5 @@ private:
 };
 
 } // namespace wv
+
+#endif // WV_ECS_HPP

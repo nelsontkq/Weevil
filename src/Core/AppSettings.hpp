@@ -1,5 +1,5 @@
-
-#pragma once
+#ifndef WV_APPSETTINGS_HPP
+#define WV_APPSETTINGS_HPP
 #include <nlohmann/json.hpp>
 namespace wv
 {

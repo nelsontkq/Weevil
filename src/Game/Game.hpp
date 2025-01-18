@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WV_GAME_HPP
+#define WV_GAME_HPP
 
 #include "wvpch.hpp"
 #include "../Utils/SDL_Deleter.hpp"

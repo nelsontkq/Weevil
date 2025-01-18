@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WV_WVPCH_HPP
+#define WV_WVPCH_HPP
 
 // platform detection
 #ifdef _WIN32
@@ -60,3 +61,5 @@
 
 // macros
 #define BIT(x) (1 << x)
+
+#endif // WV_WVPCH_HPP

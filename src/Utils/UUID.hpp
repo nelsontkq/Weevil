@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WV_UUID_HPP
+#define WV_UUID_HPP
 
 #include <cstdint>
 namespace wv

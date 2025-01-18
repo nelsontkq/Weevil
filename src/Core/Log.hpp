@@ -34,3 +34,5 @@ private:
 #define LOG_CRITICAL(...)  ::wv::Log::GetClientLogger()->critical(__VA_ARGS__)
 
 } // namespace wv
+
+#endif // WV_LOG_HPP
