@@ -11,7 +11,13 @@ find_package(SDL2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
 
 # Add the executable
-add_executable(Weevil)
+add_executable(Weevil
+        src/System/SystemManager.cpp
+        src/System/SystemManager.h
+        src/System/System.h
+        src/System/SystemManager.h
+        src/System/SystemManager.h
+        src/System/System.h)
 
 # Specify source files
 target_sources(Weevil PRIVATE
@@ -32,7 +38,7 @@ target_include_directories(Weevil PRIVATE src ${3RD_PARTY_INCLUDE_DIRS})
 target_link_libraries(Weevil PRIVATE ${3RD_PARTY_LIBS})
 
 # Enable precompiled headers
-target_precompile_headers(Weevil PRIVATE src/wvpch.hpp)
+target_precompile_headers(Weevil PRIVATE src/wvpch.h)
 
 # Ensure that the compiler supports C++20 features
 target_compile_features(Weevil PRIVATE cxx_std_20)
