@@ -76,6 +76,8 @@
         "stop_token": "cpp",
         "queue": "cpp",
         "stack": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "cinttypes": "cpp",
+        "__config": "cpp"
     }
 }

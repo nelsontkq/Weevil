@@ -2,8 +2,7 @@
 #define WV_SDLCONTEXT_HPP
 
 #include "wvpch.h"
-#include "Utils/SDL_Deleter.hpp"
-#include "AppSettings.h"
+#include "SDL_Deleter.h"
 
 namespace wv {
 // SDLContext class

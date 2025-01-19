@@ -1,5 +1,5 @@
-#include "wvpch.h"
-#include "../include/WeevilEngine/Game.h"
+#include "WeevilEngine/Game.h"
+#include "WeevilEngine/System.h"
 
 int main() {
   wv::Game game;

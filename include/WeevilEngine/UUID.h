@@ -19,5 +19,17 @@ class UUID {
   uint64_t uuid_;
 };
 }
+namespace std {
+template<typename T>
+struct hash;
+
+template<>
+struct hash<wv::UUID> {
+  std::size_t operator()(const wv::UUID &uuid) const {
+    return (uint64_t) uuid;
+  }
+};
+
+}
 
 #endif // WV_UUID_HPP

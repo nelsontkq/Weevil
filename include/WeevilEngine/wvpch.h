@@ -49,14 +49,15 @@
 // Third-Party Libraries
 #include <cassert>
 #include <SDL2/SDL.h>
-#include <entt/entt.hpp>
-#include <imgui.h>
-#include <backends/imgui_impl_sdl2.h>
-#include <backends/imgui_impl_sdlrenderer2.h>
-#include <spdlog/spdlog.h>
-#include <spdlog/fmt/ostr.h>
+#include "entt/entt.hpp"
+#include "imgui.h"
+#include "backends/imgui_impl_sdl2.h"
+#include "backends/imgui_impl_sdlrenderer2.h"
+#include "spdlog/spdlog.h"
+#include "spdlog/fmt/ostr.h"
 
-#include "../include/WeevilEngine/Log.h"
+#include "WeevilEngine/Log.h"
+#include "WeevilEngine/AppSettings.h"
 
 // macros
 #define BIT(x) (1 << x)
