@@ -15,6 +15,12 @@ struct SDL_Deleter {
       LOG_TRACE("Renderer destroyed");
     }
   }
+  void operator()(SDL_GPUDevice *ptr) const {
+    if (ptr) {
+      SDL_DestroyGPUDevice(ptr);
+      LOG_TRACE("GPU Device destroyed");
+    }
+  }
 
   void operator()(SDL_Texture *ptr) const {
     if (ptr) {

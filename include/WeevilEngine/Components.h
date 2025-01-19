@@ -18,8 +18,5 @@ struct TransformComponent {
 };
 
 struct SpriteComponent {
-  u_int64_t texture_idx;
-  SDL_Rect src_rect;
-  SDL_Rect dest_rect;
 };
 #endif //WEEVIL_INCLUDE_WEEVILENGINE_COMPONENTS_H_

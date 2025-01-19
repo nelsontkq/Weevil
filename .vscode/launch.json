@@ -5,7 +5,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Launch",
-            "program": "${workspaceFolder}/build/Weevil",
+            "program": "${workspaceFolder}/build/WeevilTest",
             "args": [],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "CMake: build",

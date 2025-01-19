@@ -1,8 +1,8 @@
 {
     "title": "Weevil",
-    "width": 1080,
+    "width": 1920,
     "height": 1080,
-    "keep_aspect_ratio": false,
-    "fullscreen": true,
+    "resizable": false,
+    "fullscreen": false,
     "asset_path": "/home/nelson/Development/Weevil/assets"
   }
