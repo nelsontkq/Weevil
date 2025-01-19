@@ -2,9 +2,8 @@
 #define WV_GAME_HPP
 
 #include "wvpch.h"
-#include "Utils/SDL_Deleter.hpp"
-#include "AppSettings.h"
 #include "SDLContext.h"
+#include "SystemManager.h"
 
 namespace wv {
 
@@ -24,8 +23,9 @@ class Game {
   AppSettings settings_;
   SDLContext sdlContext_;
   entt::registry registry_;
+  // tasks that start and end;
   entt::basic_scheduler<uint64_t> scheduler_;
-  std::unique_ptr<ECS> ecs_;
+  SystemManager mgr_;
 };
 }
 
