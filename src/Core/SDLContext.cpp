@@ -1,38 +1,39 @@
 
 #include "WeevilEngine/SDLContext.h"
 
+class SDLError : public std::runtime_error {
+ public:
+  explicit SDLError(const std::string &message) : std::runtime_error(message + ": " + SDL_GetError()) {}
+};
 wv::SDLContext::SDLContext(AppSettings &settings) {
   // Initialize SDL
-  if (SDL_Init(SDL_INIT_VIDEO)!=0) {
-    throw std::runtime_error("Failed to initialize SDL: " + std::string(SDL_GetError()));
+  if (!SDL_Init(SDL_INIT_VIDEO)) {
+    throw SDLError("Failed to initialize SDL: " + std::string(SDL_GetError()));
   }
-
-  // Create SDL window using smart pointer
-  uint32_t flags = SDL_WINDOW_SHOWN;
+  auto flags = 0;
   if (settings.fullscreen) {
-    flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    flags |= SDL_WINDOW_BORDERLESS;
+  } else if (settings.resizable) {
+    flags |= SDL_WINDOW_RESIZABLE;
   }
-  window_.reset(SDL_CreateWindow(settings.title.c_str(),
-                                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                 settings.width, settings.height,
-                                 flags));
-  if (!window_) {
-    throw std::runtime_error("Failed to create SDL Window: " + std::string(SDL_GetError()));
+  SDL_Window *window = nullptr;
+  SDL_Renderer *renderer = nullptr;
+
+  if (!SDL_CreateWindowAndRenderer(settings.title.c_str(), settings.width, settings.height, flags, &window,
+                                   &renderer)) {
+    throw SDLError("Failed to create window and renderer");
   }
-  renderer_.reset(SDL_CreateRenderer(window_.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
-  if (!renderer_) {
-    throw std::runtime_error("Failed to create SDL Renderer: " + std::string(SDL_GetError()));
+
+  if (!SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255)) {
+    throw SDLError("Failed to set render draw color");
   }
+
+  window_.reset(window);
+  renderer_.reset(renderer);
 }
 
-wv::SDLContext::~SDLContext() {
-  SDL_Quit();
-}
+wv::SDLContext::~SDLContext() { SDL_Quit(); }
 
-SDL_Window *wv::SDLContext::get_window() const {
-  return window_.get();
-}
+SDL_Window *wv::SDLContext::get_window() const { return window_.get(); }
 
-SDL_Renderer *wv::SDLContext::get_renderer() const {
-  return renderer_.get();
-}
+SDL_Renderer *wv::SDLContext::get_renderer() const { return renderer_.get(); }

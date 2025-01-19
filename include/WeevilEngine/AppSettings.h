@@ -14,11 +14,11 @@ class AppSettings {
   int width;
   int height;
   bool fullscreen;
-  bool keep_aspect_ratio;
+  bool resizable;
   std::filesystem::path asset_path = "";
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AppSettings, title, width, height, fullscreen, keep_aspect_ratio, asset_path);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AppSettings, title, width, height, fullscreen, resizable, asset_path);
 }
 
 #endif // WV_APPSETTINGS_HPP
