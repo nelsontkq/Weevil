@@ -1,4 +1,5 @@
 #include "WeevilEngine/Game.h"
+
 #include "WeevilEngine/SystemManager.h"
 
 bool wv::Game::logInitialized_ = Game::initializeLog();
@@ -13,19 +14,9 @@ auto wv::Game::initializeLog() -> bool {
 
 wv::Game::Game() : settings_(AppSettings::load()), sdlContext_(settings_) {
   LOG_INFO("Initializing Game");
-  // Initialize ImGui context
-  IMGUI_CHECKVERSION();
-  ImGui::CreateContext();
-  ImGui::StyleColorsDark();
-
-  ImGui_ImplSDL2_InitForSDLRenderer(sdlContext_.get_window(), sdlContext_.get_renderer());
-  ImGui_ImplSDLRenderer2_Init(sdlContext_.get_renderer());
 }
 
 wv::Game::~Game() {
-  ImGui_ImplSDLRenderer2_Shutdown();
-  ImGui_ImplSDL2_Shutdown();
-  ImGui::DestroyContext();
 }
 
 void wv::Game::run() {
@@ -38,8 +29,7 @@ void wv::Game::run() {
     SDL_Event event;
     // TODO: use EnTT signals
     while (SDL_PollEvent(&event)) {
-      ImGui_ImplSDL2_ProcessEvent(&event);
-      if (event.type==SDL_QUIT) {
+      if (event.type == SDL_QUIT) {
         LOG_INFO("Quit event received");
         isRunning = false;
       }

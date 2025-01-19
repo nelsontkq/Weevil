@@ -7,19 +7,14 @@
 #include "entt/entt.hpp"
 #include "UUID.h"
 namespace wv {
-enum Stage {
-  PreUpdate,
-  Update,
-  Render
-};
 struct SystemContext {
   float deltaTime;
 };
 class System {
  public:
   virtual void init(entt::registry &registry) = 0;
+  // Returns a list of UUIDs of the components that this system depends on
   virtual std::vector<UUID> after() = 0;
-  virtual Stage stage() = 0;
   virtual void update(wv::SystemContext *data, entt::registry &registry) = 0;
 };
 }

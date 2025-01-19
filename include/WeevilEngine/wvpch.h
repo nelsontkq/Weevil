@@ -37,29 +37,27 @@
 #endif
 
 // Standard Library Headers
-#include <memory>
-#include <vector>
-#include <string>
-#include <iostream>
-#include <functional>
 #include <cstdint>
-#include <stdexcept>
+#include <functional>
+#include <iostream>
+#include <memory>
 #include <random>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 // Third-Party Libraries
-#include <cassert>
 #include <SDL2/SDL.h>
-#include "entt/entt.hpp"
-#include "imgui.h"
-#include "backends/imgui_impl_sdl2.h"
-#include "backends/imgui_impl_sdlrenderer2.h"
-#include "spdlog/spdlog.h"
-#include "spdlog/fmt/ostr.h"
 
-#include "WeevilEngine/Log.h"
+#include <cassert>
+
 #include "WeevilEngine/AppSettings.h"
+#include "WeevilEngine/Log.h"
+#include "entt/entt.hpp"
+#include "spdlog/fmt/ostr.h"
+#include "spdlog/spdlog.h"
 
 // macros
 #define BIT(x) (1 << x)
 
-#endif // WV_WVPCH_HPP
+#endif  // WV_WVPCH_HPP
