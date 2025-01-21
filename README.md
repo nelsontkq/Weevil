@@ -1,7 +1,7 @@
-# Weevil Project
+# Weevil Engine
 
 ## Project Overview
-The Weevil project is a game engine designed to provide a robust and flexible framework for game development. It offers a range of functionalities to manage game systems, assets, and configurations, making it easier for developers to create and manage game projects.
+Weevil is a game engine designed to provide a robust and flexible framework for game development. It offers a range of functionalities to manage game systems, assets, and configurations, making it easier for developers to create and manage game projects.
 
 ## Features
 - **System Management**: Efficiently manage and update game systems.

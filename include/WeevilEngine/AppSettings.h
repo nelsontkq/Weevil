@@ -1,15 +1,17 @@
 #ifndef WV_APPSETTINGS_HPP
 #define WV_APPSETTINGS_HPP
 
-#include <nlohmann/json.hpp>
+#include <string_view>
+#include <toml++/toml.hpp>
+
+#include "wvpch.h"
 
 namespace wv {
+
 class AppSettings {
  public:
-  static auto load() -> AppSettings;
-
-  static auto load(const std::string &string) -> AppSettings;
-
+  AppSettings(const std::filesystem::path& path);
+  AppSettings();
   std::string title;
   int width;
   int height;
@@ -18,7 +20,6 @@ class AppSettings {
   std::filesystem::path asset_path = "";
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(AppSettings, title, width, height, fullscreen, resizable, asset_path);
-}
+}  // namespace wv
 
-#endif // WV_APPSETTINGS_HPP
+#endif  // WV_APPSETTINGS_HPP

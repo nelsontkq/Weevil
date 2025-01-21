@@ -1,0 +1,6 @@
+[window]
+title = "Weevil"
+width = 1_920
+height = 1_080
+resizable = false
+fullscreen = false

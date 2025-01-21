@@ -7,7 +7,11 @@
 #include "wvpch.h"
 
 class AssetManager {
+public:
+  // Returns index of loaded asset. Assets will be cached until removed.
   auto load(std::filesystem::path) -> u_int64_t;
+  // will unload an asset
+  auto unload(uint64_t asset_id) -> void;
 
 };
 

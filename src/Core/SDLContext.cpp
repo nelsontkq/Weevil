@@ -18,7 +18,6 @@ wv::SDLContext::SDLContext(AppSettings &settings) {
   }
   SDL_Window *window = nullptr;
   SDL_Renderer *renderer = nullptr;
-
   if (!SDL_CreateWindowAndRenderer(settings.title.c_str(), settings.width, settings.height, flags, &window,
                                    &renderer)) {
     throw SDLError("Failed to create window and renderer");

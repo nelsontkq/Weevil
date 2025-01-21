@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - { name: Linux Clang,    os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+          - { name: Linux Clang,    os: ubuntu-latest, flags: -G Ninja DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release }
         # - { name: Windows VS2022, os: windows-2022  }
 
     steps:

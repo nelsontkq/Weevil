@@ -9,18 +9,13 @@ namespace wv {
 
 class Game {
  public:
-  Game();
-
+  Game(AppSettings& a);
   ~Game();
 
   void run();
 
  private:
-  static bool logInitialized_;
-
-  static bool initializeLog();
-
-  AppSettings settings_;
+  AppSettings& settings_;
   SDLContext sdlContext_;
   entt::registry registry_;
   // tasks that start and end;

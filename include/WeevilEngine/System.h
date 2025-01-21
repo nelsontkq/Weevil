@@ -16,6 +16,7 @@ class System {
   // Returns a list of UUIDs of the components that this system depends on
   virtual std::vector<UUID> after() = 0;
   virtual void update(wv::SystemContext *data, entt::registry &registry) = 0;
+  virtual void shutdown(entt::registry &registry) = 0;
 };
 }
 #endif //WEEVIL_INCLUDE_WEEVILENGINE_SYSTEM_H_
