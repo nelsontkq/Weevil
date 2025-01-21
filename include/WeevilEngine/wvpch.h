@@ -45,6 +45,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 // Third-Party Libraries
 #include <SDL3/SDL.h>
@@ -61,3 +62,4 @@
 #define BIT(x) (1 << x)
 
 #endif  // WV_WVPCH_HPP
+

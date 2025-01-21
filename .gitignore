@@ -4,4 +4,4 @@ build
 .vs
 .aider*
 imgui.ini
-cmake-build-*
+.clangd

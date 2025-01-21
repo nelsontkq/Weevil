@@ -2,17 +2,7 @@
 
 #include "WeevilEngine/SystemManager.h"
 
-bool wv::Game::logInitialized_ = Game::initializeLog();
-
-auto wv::Game::initializeLog() -> bool {
-  if (Game::logInitialized_) {
-    return false;
-  }
-  Log::Init();
-  return true;
-}
-
-wv::Game::Game() : settings_(AppSettings::load()), sdlContext_(settings_) { LOG_INFO("Initializing Game"); }
+wv::Game::Game(AppSettings& a) : settings_(a), sdlContext_(settings_) { LOG_INFO("Initializing Game"); }
 
 wv::Game::~Game() {}
 

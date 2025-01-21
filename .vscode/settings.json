@@ -78,6 +78,17 @@
         "stack": "cpp",
         "complex": "cpp",
         "cinttypes": "cpp",
-        "__config": "cpp"
+        "__config": "cpp",
+        "any": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "fstream": "cpp",
+        "iostream": "cpp",
+        "numeric": "cpp",
+        "ranges": "cpp",
+        "__tree": "cpp"
     }
 }

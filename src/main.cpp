@@ -1,8 +1,10 @@
 #include "WeevilEngine/Game.h"
-#include "WeevilEngine/System.h"
 
-int main() {
-  wv::Game game;
+auto main() -> int {
+  wv::Log::Init();
+  wv::AppSettings settings("/home/nelson/Development/Weevil/config/weevil.toml");
+  wv::Game game(settings);
+  
   game.run();
   return 0;
 }

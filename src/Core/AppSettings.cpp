@@ -1,38 +1,24 @@
+
 #include "WeevilEngine/AppSettings.h"
-#include "WeevilEngine/wvpch.h"
+
 #include <filesystem>
 #include <fstream>
 
+#include "WeevilEngine/wvpch.h"
 namespace fs = std::filesystem;
 
-auto wv::AppSettings::load() -> AppSettings {
-  fs::path current_dir = fs::current_path();
-
-  while (true) {
-    if (fs::path potential_path = current_dir/"weevil.json"; exists(potential_path)) {
-      return AppSettings::load(potential_path);
-    }
-
-    if (current_dir==current_dir.root_path()) {
-      break;
-    }
-
-    current_dir = current_dir.parent_path();
+wv::AppSettings::AppSettings(const std::filesystem::path& p) {
+  toml::table table;
+  try {
+    table = toml::parse_file(p.u8string());
+  } catch (const toml::parse_error& err) {
+    LOG_ERROR("Failed to parse configuration at {0}: {1}", p.c_str(), err.description());
+    throw err;
   }
-  AppSettings settings;
-  return settings;
-}
-
-auto wv::AppSettings::load(const std::string &string) -> AppSettings {
-  LOG_INFO("Loaded settings from {0}", string);
-  std::ifstream file(string);
-  if (!file.is_open()) {
-    throw std::runtime_error("Failed to open file: " + string);
-  }
-
-  nlohmann::json j;
-  file >> j;
-  AppSettings result = j.get<AppSettings>();
-  LOG_TRACE("AppSettings: {0}", j.dump(2));
-  return result;
-}
+  title = table["window"]["title"].value_or("Weevil Game");
+  height = table["window"]["height"].value_or(1920);
+  width = table["window"]["width"].value_or(1080);
+  resizable = table["window"]["resizable"].value_or(false);
+  fullscreen = table["window"]["fullscreen"].value_or(false);
+  LOG_INFO("Loaded settings from {0}", p.c_str());
+};
