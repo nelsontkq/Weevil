@@ -1,6 +1,6 @@
 #ifndef WV_SDL_DELETER_HPP
 #define WV_SDL_DELETER_HPP
-
+#include "wvpch.h"
 struct SDL_Deleter {
   void operator()(SDL_Window *ptr) const {
     if (ptr) {

@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
 project(Weevil LANGUAGES CXX)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wno-unknown-pragmas")
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # CPM
 file(
@@ -25,6 +22,7 @@ add_library(WeevilEngine STATIC
         src/Core/AppSettings.cpp
         src/Core/SDLContext.cpp
         src/Game/Game.cpp
+        src/System/AssetManager.cpp
         src/System/SystemManager.cpp
 )
 
@@ -35,8 +33,9 @@ target_include_directories(WeevilEngine
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
-
 target_compile_features(WeevilEngine PUBLIC cxx_std_20)
+target_compile_options(WeevilEngine PRIVATE -Wall -Wextra -Wpedantic -Wno-unknown-pragmas)
+
 target_link_libraries(WeevilEngine
         PUBLIC
         SDL3::SDL3
@@ -46,14 +45,7 @@ target_link_libraries(WeevilEngine
         tomlplusplus::tomlplusplus
 )
 
-if(PROJECT_IS_TOP_LEVEL)
-    set(WV_DEBUG 1)
-    add_executable(WeevilTest
-        src/main.cpp
-    )
-    target_compile_features(WeevilTest PRIVATE cxx_std_20)
-    target_link_libraries(WeevilTest
-        PRIVATE
-            Weevil::Engine
-    )
-endif()
+
+add_executable(WeevilTest tests/main.cpp )
+target_link_libraries(WeevilTest PRIVATE Weevil::Engine
+)

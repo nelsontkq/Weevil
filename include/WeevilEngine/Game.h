@@ -1,16 +1,19 @@
 #ifndef WV_GAME_HPP
 #define WV_GAME_HPP
+#include <concepts>
 
-#include "wvpch.h"
 #include "SDLContext.h"
 #include "SystemManager.h"
-
+#include "wvpch.h"
+#include "System.h"
 namespace wv {
+
 
 class Game {
  public:
   Game(AppSettings& a);
   ~Game();
+  SystemManager system_manager() { return system_manager_; }
 
   void run();
 
@@ -20,8 +23,8 @@ class Game {
   entt::registry registry_;
   // tasks that start and end;
   entt::basic_scheduler<uint64_t> scheduler_;
-  SystemManager mgr_;
+  SystemManager system_manager_;
 };
-}
+}  // namespace wv
 
-#endif // WV_GAME_HPP
+#endif  // WV_GAME_HPP

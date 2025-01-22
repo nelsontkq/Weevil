@@ -7,30 +7,43 @@
 #ifndef WEEVIL_SRC_SYSTEM_SYSTEMMANAGER_H_
 #define WEEVIL_SRC_SYSTEM_SYSTEMMANAGER_H_
 
-#include <vector>
 #include <string_view>
-#include "entt/entt.hpp"
+#include <vector>
+
 #include "System.h"
 #include "UUID.h"
+#include "entt/entt.hpp"
 
 namespace wv {
 
-
 class SystemManager {
  public:
-  UUID add_system(System&& sys);
+  explicit SystemManager(entt::registry* registry) : registry_(registry) {}
+  template <SystemDerived T>
+  UUID add_system();
+  void init();
   void remove_system(UUID name);
   void remove_all_systems();
-  void update(entt::registry &registry, float deltaTime);
+  void update(float deltaTime);
   void sort_systems();
 
  private:
-  std::vector<System> systems_;
+  entt::registry* registry_;
+
+  std::unordered_map<UUID, System*> systems_;
   std::vector<entt::organizer::vertex> sorted_systems_;
 };
 
-} // wv
+template <SystemDerived T>
+UUID SystemManager::add_system() {
+  UUID id;
+  auto* system = new T();
+  systems_.emplace(id, system);
+  return id;
+}
 
-#endif //WEEVIL_SRC_SYSTEM_SYSTEMMANAGER_H_
+}  // namespace wv
+
+#endif  // WEEVIL_SRC_SYSTEM_SYSTEMMANAGER_H_
 
 #pragma clang diagnostic pop

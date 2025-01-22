@@ -1,10 +1,6 @@
 
 #include "WeevilEngine/SDLContext.h"
 
-class SDLError : public std::runtime_error {
- public:
-  explicit SDLError(const std::string &message) : std::runtime_error(message + ": " + SDL_GetError()) {}
-};
 wv::SDLContext::SDLContext(AppSettings &settings) {
   // Initialize SDL
   if (!SDL_Init(SDL_INIT_VIDEO)) {
