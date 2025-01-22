@@ -17,7 +17,7 @@ class AppSettings {
   int height;
   bool fullscreen;
   bool resizable;
-  std::filesystem::path asset_path = "";
+  std::string_view asset_path = "";
 };
 
 }  // namespace wv

@@ -1,14 +1,12 @@
 {
-    "version": "0.2.0",
     "configurations": [
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Launch",
-            "program": "${workspaceFolder}/build/WeevilTest",
-            "args": [],
-            "cwd": "${workspaceFolder}",
-            "preLaunchTask": "CMake: build",
-        }
+    {
+        "type": "lldb",
+        "request": "launch",
+        "name": "Launch",
+        "program": "${workspaceFolder}/build/default/WeevilTest",
+        "args": [],
+        "cwd": "${workspaceFolder}"
+    }
     ]
 }
