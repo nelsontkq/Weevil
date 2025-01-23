@@ -2,10 +2,11 @@
 #define WV_GAME_HPP
 #include <concepts>
 
+#include "NoCopy.h"
 #include "SDLContext.h"
 #include "System.h"
 #include "SystemManager.h"
-#include "NoCopy.h"
+#include "AssetManager.h"
 #include "wvpch.h"
 namespace wv {
 
@@ -23,6 +24,7 @@ class Game : NoCopy {
   entt::registry registry_;
   // tasks that start and end;
   entt::basic_scheduler<uint64_t> scheduler_;
+  AssetManager assets_;
   SystemManager system_manager_;
 };
 }  // namespace wv
