@@ -6,7 +6,10 @@
         "name": "Launch",
         "program": "${workspaceFolder}/build/default/WeevilTest",
         "args": [],
-        "cwd": "${workspaceFolder}"
+        "cwd": "${workspaceFolder}",
+        "env": {
+            "WEEVIL_CONFIG_PATH": "${workspaceFolder}/config/weevil.json"
+        }
     }
     ]
 }

@@ -89,6 +89,7 @@
         "iostream": "cpp",
         "numeric": "cpp",
         "ranges": "cpp",
-        "__tree": "cpp"
+        "__tree": "cpp",
+        "expected": "cpp"
     }
 }

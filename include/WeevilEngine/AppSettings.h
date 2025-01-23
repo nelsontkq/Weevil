@@ -3,21 +3,21 @@
 
 #include <string_view>
 #include <toml++/toml.hpp>
+#include "NoCopy.h"
 
 #include "wvpch.h"
 
 namespace wv {
 
-class AppSettings {
+class AppSettings : NoCopy {
  public:
   AppSettings(const std::filesystem::path& path);
-  AppSettings();
   std::string title;
   int width;
   int height;
   bool fullscreen;
   bool resizable;
-  std::string_view asset_path = "";
+  std::string asset_path;
 };
 
 }  // namespace wv

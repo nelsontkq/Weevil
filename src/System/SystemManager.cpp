@@ -25,19 +25,20 @@ void SystemManager::remove_system(UUID name) {
   }
 }
 void SystemManager::init() {
-  for (auto &&node : systems_) {
-    node.second->init(*registry_);
+  for (const auto &[key, sys] : systems_) {
+    sys->init(*registry_);
   }
   sort_systems();
 }
 void SystemManager::update(float deltaTime) {
-  SystemContext ctx = {.deltaTime = deltaTime};
+  registry_->ctx().emplace<SystemContext>(std::move(SystemContext{.deltaTime = deltaTime}));
   for (auto &&node : sorted_systems_) {
     node.prepare(*registry_);
   }
   // TODO: Can be parallelized here
   for (auto &&node : sorted_systems_) {
-    node.callback()(&ctx, *registry_);
+    auto *cb = node.callback();
+    cb(node.data(), *registry_);
   }
   //  std::vector<std::future<void>> tasks;
   //  for (size_t i = 0; i < sorted_systems_.size(); ++i) {
@@ -70,10 +71,10 @@ void SystemManager::update(float deltaTime) {
   //  }
 }
 void SystemManager::sort_systems() {
-  entt::organizer organizer;
-  for (auto &&[id, system] : systems_) {
-    organizer.emplace<&wv::System::update>(*system);
+  organizer_.clear();
+  for (const auto &[id, system] : systems_) {
+    organizer_.emplace<&wv::System::update>(*system, system->name().c_str());
   }
-  sorted_systems_ = organizer.graph();
+  sorted_systems_ = organizer_.graph();
 }
 }  // namespace wv

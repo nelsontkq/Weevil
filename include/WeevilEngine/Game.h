@@ -3,17 +3,17 @@
 #include <concepts>
 
 #include "SDLContext.h"
-#include "SystemManager.h"
-#include "wvpch.h"
 #include "System.h"
+#include "SystemManager.h"
+#include "NoCopy.h"
+#include "wvpch.h"
 namespace wv {
 
-
-class Game {
+class Game : NoCopy {
  public:
   Game(AppSettings& a);
   ~Game();
-  SystemManager system_manager() { return system_manager_; }
+  SystemManager& system_manager() { return system_manager_; }
 
   void run();
 

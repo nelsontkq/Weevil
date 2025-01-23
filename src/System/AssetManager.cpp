@@ -6,10 +6,11 @@
 #include <SDL3_image/SDL_image.h>
 
 #include "WeevilEngine/SDL_Deleter.h"
-#include "WeevilEngine/UUID.h"
 namespace wv {
 AssetManager::AssetManager(AppSettings &app, SDL_Renderer *renderer)
-    : renderer_(renderer), asset_path_(app.asset_path) {}
+    : renderer_(renderer), asset_path_(app.asset_path) {
+      
+    }
 
 SDL_Texture *AssetManager::get(uint64_t asset_id) { return texture_map_[asset_id]; }
 

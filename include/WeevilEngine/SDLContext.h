@@ -6,7 +6,7 @@
 
 namespace wv {
 
-class SDLError : public std::runtime_error {
+class SDLError : public std::runtime_error, NoCopy {
  public:
   explicit SDLError(const std::string &message) : std::runtime_error(message + ": " + SDL_GetError()) {}
 };

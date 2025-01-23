@@ -18,18 +18,16 @@ class UUID {
  private:
   uint64_t uuid_;
 };
-}
+}  // namespace wv
 namespace std {
-template<typename T>
+template <typename T>
 struct hash;
 
-template<>
+template <>
 struct hash<wv::UUID> {
-  std::size_t operator()(const wv::UUID &uuid) const {
-    return (uint64_t) uuid;
-  }
+  std::size_t operator()(const wv::UUID &uuid) const { return (uint64_t)uuid; }
 };
 
-}
+}  // namespace std
 
-#endif // WV_UUID_HPP
+#endif  // WV_UUID_HPP

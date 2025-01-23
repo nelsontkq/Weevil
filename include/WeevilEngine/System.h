@@ -15,9 +15,8 @@ class System {
  public:
   virtual ~System() = default;
   virtual void init(entt::registry &) {};
-  // Returns a list of UUIDs of the components that this system depends on
-  std::vector<UUID> after() { return {}; };
-  virtual void update(wv::SystemContext *, entt::registry &) = 0;
+  virtual std::string name() = 0;
+  virtual void update(void *, entt::registry &) = 0;
   virtual void shutdown(entt::registry &) {};
 };
 template <typename Derived>

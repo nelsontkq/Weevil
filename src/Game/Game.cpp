@@ -16,6 +16,7 @@ void wv::Game::run() {
   float deltaTime = 0;
   bool isRunning = true;
   AssetManager assets(settings_, sdlContext_.get_renderer());
+  registry_.ctx().emplace<AssetManager&>(assets);
   system_manager_.init();
   while (isRunning) {
     SDL_Event event;

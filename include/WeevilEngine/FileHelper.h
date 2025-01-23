@@ -1,8 +1,9 @@
 #include "wvpch.h"
+#include "NoCopy.h"
 
 namespace wv {
   constexpr char* CONFIG_FILE_NAME = "weevil.toml";
-class FileHelper {
+class FileHelper : NoCopy {
  public:
   static std::filesystem::path get_config(const std::string& app_name) {
     if (const std::filesystem::path env_path = std::getenv("WEEVIL_CONFIG_PATH")) {
