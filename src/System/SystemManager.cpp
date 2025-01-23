@@ -24,9 +24,9 @@ void SystemManager::remove_system(UUID name) {
     systems_.erase(it);
   }
 }
-void SystemManager::init() {
+void SystemManager::init(AssetManager &assets) {
   for (const auto &[key, sys] : systems_) {
-    sys->init(*registry_);
+    sys->init(assets, *registry_);
   }
   sort_systems();
 }

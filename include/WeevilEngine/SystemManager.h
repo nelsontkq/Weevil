@@ -7,26 +7,24 @@
 #ifndef WEEVIL_SRC_SYSTEM_SYSTEMMANAGER_H_
 #define WEEVIL_SRC_SYSTEM_SYSTEMMANAGER_H_
 
-#include "System.h"
 #include "NoCopy.h"
+#include "System.h"
+#include "AssetManager.h"
 #include "wvpch.h"
 
 namespace wv {
 
 class SystemManager : NoCopy {
  public:
-
   explicit SystemManager(entt::registry* registry) : registry_(registry) {}
   template <SystemDerived T>
   UUID add_system() {
     UUID id;
     auto* sys = new T();
     systems_[id] = sys;
-
-    auto y = systems_.size();
     return id;
   }
-  void init();
+  void init(AssetManager& assets);
   void remove_system(UUID name);
   void remove_all_systems();
   void update(float deltaTime);

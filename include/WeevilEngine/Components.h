@@ -11,14 +11,17 @@ struct Vector2 {
   float x, y;
 };
 
+// Screen location
 struct TransformComponent {
   Vector2 position;
-  Vector2 rotation;
-  Vector2 scale;
+  float w, h;
+  bool flip_x;
+  bool flip_y;
 };
+
 
 struct SpriteComponent {
   uint64_t idx;
 };
-}
-#endif //WEEVIL_INCLUDE_WEEVILENGINE_COMPONENTS_H_
+}  // namespace wv
+#endif  // WEEVIL_INCLUDE_WEEVILENGINE_COMPONENTS_H_

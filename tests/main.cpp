@@ -5,23 +5,21 @@
 class SquareSystem : public wv::System {
  public:
   auto name() -> std::string override { return "SquareSystem"; }
-  void init(entt::registry &registry) override {
+  void init(wv::AssetManager &assets, entt::registry &registry) override {
     const auto square = registry.create();
-    auto assets = registry.ctx().get<wv::AssetManager>();
-    auto pos = wv::Vector2{.x = 0, .y = 0};
-    auto rotation = wv::Vector2{.x = 0, .y = 0};
-    auto scale = wv::Vector2{.x = 0, .y = 0};
-    registry.emplace<wv::TransformComponent>(square, pos, rotation, scale);
+    registry.emplace<wv::TransformComponent>(square, wv::Vector2{.x = 0, .y = 0}, false, false, 100.0f, 100.0f);
     idx_ = assets.load("textures/square.png");
     registry.emplace<wv::SpriteComponent>(square, idx_);
+    // Add a rotation
+    registry.emplace<double>(square, 0.0f);
   }
   // Returns a list of UUIDs of the components that this system depends on
-  void update(void* d, entt::registry &registry) override {
-    auto view = registry.view<const wv::SpriteComponent, wv::TransformComponent>();
+  void update(void *d, entt::registry &registry) override {
+    auto view = registry.view<const wv::SpriteComponent, wv::TransformComponent, double>();
     auto data = registry.ctx().get<wv::SystemContext>();
 
-    for (auto [ent, sp, t] : view.each()) {
-      t.rotation.y += 5 * data.deltaTime;
+    for (auto [ent, sp, t, rot] : view.each()) {
+      rot += 5 * data.deltaTime;
     }
   }
   void shutdown(entt::registry &registry) override {

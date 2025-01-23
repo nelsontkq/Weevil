@@ -1,5 +1,6 @@
 
 #include "WeevilEngine/SDLContext.h"
+#include <SDL3_image/SDL_image.h>
 
 wv::SDLContext::SDLContext(AppSettings &settings) {
   // Initialize SDL

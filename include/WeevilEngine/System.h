@@ -6,6 +6,7 @@
 #define WEEVIL_INCLUDE_WEEVILENGINE_SYSTEM_H_
 #include "UUID.h"
 #include "entt/entt.hpp"
+#include "AssetManager.h"
 namespace wv {
 
 struct SystemContext {
@@ -14,7 +15,7 @@ struct SystemContext {
 class System {
  public:
   virtual ~System() = default;
-  virtual void init(entt::registry &) {};
+  virtual void init(wv::AssetManager &, entt::registry &) {};
   virtual std::string name() = 0;
   virtual void update(void *, entt::registry &) = 0;
   virtual void shutdown(entt::registry &) {};

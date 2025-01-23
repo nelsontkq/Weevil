@@ -26,7 +26,7 @@ auto AssetManager::load(const std::string relative_path) -> uint64_t {
   // TODO: use SDL_AsyncIOFromFile
   auto *texture = IMG_LoadTexture(renderer_, p.c_str());
   if (texture == nullptr) {
-    LOG_ERROR("Failed to load asset: {}", relative_path.c_str());
+    LOG_ERROR("Failed to load asset: {}", SDL_GetError());
     return 0;
   }
 
