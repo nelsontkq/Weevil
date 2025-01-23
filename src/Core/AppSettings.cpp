@@ -20,5 +20,12 @@ wv::AppSettings::AppSettings(const std::filesystem::path& p) {
   width = table["window"]["width"].value_or(1080);
   resizable = table["window"]["resizable"].value_or(false);
   fullscreen = table["window"]["fullscreen"].value_or(false);
+  std::optional res = table["general"]["assets"].value<std::string_view>();
+  if (!res.has_value()) {
+    LOG_ERROR("Failed to load asset path from {0}", p.c_str());
+    throw std::runtime_error("Failed to load asset path");
+  }
+
+  asset_path = *res;
   LOG_INFO("Loaded settings from {0}", p.c_str());
 };

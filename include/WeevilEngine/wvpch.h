@@ -52,9 +52,9 @@
 #include <SDL3/SDL.h>
 
 
-#include "WeevilEngine/AppSettings.h"
-#include "WeevilEngine/Log.h"
-#include "WeevilEngine/UUID.h"
+#include "AppSettings.h"
+#include "Log.h"
+#include "UUID.h"
 #include "entt/entt.hpp"
 #include "spdlog/fmt/ostr.h"
 #include "spdlog/spdlog.h"
