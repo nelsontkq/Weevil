@@ -35,14 +35,18 @@ void wv::Game::run() {
     deltaTime = static_cast<float>(currentTicks - previousTicks) / 1000.0f;
     previousTicks = currentTicks;
     system_manager_.update(deltaTime);
-    SDL_RenderClear(sdlContext_.get_renderer());
-    auto view = registry_.view<const TransformComponent, const SpriteComponent>();
-    for (auto&& [entity, transform, sprite] : view.each()) {
-      SDL_Texture* texture = assets_.get(sprite.idx);
-
-      SDL_FRect dest = {transform.position.x, transform.position.y, transform.w, transform.h};
-      SDL_RenderTexture(sdlContext_.get_renderer(), texture, nullptr, &dest);
-    }
-    SDL_RenderPresent(sdlContext_.get_renderer());
+    render();
   }
+}
+
+void wv::Game::render() {
+  SDL_RenderClear(sdlContext_.get_renderer());
+  auto view = registry_.view<TransformComponent, const SpriteComponent>();
+  for (auto&& [entity, transform, sprite] : view.each()) {
+    SDL_Texture* texture = assets_.get(sprite.idx);
+
+    SDL_FRect dest = {transform.position.x, transform.position.y, transform.w, transform.h};
+    SDL_RenderTexture(sdlContext_.get_renderer(), texture, nullptr, &dest);
+  }
+  SDL_RenderPresent(sdlContext_.get_renderer());
 }
