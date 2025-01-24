@@ -15,8 +15,6 @@ struct Vector2 {
 struct TransformComponent {
   Vector2 position;
   float w, h;
-  bool flip_x;
-  bool flip_y;
 };
 
 

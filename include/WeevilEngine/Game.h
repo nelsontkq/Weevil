@@ -2,11 +2,11 @@
 #define WV_GAME_HPP
 #include <concepts>
 
+#include "AssetManager.h"
 #include "NoCopy.h"
 #include "SDLContext.h"
 #include "System.h"
 #include "SystemManager.h"
-#include "AssetManager.h"
 #include "wvpch.h"
 namespace wv {
 
@@ -19,6 +19,7 @@ class Game : NoCopy {
   void run();
 
  private:
+  void render();
   AppSettings& settings_;
   SDLContext sdlContext_;
   entt::registry registry_;
