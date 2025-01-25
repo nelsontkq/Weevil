@@ -92,7 +92,6 @@
         "__tree": "cpp",
         "expected": "cpp"
     },
-
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -100,6 +99,10 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
+        ".idea": true,
+        ".cache": true
+    },
+    "search.exclude": {
         "**/_deps": true
     }
 }

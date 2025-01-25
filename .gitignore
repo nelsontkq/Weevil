@@ -2,7 +2,6 @@ build
 .cache
 .idea
 .vs
-.aider*
 imgui.ini
 .clangd
 assets/**/*.png
