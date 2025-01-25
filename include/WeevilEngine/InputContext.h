@@ -2,11 +2,12 @@
 
 #include "wvpch.h"
 
-namespace wv {
+namespace wv{
 class InputContext : NoCopy {
  public:
   void bind_action(std::string_view action, SDL_Scancode key);
 
+  void unbind_action(std::string_view action);
   void unbind_action(std::string_view action, SDL_Scancode key);
 
   bool is_triggered(std::string_view action) const;

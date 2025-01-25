@@ -47,6 +47,9 @@ target_link_libraries(WeevilEngine
 )
 
 
-add_executable(WeevilTest tests/main.cpp tests/brotato/player.cpp)
+add_executable(WeevilTest tests/main.cpp tests/brotato/PlayerSystem.cpp
+        tests/brotato/InputSystem.cpp
+        tests/brotato/InputSystem.h
+        tests/brotato/BrotatoComponents.h)
 target_link_libraries(WeevilTest PRIVATE Weevil::Engine
 )

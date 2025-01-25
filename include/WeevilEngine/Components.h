@@ -1,6 +1,5 @@
 #pragma once
-
-#include "wvpch.h"
+#include <cstdint>
 namespace wv {
 // Vector2 with the origin at the top-left corner
 struct Vector2 {
@@ -12,7 +11,6 @@ struct TransformComponent {
   Vector2 position;
   float w, h;
 };
-
 
 struct SpriteComponent {
   uint64_t idx;

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "SDL_Deleter.h"
 #include "wvpch.h"
 namespace wv {
 class AssetManager {

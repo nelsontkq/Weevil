@@ -9,7 +9,8 @@
         "cwd": "${workspaceFolder}",
         "env": {
             "WEEVIL_CONFIG_PATH": "${workspaceFolder}/config/weevil.json"
-        }
+        },
+        "preLaunchTask": "build"
     }
     ]
 }

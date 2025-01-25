@@ -8,6 +8,10 @@ void wv::InputContext::bind_action(std::string_view action, SDL_Scancode key) {
   action_bindings_[std::string(action)].insert(key);
 }
 
+void wv::InputContext::unbind_action(std::string_view action) {
+  assert(action_bindings_.find(std::string(action)) != action_bindings_.end());
+  action_bindings_.erase(std::string(action));
+}
 void wv::InputContext::unbind_action(std::string_view action, SDL_Scancode key) {
   assert(action_bindings_.find(std::string(action)) != action_bindings_.end());
   auto &keys = action_bindings_[std::string(action)];
