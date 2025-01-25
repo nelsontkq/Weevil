@@ -42,12 +42,11 @@ void wv::Game::run() {
 }
 
 void wv::Game::render() {
+  // TODO: tighten this up
   SDL_RenderClear(sdlContext_.get_renderer());
-  // TODO: use EnTT signals to know when to sort. This is probably expensive.
   auto view = registry_.view<const TransformComponent, const SpriteComponent>();
-  registry_.sort<SpriteComponent>([](const SpriteComponent &lhs, const SpriteComponent &rhs) {
-    return lhs.z_order < rhs.z_order;
-  });
+  registry_.sort<SpriteComponent>(
+      [](const SpriteComponent &lhs, const SpriteComponent &rhs) { return lhs.z_order < rhs.z_order; });
   for (auto &&[entity, transform, sprite] : view.each()) {
     SDL_Texture *texture = assets_.get(sprite.idx);
 
