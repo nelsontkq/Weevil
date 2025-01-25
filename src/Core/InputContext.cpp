@@ -9,13 +9,13 @@ void wv::InputContext::bind_action(std::string_view action, SDL_Scancode key) {
 }
 
 void wv::InputContext::unbind_action(std::string_view action) {
-  assert(action_bindings_.find(std::string(action)) != action_bindings_.end());
+  WV_ASSERT(action_bindings_.find(std::string(action)) != action_bindings_.end(), "Action " + std::string(action) + " not bound");
   action_bindings_.erase(std::string(action));
 }
 void wv::InputContext::unbind_action(std::string_view action, SDL_Scancode key) {
-  assert(action_bindings_.find(std::string(action)) != action_bindings_.end());
+  WV_ASSERT(action_bindings_.find(std::string(action)) != action_bindings_.end(), "Action " + std::string(action) + " not bound");
   auto &keys = action_bindings_[std::string(action)];
-  assert(keys.find(key) != keys.end());
+  WV_ASSERT(keys.find(key) != keys.end(), "Key not bound to action!");
   keys.erase(key);
   if (keys.empty()) {
     action_bindings_.erase(std::string(action));

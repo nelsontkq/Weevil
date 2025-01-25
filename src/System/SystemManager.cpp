@@ -20,7 +20,7 @@ void SystemManager::remove_system(UUID name) {
   auto it = systems_.find(name);
   if (it != systems_.end()) {
     it->second->shutdown(*registry_);
-    delete it->second;
+  delete it->second;
     systems_.erase(it);
   }
 }

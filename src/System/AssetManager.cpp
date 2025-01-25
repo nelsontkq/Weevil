@@ -21,7 +21,7 @@ auto AssetManager::load(const std::string relative_path) -> uint64_t {
     return key;
   }
   auto p = asset_path_ / relative_path;
-  assert(exists(p));
+  WV_ASSERT(exists(p), "Asset does not exist: " + p.string());
   LOG_INFO("Loading asset: {}", relative_path.c_str());
   // TODO: use SDL_AsyncIOFromFile
   auto *texture = IMG_LoadTexture(renderer_, p.c_str());
