@@ -5,3 +5,6 @@ build
 .aider*
 imgui.ini
 .clangd
+assets/**/*.png
+assets/**/*.mp3
+assets/**/*.ttf

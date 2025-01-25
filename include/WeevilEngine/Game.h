@@ -14,7 +14,6 @@ namespace wv {
 class Game : NoCopy {
  public:
   Game(AppSettings& a);
-  ~Game();
   SystemManager& system_manager() { return system_manager_; }
 
   void run();

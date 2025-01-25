@@ -14,5 +14,6 @@ struct TransformComponent {
 
 struct SpriteComponent {
   uint64_t idx;
+  int z_order = 0;
 };
 }  // namespace wv
