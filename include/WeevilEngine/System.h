@@ -10,6 +10,7 @@ struct Time {
 };
 class System {
  public:
+  virtual ~System() = default;
   virtual void init(wv::AssetManager &, entt::registry &) {};
   virtual auto name() -> std::string = 0;
   virtual void update(void *, entt::registry &) = 0;

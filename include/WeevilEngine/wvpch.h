@@ -50,11 +50,33 @@
 // Third-Party Libraries
 #include <SDL3/SDL.h>
 
-#include "AppSettings.h"
-#include "Log.h"
-#include "UUID.h"
 #include "entt/entt.hpp"
 #include "spdlog/fmt/ostr.h"
 #include "spdlog/spdlog.h"
+
+// Engine
+#include "AppSettings.h"
+#include "Log.h"
+#include "UUID.h"
+
 // macros
 #define BIT(x) (1 << x)
+
+inline void wvAssertImpl(bool condition, const char* conditionStr, const char* message) {
+  if (condition) {
+    return;
+  }
+
+  auto error = "Assertion failed: " + std::string(conditionStr) + "\n" + message;
+  // TODO: text too small, use a custom dialog
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Assertion Failed", error.c_str(), nullptr);
+  abort();
+}
+inline void wvAssertImpl(bool condition, const char* conditionStr, const std::string& message) {
+  wvAssertImpl(condition, conditionStr, message.c_str());
+}
+#if WV_ENABLE_ASSERTS
+#define WV_ASSERT(condition, message) wvAssertImpl((condition), #condition, (message))
+#else
+#define WV_ASSERT(condition, message) ((void)0)
+#endif
