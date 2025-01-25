@@ -13,8 +13,6 @@ wv::Game::Game(AppSettings &a)
   LOG_INFO("Initializing Game");
 }
 
-wv::Game::~Game() {}
-
 void wv::Game::run() {
   LOG_INFO("Running Game");
   uint64_t previousTicks = SDL_GetTicks();
@@ -45,7 +43,11 @@ void wv::Game::run() {
 
 void wv::Game::render() {
   SDL_RenderClear(sdlContext_.get_renderer());
+  // TODO: use EnTT signals to know when to sort. This is probably expensive.
   auto view = registry_.view<const TransformComponent, const SpriteComponent>();
+  registry_.sort<SpriteComponent>([](const SpriteComponent &lhs, const SpriteComponent &rhs) {
+    return lhs.z_order < rhs.z_order;
+  });
   for (auto &&[entity, transform, sprite] : view.each()) {
     SDL_Texture *texture = assets_.get(sprite.idx);
 

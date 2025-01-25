@@ -31,9 +31,12 @@ void InputSystem::update(void *, entt::registry &registry) {
   } else if (input->is_triggered(WALK_DOWN)) {
     direction.y = 1;
   }
-  if (direction.x == 0 && direction.y == 0) {
-    return;
+  float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+  if (length > 0) {
+    direction.x /= length;
+    direction.y /= length;
   }
+
   auto &[deltaTime] = registry.ctx().get<wv::Time>();
   for (auto &&[entity, player, transform] : registry.view<const PlayerComponent, wv::TransformComponent>().each()) {
     transform.position.x += player.speed * direction.x * deltaTime;
