@@ -91,5 +91,15 @@
         "ranges": "cpp",
         "__tree": "cpp",
         "expected": "cpp"
+    },
+
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/_deps": true
     }
 }

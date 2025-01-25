@@ -2,8 +2,8 @@
 
 #include "WeevilEngine/AssetManager.h"
 #include "WeevilEngine/Components.h"
-#include "WeevilEngine/SystemManager.h"
 #include "WeevilEngine/InputContext.h"
+#include "WeevilEngine/SystemManager.h"
 
 wv::Game::Game(AppSettings &a)
     : settings_(a),
@@ -20,9 +20,9 @@ void wv::Game::run() {
   uint64_t previousTicks = SDL_GetTicks();
   float deltaTime = 0;
   bool isRunning = true;
-  system_manager_.init(assets_);
+  auto &player_input_context = registry_.ctx().emplace<InputContext>();
 
-  auto& player_input_context = registry_.ctx().emplace<InputContext>();
+  system_manager_.init(assets_);
   while (isRunning) {
     SDL_Event event;
     // TODO: use EnTT signals
