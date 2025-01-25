@@ -1,10 +1,9 @@
-#ifndef WV_APPSETTINGS_HPP
-#define WV_APPSETTINGS_HPP
+#pragma once
 
 #include <string_view>
 #include <toml++/toml.hpp>
-#include "NoCopy.h"
 
+#include "NoCopy.h"
 #include "wvpch.h"
 
 namespace wv {
@@ -21,5 +20,3 @@ class AppSettings : NoCopy {
 };
 
 }  // namespace wv
-
-#endif  // WV_APPSETTINGS_HPP

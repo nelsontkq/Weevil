@@ -1,5 +1,5 @@
-#ifndef WV_GAME_HPP
-#define WV_GAME_HPP
+#pragma once
+
 #include <concepts>
 
 #include "AssetManager.h"
@@ -8,6 +8,7 @@
 #include "System.h"
 #include "SystemManager.h"
 #include "wvpch.h"
+
 namespace wv {
 
 class Game : NoCopy {
@@ -23,11 +24,7 @@ class Game : NoCopy {
   AppSettings& settings_;
   SDLContext sdlContext_;
   entt::registry registry_;
-  // tasks that start and end;
-  entt::basic_scheduler<uint64_t> scheduler_;
   AssetManager assets_;
   SystemManager system_manager_;
 };
 }  // namespace wv
-
-#endif  // WV_GAME_HPP

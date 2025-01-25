@@ -1,5 +1,4 @@
-#ifndef WV_WVPCH_HPP
-#define WV_WVPCH_HPP
+#pragma once
 
 // platform detection
 #ifdef _WIN32
@@ -37,7 +36,9 @@
 #endif
 
 // Standard Library Headers
+#include <cassert>
 #include <cstdint>
+#include <filesystem>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -45,12 +46,9 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <filesystem>
-#include <cassert>
 
 // Third-Party Libraries
 #include <SDL3/SDL.h>
-
 
 #include "AppSettings.h"
 #include "Log.h"
@@ -60,6 +58,3 @@
 #include "spdlog/spdlog.h"
 // macros
 #define BIT(x) (1 << x)
-
-#endif  // WV_WVPCH_HPP
-

@@ -1,12 +1,11 @@
-#ifndef WV_SDLCONTEXT_HPP
-#define WV_SDLCONTEXT_HPP
+#pragma once
 
 #include "SDL_Deleter.h"
 #include "wvpch.h"
 
 namespace wv {
 
-class SDLError : public std::runtime_error, NoCopy {
+class SDLError : public std::runtime_error {
  public:
   explicit SDLError(const std::string &message) : std::runtime_error(message + ": " + SDL_GetError()) {}
 };
@@ -23,4 +22,3 @@ class SDLContext {
   std::unique_ptr<SDL_Renderer, SDL_Deleter> renderer_;
 };
 }  // namespace wv
-#endif

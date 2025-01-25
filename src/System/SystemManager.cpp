@@ -31,7 +31,7 @@ void SystemManager::init(AssetManager &assets) {
   sort_systems();
 }
 void SystemManager::update(float deltaTime) {
-  registry_->ctx().emplace<SystemContext>(std::move(SystemContext{.deltaTime = deltaTime}));
+  registry_->ctx().emplace<Time>(deltaTime);
   for (auto &&node : sorted_systems_) {
     node.prepare(*registry_);
   }

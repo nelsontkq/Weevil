@@ -1,6 +1,4 @@
-
-#ifndef WEEVIL_INCLUDE_WEEVILENGINE_NOCOPY_H_
-#define WEEVIL_INCLUDE_WEEVILENGINE_NOCOPY_H_
+#pragma once
 
 namespace wv {
 struct NoCopy {
@@ -11,5 +9,3 @@ struct NoCopy {
   NoCopy& operator=(NoCopy&&) = delete;
 };
 }  // namespace wv
-
-#endif  // WEEVIL_INCLUDE_WEEVILENGINE_NOCOPY_H_

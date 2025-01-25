@@ -3,8 +3,9 @@
 #include "WeevilEngine/AssetManager.h"
 #include "WeevilEngine/Components.h"
 #include "WeevilEngine/SystemManager.h"
+#include "WeevilEngine/InputContext.h"
 
-wv::Game::Game(AppSettings& a)
+wv::Game::Game(AppSettings &a)
     : settings_(a),
       sdlContext_(settings_),
       assets_(settings_, sdlContext_.get_renderer()),
@@ -20,6 +21,8 @@ void wv::Game::run() {
   float deltaTime = 0;
   bool isRunning = true;
   system_manager_.init(assets_);
+
+  auto& player_input_context = registry_.ctx().emplace<InputContext>();
   while (isRunning) {
     SDL_Event event;
     // TODO: use EnTT signals
@@ -29,6 +32,7 @@ void wv::Game::run() {
         isRunning = false;
         break;
       }
+      player_input_context.process_event(event);
     }
     // Calculate deltaTime
     uint64_t currentTicks = SDL_GetTicks();
@@ -41,9 +45,9 @@ void wv::Game::run() {
 
 void wv::Game::render() {
   SDL_RenderClear(sdlContext_.get_renderer());
-  auto view = registry_.view<TransformComponent, const SpriteComponent>();
-  for (auto&& [entity, transform, sprite] : view.each()) {
-    SDL_Texture* texture = assets_.get(sprite.idx);
+  auto view = registry_.view<const TransformComponent, const SpriteComponent>();
+  for (auto &&[entity, transform, sprite] : view.each()) {
+    SDL_Texture *texture = assets_.get(sprite.idx);
 
     SDL_FRect dest = {transform.position.x, transform.position.y, transform.w, transform.h};
     SDL_RenderTexture(sdlContext_.get_renderer(), texture, nullptr, &dest);

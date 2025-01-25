@@ -1,15 +1,11 @@
-//
-// Created by nelson on 1/18/25.
-//
+#pragma once
 
-#ifndef WEEVIL_INCLUDE_WEEVILENGINE_SYSTEM_H_
-#define WEEVIL_INCLUDE_WEEVILENGINE_SYSTEM_H_
 #include "UUID.h"
 #include "entt/entt.hpp"
 #include "AssetManager.h"
 namespace wv {
 
-struct SystemContext {
+struct Time {
   float deltaTime;
 };
 class System {
@@ -24,4 +20,3 @@ template <typename Derived>
 concept SystemDerived = std::is_base_of_v<System, Derived>;
 
 }  // namespace wv
-#endif  // WEEVIL_INCLUDE_WEEVILENGINE_SYSTEM_H_

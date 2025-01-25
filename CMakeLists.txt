@@ -17,10 +17,11 @@ CPMAddPackage("gh:gabime/spdlog@1.15.0")
 CPMAddPackage("gh:marzer/tomlplusplus@3.4.0")
 
 add_library(WeevilEngine STATIC
-        src/Utils/UUID.cpp
-        src/Core/Log.cpp
         src/Core/AppSettings.cpp
+        src/Core/InputContext.cpp
+        src/Core/Log.cpp
         src/Core/SDLContext.cpp
+        src/Core/UUID.cpp
         src/Game/Game.cpp
         src/System/AssetManager.cpp
         src/System/SystemManager.cpp
@@ -46,6 +47,6 @@ target_link_libraries(WeevilEngine
 )
 
 
-add_executable(WeevilTest tests/main.cpp )
+add_executable(WeevilTest tests/main.cpp tests/brotato/player.cpp)
 target_link_libraries(WeevilTest PRIVATE Weevil::Engine
 )
