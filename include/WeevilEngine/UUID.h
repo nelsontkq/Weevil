@@ -1,5 +1,4 @@
-#ifndef WV_UUID_HPP
-#define WV_UUID_HPP
+#pragma once
 
 #include <cstdint>
 
@@ -29,5 +28,3 @@ struct hash<wv::UUID> {
 };
 
 }  // namespace std
-
-#endif  // WV_UUID_HPP

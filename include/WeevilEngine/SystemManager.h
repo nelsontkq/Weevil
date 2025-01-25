@@ -1,15 +1,10 @@
-//
-// Created by nelson on 1/18/25.
-//
-
+#pragma once
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
-#ifndef WEEVIL_SRC_SYSTEM_SYSTEMMANAGER_H_
-#define WEEVIL_SRC_SYSTEM_SYSTEMMANAGER_H_
 
+#include "AssetManager.h"
 #include "NoCopy.h"
 #include "System.h"
-#include "AssetManager.h"
 #include "wvpch.h"
 
 namespace wv {
@@ -32,7 +27,6 @@ class SystemManager : NoCopy {
 
  private:
   entt::registry* registry_;
-  SystemContext* ctx_;
   entt::organizer organizer_;
 
   std::unordered_map<UUID, System*> systems_;
@@ -40,7 +34,5 @@ class SystemManager : NoCopy {
 };
 
 }  // namespace wv
-
-#endif  // WEEVIL_SRC_SYSTEM_SYSTEMMANAGER_H_
 
 #pragma clang diagnostic pop

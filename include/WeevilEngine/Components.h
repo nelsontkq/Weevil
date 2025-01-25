@@ -1,9 +1,5 @@
-//
-// Created by nelson on 1/18/25.
-//
+#pragma once
 
-#ifndef WEEVIL_INCLUDE_WEEVILENGINE_COMPONENTS_H_
-#define WEEVIL_INCLUDE_WEEVILENGINE_COMPONENTS_H_
 #include "wvpch.h"
 namespace wv {
 // Vector2 with the origin at the top-left corner
@@ -22,4 +18,3 @@ struct SpriteComponent {
   uint64_t idx;
 };
 }  // namespace wv
-#endif  // WEEVIL_INCLUDE_WEEVILENGINE_COMPONENTS_H_

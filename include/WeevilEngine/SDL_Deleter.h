@@ -1,5 +1,5 @@
-#ifndef WV_SDL_DELETER_HPP
-#define WV_SDL_DELETER_HPP
+#pragma once
+
 #include "wvpch.h"
 struct SDL_Deleter {
   void operator()(SDL_Window *ptr) const {
@@ -28,5 +28,3 @@ struct SDL_Deleter {
     }
   }
 };
-
-#endif // WV_SDL_DELETER_HPP

@@ -26,6 +26,6 @@ wv::AppSettings::AppSettings(const std::filesystem::path& p) {
     throw std::runtime_error("Failed to load asset path");
   }
 
-  asset_path = *res;
+    asset_path = *res;
   LOG_INFO("Loaded settings from {0}", p.c_str());
 };
