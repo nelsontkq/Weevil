@@ -8,8 +8,7 @@
 wv::Game::Game(AppSettings &a)
     : settings_(a),
       sdlContext_(settings_),
-      assets_(settings_, sdlContext_.get_renderer()),
-      system_manager_(&registry_) {
+      assets_(settings_, sdlContext_.get_renderer()) {
   LOG_INFO("Initializing Game");
 }
 

@@ -1,0 +1,12 @@
+//
+// Created by nelson on 1/25/25.
+//
+
+#ifndef WEEVIL_TESTS_BROTATO_MAINMENUSCENE_H_
+#define WEEVIL_TESTS_BROTATO_MAINMENUSCENE_H_
+
+class MainMenuScene {
+
+};
+
+#endif //WEEVIL_TESTS_BROTATO_MAINMENUSCENE_H_

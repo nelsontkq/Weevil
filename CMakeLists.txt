@@ -25,6 +25,10 @@ add_library(WeevilEngine STATIC
         src/Game/Game.cpp
         src/System/AssetManager.cpp
         src/System/SystemManager.cpp
+        src/Scene/SceneManager.cpp
+        include/WeevilEngine/SceneManager.h
+        tests/brotato/MainGame/MainGameScene.cpp
+        tests/brotato/MainGame/MainGameScene.h
 )
 
 add_library(Weevil::Engine ALIAS WeevilEngine)
@@ -47,9 +51,11 @@ target_link_libraries(WeevilEngine
 )
 
 
-add_executable(WeevilTest tests/main.cpp tests/brotato/PlayerSystem.cpp
-        tests/brotato/InputSystem.cpp
-        tests/brotato/InputSystem.h
-        tests/brotato/BrotatoComponents.h)
+add_executable(WeevilTest tests/main.cpp tests/brotato/MainGame/PlayerSystem.cpp
+        tests/brotato/MainGame/InputSystem.cpp
+        tests/brotato/MainGame/InputSystem.h
+        tests/brotato/BrotatoComponents.h
+        tests/brotato/MainMenu/MainMenuScene.cpp
+        tests/brotato/MainMenu/MainMenuScene.h)
 target_link_libraries(WeevilTest PRIVATE Weevil::Engine
 )

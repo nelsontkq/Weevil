@@ -2,7 +2,7 @@
 
 #include <entt/entt.hpp>
 
-#include "BrotatoComponents.h"
+#include "../BrotatoComponents.h"
 
 void PlayerSystem::init(wv::AssetManager &assets, entt::registry &registry) {
   auto player = registry.create();
