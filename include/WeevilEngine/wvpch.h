@@ -62,6 +62,8 @@
 // macros
 #define BIT(x) (1 << x)
 
+// assertions
+
 inline void wvAssertImpl(bool condition, const char* conditionStr, const char* message) {
   if (condition) {
     return;
@@ -80,3 +82,11 @@ inline void wvAssertImpl(bool condition, const char* conditionStr, const std::st
 #else
 #define WV_ASSERT(condition, message) ((void)0)
 #endif
+
+// templates
+
+// derived type
+
+template <typename Derived, typename Base>
+concept Derived = std::is_base_of_v<Base, Derived>;
+

@@ -12,7 +12,8 @@ namespace wv {
 class SystemManager : NoCopy {
  public:
   explicit SystemManager(entt::registry* registry) : registry_(registry) {}
-  template <SystemDerived T>
+
+  template <Derived<System> T>
   UUID add_system() {
     UUID id;
     auto* sys = new T();

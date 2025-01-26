@@ -16,7 +16,5 @@ class System {
   virtual void update(void *, entt::registry &) = 0;
   virtual void shutdown(entt::registry &) {};
 };
-template <typename Derived>
-concept SystemDerived = std::is_base_of_v<System, Derived>;
 
 }  // namespace wv
