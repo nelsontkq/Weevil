@@ -3,15 +3,16 @@
 #include <string_view>
 #include <toml++/toml.hpp>
 
-#include "NoCopy.h"
-#include "wvpch.h"
+#include "weevil.h"
 
 namespace wv {
 
-class AppSettings : NoCopy {
+class AppSettings {
  public:
-  explicit AppSettings(const std::filesystem::path& path);
+  static auto load_from_file(const std::string_view& file_name) -> AppSettings&&;
   std::string title;
+  std::string version;
+  std::string app_identifier;
   int width;
   int height;
   bool fullscreen;

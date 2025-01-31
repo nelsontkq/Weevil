@@ -1,5 +1,5 @@
 #include "NoCopy.h"
-#include "wvpch.h"
+#include "weevil.h"
 
 namespace wv {
 constexpr char* CONFIG_FILE_NAME = "weevil.toml";
