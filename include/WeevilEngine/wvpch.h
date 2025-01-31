@@ -87,6 +87,6 @@ inline void wvAssertImpl(bool condition, const char* conditionStr, const std::st
 
 // derived type
 
-template <typename Derived, typename Base>
-concept Derived = std::is_base_of_v<Base, Derived>;
+template <typename TDerived, typename TBase>
+concept Derived = std::is_base_of_v<TBase, TDerived>;
 

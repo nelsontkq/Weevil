@@ -1,7 +1,7 @@
 #include "WeevilEngine/Components.h"
+#include "WeevilEngine/AppSettings.h"
 #include "WeevilEngine/Game.h"
-#include "brotato/MainGame/PlayerSystem.h"
-#include "brotato/MainGame/InputSystem.h"
+
 
 auto main() -> int {
   wv::Log::Init();

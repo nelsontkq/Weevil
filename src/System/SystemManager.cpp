@@ -10,27 +10,26 @@
 namespace wv {
 
 void SystemManager::remove_all_systems() {
-  for (auto &&[id, system] : systems_) {
+  for (const auto &system : systems_ | std::views::values) {
     system->shutdown(*registry_);
     delete system;
   }
   systems_.clear();
 }
-void SystemManager::remove_system(UUID name) {
-  auto it = systems_.find(name);
-  if (it != systems_.end()) {
+void SystemManager::remove_system(const UUID &name) {
+  if (const auto it = systems_.find(name); it != systems_.end()) {
     it->second->shutdown(*registry_);
   delete it->second;
     systems_.erase(it);
   }
 }
 void SystemManager::init(AssetManager &assets) {
-  for (const auto &[key, sys] : systems_) {
+  for (const auto &sys : systems_ | std::views::values) {
     sys->init(assets, *registry_);
   }
   sort_systems();
 }
-void SystemManager::update(float deltaTime) {
+void SystemManager::update(float deltaTime) const {
   registry_->ctx().emplace<Time>(deltaTime);
   for (auto &&node : sorted_systems_) {
     node.prepare(*registry_);
@@ -72,7 +71,7 @@ void SystemManager::update(float deltaTime) {
 }
 void SystemManager::sort_systems() {
   organizer_.clear();
-  for (const auto &[id, system] : systems_) {
+  for (const auto &system : systems_ | std::views::values) {
     organizer_.emplace<&wv::System::update>(*system, system->name().c_str());
   }
   sorted_systems_ = organizer_.graph();

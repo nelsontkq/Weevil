@@ -32,7 +32,7 @@ void wv::Game::run() {
       player_input_context.process_event(event);
     }
     // Calculate deltaTime
-    uint64_t currentTicks = SDL_GetTicks();
+    const uint64_t currentTicks = SDL_GetTicks();
     deltaTime = static_cast<float>(currentTicks - previousTicks) / 1000.0f;
     previousTicks = currentTicks;
     system_manager_.update(deltaTime);
@@ -45,11 +45,14 @@ void wv::Game::render() {
   SDL_RenderClear(sdlContext_.get_renderer());
   auto view = registry_.view<const TransformComponent, const SpriteComponent>();
   registry_.sort<SpriteComponent>(
-      [](const SpriteComponent &lhs, const SpriteComponent &rhs) { return lhs.z_order < rhs.z_order; });
+      [](const SpriteComponent &lhs, const SpriteComponent &rhs) {
+        return lhs.z_order < rhs.z_order;
+      });
   for (auto &&[entity, transform, sprite] : view.each()) {
     SDL_Texture *texture = assets_.get(sprite.idx);
 
-    SDL_FRect dest = {transform.position.x, transform.position.y, transform.w, transform.h};
+    SDL_FRect dest = {transform.position.x, transform.position.y, transform.w,
+                      transform.h};
     SDL_RenderTexture(sdlContext_.get_renderer(), texture, nullptr, &dest);
   }
   SDL_RenderPresent(sdlContext_.get_renderer());
