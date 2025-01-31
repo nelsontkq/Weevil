@@ -9,8 +9,7 @@ wv::UUID::UUID() {
   uuid_ = distribution(generator);
 }
 
-wv::UUID::UUID(uint64_t uuid)
+wv::UUID::UUID(const uint64_t uuid)
     : uuid_(uuid) {}
 
-wv::UUID::UUID(const UUID &other)
-    : uuid_(other.uuid_) {}
+wv::UUID::UUID(const UUID &other) = default;

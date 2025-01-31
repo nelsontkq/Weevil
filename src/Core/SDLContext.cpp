@@ -2,7 +2,7 @@
 #include "WeevilEngine/SDLContext.h"
 #include <SDL3_image/SDL_image.h>
 
-wv::SDLContext::SDLContext(AppSettings &settings) {
+wv::SDLContext::SDLContext(const AppSettings &settings) {
   // Initialize SDL
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     throw SDLError("Failed to initialize SDL: " + std::string(SDL_GetError()));
@@ -20,7 +20,7 @@ wv::SDLContext::SDLContext(AppSettings &settings) {
     throw SDLError("Failed to create window and renderer");
   }
 
-  if (!SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255)) {
+  if (!SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_MAX_UINT8)) {
     throw SDLError("Failed to set render draw color");
   }
 
@@ -30,6 +30,6 @@ wv::SDLContext::SDLContext(AppSettings &settings) {
 
 wv::SDLContext::~SDLContext() { SDL_Quit(); }
 
-SDL_Window *wv::SDLContext::get_window() const { return window_.get(); }
+auto wv::SDLContext::get_window() const -> SDL_Window * { return window_.get(); }
 
-SDL_Renderer *wv::SDLContext::get_renderer() const { return renderer_.get(); }
+auto wv::SDLContext::get_renderer() const -> SDL_Renderer * { return renderer_.get(); }

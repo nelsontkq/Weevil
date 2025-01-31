@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.30)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+
+add_subdirectory(SDL EXCLUDE_FROM_ALL)
+set(SDLIMAGE_VENDORED OFF)
+set(SDLIMAGE_AVIF OFF)
+set(SDLIMAGE_BMP OFF)
+set(SDLIMAGE_JPEG OFF)
+set(SDLIMAGE_TIFF OFF)
+set(SDLIMAGE_WEBP OFF)
+add_subdirectory(SDL_image EXCLUDE_FROM_ALL)
+add_subdirectory(spdlog)
+add_subdirectory(tomlplusplus)
+add_subdirectory(entt)

@@ -12,7 +12,7 @@ class SDLError : public std::runtime_error {
 // SDLContext class
 class SDLContext {
  public:
-  explicit SDLContext(AppSettings &settings);
+  explicit SDLContext(const AppSettings &settings);
   SDL_Window *get_window() const;
   SDL_Renderer *get_renderer() const;
   ~SDLContext();

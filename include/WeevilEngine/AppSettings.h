@@ -10,7 +10,7 @@ namespace wv {
 
 class AppSettings : NoCopy {
  public:
-  AppSettings(const std::filesystem::path& path);
+  explicit AppSettings(const std::filesystem::path& path);
   std::string title;
   int width;
   int height;
