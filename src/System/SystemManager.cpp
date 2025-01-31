@@ -6,6 +6,7 @@
 #include "WeevilEngine/SystemManager.h"
 
 #include "WeevilEngine/System.h"
+#include "WeevilEngine/SystemManager.h"
 
 namespace wv {
 
@@ -16,13 +17,7 @@ void SystemManager::remove_all_systems() {
   }
   systems_.clear();
 }
-void SystemManager::remove_system(const UUID &name) {
-  if (const auto it = systems_.find(name); it != systems_.end()) {
-    it->second->shutdown(*registry_);
-  delete it->second;
-    systems_.erase(it);
-  }
-}
+
 void SystemManager::init(AssetManager &assets) {
   for (const auto &sys : systems_ | std::views::values) {
     sys->init(assets, *registry_);

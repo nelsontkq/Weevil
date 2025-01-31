@@ -3,8 +3,7 @@
 //
 
 #include "InputSystem.h"
-
-#include "../BrotatoComponents.h"
+#include "Shared/BrotatoComponents.h"
 constexpr std::string_view WALK_LEFT = "left";
 constexpr std::string_view WALK_DOWN = "down";
 constexpr std::string_view WALK_RIGHT = "right";

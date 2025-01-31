@@ -3,7 +3,6 @@
 #include "WeevilEngine/AssetManager.h"
 #include "WeevilEngine/Components.h"
 #include "WeevilEngine/InputContext.h"
-#include "WeevilEngine/SystemManager.h"
 
 wv::Game::Game(AppSettings &a)
     : settings_(a),

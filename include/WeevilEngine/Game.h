@@ -18,6 +18,8 @@ class Game : NoCopy {
 
  private:
   void render();
+  entt::registry registry_;
+  SystemManager system_manager_{&registry_};
   AppSettings& settings_;
   SDLContext sdlContext_;
   AssetManager assets_;
