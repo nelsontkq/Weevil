@@ -5,15 +5,20 @@ add_subdirectory(vendor)
 
 add_library(WeevilEngine STATIC
         src/Core/AppSettings.cpp
-        src/Core/InputContext.cpp
         src/Core/Log.cpp
-        src/Core/SDLContext.cpp
         src/Core/UUID.cpp
-        src/Game/Game.cpp
         src/System/AssetManager.cpp
         src/System/SystemManager.cpp
+        src/Renderer/Renderer.cpp
+        src/Core/Application.cpp
+        src/Engine/Engine.cpp
+        include/WeevilEngine/Engine.h
 )
 
+target_precompile_headers(WeevilEngine
+        PRIVATE
+        include/WeevilEngine/weevil.h
+)
 add_library(Weevil::Engine ALIAS WeevilEngine)
 
 # Set include directories for WeevilEngine
@@ -37,13 +42,8 @@ target_link_libraries(WeevilEngine
 )
 
 add_executable(WeevilTest
-        tests/main.cpp
-        tests/brotato/MainGame/Systems/InputSystem.cpp
-        tests/brotato/MainGame/Systems/InputSystem.h
-        tests/brotato/Shared/BrotatoComponents.h
-        tests/brotato/MainMenu/MainMenuScene.cpp
-        tests/brotato/MainMenu/MainMenuScene.h)
+        Game/main.cpp)
 
 
-target_include_directories(WeevilTest PRIVATE tests/brotato)
+target_include_directories(WeevilTest PRIVATE Game)
 target_link_libraries(WeevilTest PRIVATE Weevil::Engine)

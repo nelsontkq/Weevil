@@ -57,6 +57,7 @@
 // Engine
 #include "AppSettings.h"
 #include "Log.h"
+#include "NoCopy.h"
 #include "UUID.h"
 
 // macros
@@ -64,21 +65,26 @@
 
 // assertions
 
-inline void wvAssertImpl(bool condition, const char* conditionStr, const char* message) {
+inline void wvAssertImpl(const bool condition, const char* conditionStr,
+                         const char* message) {
   if (condition) {
     return;
   }
 
-  auto error = "Assertion failed: " + std::string(conditionStr) + "\n" + message;
+  const auto error =
+      "Assertion failed: " + std::string(conditionStr) + "\n" + message;
   // TODO: text too small, use a custom dialog
-  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Assertion Failed", error.c_str(), nullptr);
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Assertion Failed",
+                           error.c_str(), nullptr);
   abort();
 }
-inline void wvAssertImpl(bool condition, const char* conditionStr, const std::string& message) {
+inline void wvAssertImpl(const bool condition, const char* conditionStr,
+                         const std::string& message) {
   wvAssertImpl(condition, conditionStr, message.c_str());
 }
 #if WV_ENABLE_ASSERTS
-#define WV_ASSERT(condition, message) wvAssertImpl((condition), #condition, (message))
+#define WV_ASSERT(condition, message) \
+  wvAssertImpl((condition), #condition, (message))
 #else
 #define WV_ASSERT(condition, message) ((void)0)
 #endif
@@ -89,4 +95,3 @@ inline void wvAssertImpl(bool condition, const char* conditionStr, const std::st
 
 template <typename TDerived, typename TBase>
 concept Derived = std::is_base_of_v<TBase, TDerived>;
-

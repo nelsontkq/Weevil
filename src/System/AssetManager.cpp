@@ -2,14 +2,10 @@
 // Created by nelson on 1/20/25.
 //
 #include "WeevilEngine/AssetManager.h"
-
 #include <SDL3_image/SDL_image.h>
-
-#include "WeevilEngine/SDL_Deleter.h"
 namespace wv {
 AssetManager::AssetManager(const AppSettings &app, SDL_Renderer *renderer)
     : renderer_(renderer), asset_path_(app.asset_path) {}
-
 auto AssetManager::get(const uint64_t asset_id) -> SDL_Texture * {
   return texture_map_[asset_id];
 }
