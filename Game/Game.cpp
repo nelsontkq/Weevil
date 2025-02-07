@@ -1,12 +1,10 @@
 #include <SDL3/SDL.h>
-
-#include "WeevilEngine/GameModuleAPI.h"
 #include "WeevilEngine/weevil.h"
 
 // Keep some module-local state.
 namespace {
 SDL_FRect square = {100, 100, 50, 50};
-SDL_Color squareColor = {255, 255, 0, 255};
+SDL_Color squareColor = {0, 255, 0, 255};
 }  // namespace
 
 extern "C" {
