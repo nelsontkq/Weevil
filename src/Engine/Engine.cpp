@@ -2,7 +2,7 @@
 #include <SDL3/SDL_main.h>
 #include <WeevilEngine/AppContext.h>
 #include <WeevilEngine/Log.h>
-
+extern "C" {
 /* This function runs once at startup. */
 auto SDL_AppInit(void **appstate, int argc, char *argv[]) -> SDL_AppResult {
   wv::Log::Init();
@@ -12,7 +12,7 @@ auto SDL_AppInit(void **appstate, int argc, char *argv[]) -> SDL_AppResult {
   wv::Application *context = nullptr;
   try {
     context = new wv::Application(settings);
-  } catch (const std::exception & ex) {
+  } catch (const std::exception &ex) {
     LOG_ERROR("Failed to initialize application: {}", ex.what());
     return SDL_APP_FAILURE;
   }
@@ -38,4 +38,5 @@ auto SDL_AppIterate(void *appstate) -> SDL_AppResult {
 void SDL_AppQuit(void *appstate, SDL_AppResult result) {
   const auto context = static_cast<wv::Application *>(appstate);
   context->shutdown();
+}
 }

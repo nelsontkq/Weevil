@@ -4,33 +4,11 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "${workspaceFolder}/debug.sh",
+            "command": "${workspaceFolder}/build.sh",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "isBackground": true,
-            "presentation": {
-                "reveal": "always",
-                "panel": "new",
-                "close": true
-            },
-            "problemMatcher": {
-                "owner": "custom",
-                "pattern": [
-                    {
-                        "regexp": ".*Watches established.*",
-                        "file": 1,
-                        "location": 2,
-                        "message": 3
-                    }
-                ],
-                "background": {
-                    "activeOnStart": true,
-                    "beginsPattern": ".*",
-                    "endsPattern": ".*Watches established.*"
-                }
-            }
         }
     ]
 }

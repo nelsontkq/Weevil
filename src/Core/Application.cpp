@@ -28,7 +28,8 @@ wv::Application::Application(const wv::AppSettings& settings)
   }
 }
 SDL_AppResult wv::Application::process_event(SDL_Event& event) {
-  if (event.type == SDL_EVENT_KEY_DOWN && event.key.scancode == SDL_SCANCODE_F5) {
+  if (event.type == SDL_EVENT_KEY_DOWN &&
+      event.key.scancode == SDL_SCANCODE_F5) {
     LOG_INFO("F5 pressed, toggling hot reload");
     game_module_->trigger_reload();
   }
@@ -41,7 +42,6 @@ SDL_AppResult wv::Application::iterate() {
     LOG_INFO("Hot reloading game module...");
     game_module_->shutdown();
     game_module_->unload();
-    // Optionally, you might wait a moment or copy the file to a temp location.
     if (game_module_->load()) {
       game_module_->init(sdl_renderer_);
     } else {
@@ -53,6 +53,7 @@ SDL_AppResult wv::Application::iterate() {
     game_module_->update(sdl_renderer_,
                          static_cast<float>(delta_ticks_) / 1000.f);
   }
+  return SDL_APP_CONTINUE;
 }
 void wv::Application::shutdown() {
   SDL_DestroyRenderer(sdl_renderer_);
