@@ -1,33 +1,29 @@
 cmake_minimum_required(VERSION 3.30)
 project(Weevil LANGUAGES CXX)
 
+find_package(SDL3 REQUIRED)
 add_subdirectory(vendor)
 
-add_library(WeevilEngine STATIC
+add_library(WeevilEngine SHARED
+        src/Core/Application.cpp
         src/Core/AppSettings.cpp
+        src/Core/GameModule.cpp
         src/Core/Log.cpp
         src/Core/UUID.cpp
         src/System/AssetManager.cpp
         src/System/SystemManager.cpp
-        src/Renderer/Renderer.cpp
-        src/Core/Application.cpp
         src/Engine/Engine.cpp
-        include/WeevilEngine/Engine.h
 )
 
 target_precompile_headers(WeevilEngine
         PRIVATE
         include/WeevilEngine/weevil.h
 )
-add_library(Weevil::Engine ALIAS WeevilEngine)
 
-# Set include directories for WeevilEngine
 target_include_directories(WeevilEngine
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
-        PRIVATE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 target_compile_features(WeevilEngine PUBLIC cxx_std_20)
 target_compile_options(WeevilEngine PRIVATE -Wall -Wextra -Wpedantic -Wno-unknown-pragmas)
@@ -41,9 +37,25 @@ target_link_libraries(WeevilEngine
         tomlplusplus::tomlplusplus
 )
 
-add_executable(WeevilTest
-        Game/main.cpp)
+add_executable(WeevilApp src/main.cpp)
+target_link_libraries(WeevilApp PRIVATE WeevilEngine)
 
+# Add the game module target.
+add_library(GameModule SHARED
+        Game/Game.cpp
+)
 
-target_include_directories(WeevilTest PRIVATE Game)
-target_link_libraries(WeevilTest PRIVATE Weevil::Engine)
+target_include_directories(GameModule PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(GameModule
+        PRIVATE
+        WeevilEngine
+)
+
+# Place the resulting shared library in a “modules” folder (which your engine expects).
+set_target_properties(GameModule PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/modules
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/modules
+)

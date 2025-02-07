@@ -103,6 +103,6 @@
         ".cache": true
     },
     "search.exclude": {
-        "**/_deps": true
+        "vendor": true
     }
 }
