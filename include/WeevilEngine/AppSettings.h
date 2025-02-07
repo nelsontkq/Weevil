@@ -9,7 +9,7 @@ namespace wv {
 
 class AppSettings {
  public:
-  static auto load_from_file(const std::string_view& file_name) -> AppSettings&&;
+  AppSettings(const std::string_view& file_name);
   std::string title;
   std::string version;
   std::string app_identifier;

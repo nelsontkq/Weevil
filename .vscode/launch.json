@@ -4,12 +4,9 @@
         "type": "lldb",
         "request": "launch",
         "name": "Launch",
-        "program": "${workspaceFolder}/build/default/WeevilTest",
+        "program": "${workspaceFolder}/build/WeevilApp",
         "args": [],
         "cwd": "${workspaceFolder}",
-        "env": {
-            "WEEVIL_CONFIG_PATH": "${workspaceFolder}/config/weevil.json"
-        },
         "preLaunchTask": "build"
     }
     ]

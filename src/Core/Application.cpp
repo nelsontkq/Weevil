@@ -4,7 +4,7 @@
 #include "WeevilEngine/AppContext.h"
 #include "WeevilEngine/weevil.h"
 wv::Application::Application(const wv::AppSettings& settings)
-    : systems_(registry_) {
+    : game_module_(new GameModule()) {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     LOG_ERROR("Failed to initialize SDL" + std::string(SDL_GetError()));
     throw std::runtime_error("Failed to initialize SDL");
@@ -26,24 +26,35 @@ wv::Application::Application(const wv::AppSettings& settings)
     LOG_ERROR("Failed to create window and renderer");
     throw std::runtime_error("Failed to initialize SDL");
   }
-  if (!SDL_SetRenderDrawColor(sdl_renderer_, 0, 0, 0, SDL_MAX_UINT8)) {
-    LOG_ERROR("Failed to set render draw color" + std::string(SDL_GetError()));
-    throw std::runtime_error("Failed to initialize SDL");
-  }
 }
 SDL_AppResult wv::Application::process_event(SDL_Event& event) {
-  // TODO: keyboard events -> delegates
+  if (event.type == SDL_EVENT_KEY_DOWN && event.key.scancode == SDL_SCANCODE_F5) {
+    LOG_INFO("F5 pressed, toggling hot reload");
+    game_module_->trigger_reload();
+  }
   return SDL_APP_CONTINUE;
 }
-void wv::Application::iterate() {
+SDL_AppResult wv::Application::iterate() {
   const uint64_t currentTicks = SDL_GetTicks();
   delta_ticks_ = currentTicks - delta_ticks_;
-  systems_.update(static_cast<float>(delta_ticks_) / 1000.0f);
-  renderer_.render(sdl_renderer_, registry_);
+  if (game_module_ && game_module_->needs_reload()) {
+    LOG_INFO("Hot reloading game module...");
+    game_module_->shutdown();
+    game_module_->unload();
+    // Optionally, you might wait a moment or copy the file to a temp location.
+    if (game_module_->load()) {
+      game_module_->init(sdl_renderer_);
+    } else {
+      LOG_ERROR("Failed to reload game module.");
+      return SDL_APP_FAILURE;
+    }
+  }
+  if (game_module_) {
+    game_module_->update(sdl_renderer_,
+                         static_cast<float>(delta_ticks_) / 1000.f);
+  }
 }
-
 void wv::Application::shutdown() {
-  systems_.shutdown();
   SDL_DestroyRenderer(sdl_renderer_);
   SDL_DestroyWindow(sdl_window_);
 }

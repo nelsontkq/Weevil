@@ -1,8 +1,9 @@
 #include "WeevilEngine/AppSettings.h"
+
 #include "WeevilEngine/weevil.h"
 namespace fs = std::filesystem;
 
-auto wv::AppSettings::load_from_file(const std::string_view& file_name) -> wv::AppSettings&& {
+wv::AppSettings::AppSettings(const std::string_view& file_name) {
   toml::table table;
   try {
     table = toml::parse_file(file_name);
@@ -11,14 +12,13 @@ auto wv::AppSettings::load_from_file(const std::string_view& file_name) -> wv::A
               err.description());
     throw err;
   }
-  AppSettings settings;
-  settings.title = table["window"]["title"].value_or("Weevil Game");
-  settings.height = table["window"]["height"].value_or(1920);
-  settings.width = table["window"]["width"].value_or(1080);
-  settings.resizable = table["window"]["resizable"].value_or(false);
-  settings.fullscreen = table["window"]["fullscreen"].value_or(false);
-  settings.version = table["general"]["version"].value_or("0.0.1");
-  settings.app_identifier =
+  title = table["window"]["title"].value_or("Weevil Game");
+  height = table["window"]["height"].value_or(1920);
+  width = table["window"]["width"].value_or(1080);
+  resizable = table["window"]["resizable"].value_or(false);
+  fullscreen = table["window"]["fullscreen"].value_or(false);
+  version = table["general"]["version"].value_or("0.0.1");
+  app_identifier =
       table["general"]["app_identifier"].value_or("com.weevil.game");
   const std::optional res =
       table["general"]["assets"].value<std::string_view>();
@@ -26,8 +26,6 @@ auto wv::AppSettings::load_from_file(const std::string_view& file_name) -> wv::A
     LOG_ERROR("Failed to load asset path from {0}", file_name);
     throw std::runtime_error("Failed to load asset path");
   }
-
-  settings.asset_path = *res;
+  asset_path = *res;
   LOG_INFO("Loaded settings from {0}", file_name);
-  return std::move(settings);
 };

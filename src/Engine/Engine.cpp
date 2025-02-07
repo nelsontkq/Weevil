@@ -3,17 +3,17 @@
 #include <WeevilEngine/AppContext.h>
 #include <WeevilEngine/Log.h>
 
-
 /* This function runs once at startup. */
 auto SDL_AppInit(void **appstate, int argc, char *argv[]) -> SDL_AppResult {
   wv::Log::Init();
   // TODO: setup a dev configuration otherwise load from preferred dir
-  const auto settings = wv::AppSettings::load_from_file(
-      "/home/nelson/Development/Weevil/config/weevil.toml");
-  wv::Application* context = nullptr;
+  const auto settings =
+      wv::AppSettings("/home/nelson/Development/Weevil/config/weevil.toml");
+  wv::Application *context = nullptr;
   try {
     context = new wv::Application(settings);
-  } catch (const std::exception &) {
+  } catch (const std::exception & ex) {
+    LOG_ERROR("Failed to initialize application: {}", ex.what());
     return SDL_APP_FAILURE;
   }
   *appstate = context;
@@ -31,8 +31,7 @@ auto SDL_AppEvent(void *appstate, SDL_Event *event) -> SDL_AppResult {
 /* This function runs once per frame, and is the heart of the program. */
 auto SDL_AppIterate(void *appstate) -> SDL_AppResult {
   const auto context = static_cast<wv::Application *>(appstate);
-  context->iterate();
-  return SDL_APP_CONTINUE;
+  return context->iterate();
 }
 
 /* This function runs once at shutdown. */
