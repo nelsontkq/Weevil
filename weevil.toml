@@ -10,4 +10,4 @@ assets = "/home/nelson/Development/Weevil/assets"
 
 [development]
 module_path = "/home/nelson/Development/Weevil/Game"
-
+build_command = "cmake --build build --target GameModule"
