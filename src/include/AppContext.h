@@ -1,9 +1,8 @@
 #pragma once
 #include "SDL3/SDL.h"
 #include "WeevilEngine/AppSettings.h"
-#include "WeevilEngine/GameModule.h"
-#include "WeevilEngine/SystemManager.h"
-#include "WeevilEngine/FileWatcher.h"
+#include "GameModule.h"
+#include "FileWatcher.h"
 
 namespace wv {
 class Application {

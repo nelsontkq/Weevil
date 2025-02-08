@@ -49,9 +49,6 @@ SDL_AppResult wv::Application::process_event(SDL_Event& event) {
       case WV_EVENT_RELOAD_MODULE:
         game_module_.trigger_reload(sdl_renderer_);
         break;
-      case WV_EVENT_REBUILD_MODULE:
-        file_watcher_->run_build_command();
-        break;
       default:
         break;
     }

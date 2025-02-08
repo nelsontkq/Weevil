@@ -19,6 +19,7 @@ add_library(WeevilEngine SHARED
         src/Core/GameModule.cpp
         src/Core/Log.cpp
         src/Core/UUID.cpp
+        src/HotReloading/FileWatcher.cpp
         src/System/AssetManager.cpp
         src/System/SystemManager.cpp
         src/Engine/Engine.cpp
