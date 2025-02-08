@@ -1,5 +1,5 @@
 
-#include "WeevilEngine/GameModule.h"
+#include "GameModule.h"
 
 #include <SDL3/SDL.h>
 

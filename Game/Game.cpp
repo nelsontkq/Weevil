@@ -10,12 +10,16 @@ SDL_Color squareColor = {255, 0, 0, 255};
 
 extern "C" {
 
-void GameInit() { LOG_INFO("Game module initialized. :()"); }
+void GameInit() { LOG_INFO("Game module initialized. :)"); }
 
 void GameUpdate(SDL_Renderer* renderer, float deltaTime) {
-  square.x += 6;
+  square.x += 4;
   if (square.x > 1920) {
     square.x = 0;
+  }
+  square.y += 4;
+  if (square.y > 1080) {
+    square.y = 0;
   }
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_MAX_UINT8);
   SDL_RenderClear(renderer);
