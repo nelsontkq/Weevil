@@ -38,7 +38,7 @@ wv::AppSettings::AppSettings() {
   }
   asset_path = *res;
   module_path = table["development"]["module_path"].value_or("");
-  build_command = table["development"]["build_command"].value_or("");
+  cmake_build_args = table["development"]["cmake_build_args"].value_or("");
 
   CORE_INFO("Loaded settings from {0}", file_name);
 }

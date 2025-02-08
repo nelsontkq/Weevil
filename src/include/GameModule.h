@@ -10,24 +10,15 @@ class GameModule {
   explicit GameModule();
   ~GameModule();
 
-  // Load the dynamic library and resolve the required symbols.
-  bool load();
-
-  // Unload the library.
-  void unload();
-
-  // Call the module’s functions.
   void init(SDL_Renderer* renderer);
   void update(SDL_Renderer* renderer, float dt);
   void shutdown();
 
-  // Checks if the file on disk has been modified (or a reload was triggered).
-  bool needs_reload() const;
-
-  // Optionally trigger reload from inside the game code.
   void trigger_reload(SDL_Renderer* renderer);
 
  private:
+  bool load();
+  void unload();
   std::filesystem::path module_path_;
   SDL_SharedObject* handle_ = nullptr;
 

@@ -81,14 +81,6 @@ void GameModule::shutdown() {
   }
 }
 
-auto GameModule::needs_reload() const -> bool {
-  bool fileChanged = false;
-  if (exists(module_path_)) {
-    fileChanged = last_write_time(module_path_) != last_write_time_;
-  }
-  return fileChanged || reload_requested_;
-}
-
 void GameModule::trigger_reload(SDL_Renderer* renderer) {
   CORE_INFO("Hot reloading game module...");
   shutdown();
