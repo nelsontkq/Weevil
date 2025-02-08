@@ -61,9 +61,9 @@ void watch_directory(const std::string &directory, int build_event_fd,
         }
       }
     }
-    LOG_INFO("[INFO] Exiting watch_directory thread.");
+    CORE_INFO("[INFO] Exiting watch_directory thread.");
   } catch (const std::exception &e) {
-    LOG_ERROR("[ERROR] Exception in watch_directory: {}", e.what());
+    CORE_ERROR("[ERROR] Exception in watch_directory: {}", e.what());
   }
 }
 void build_process(const std::string &build_cmd, int build_event_fd,
@@ -78,7 +78,7 @@ void build_process(const std::string &build_cmd, int build_event_fd,
     int poll_ret = poll(fds, 2, -1);
     if (poll_ret < 0) {
       if (errno == EINTR) continue;
-      LOG_ERROR("[ERROR] poll() in build_process: {}", std::strerror(errno));
+      CORE_ERROR("[ERROR] poll() in build_process: {}", std::strerror(errno));
       break;
     }
 
@@ -90,20 +90,20 @@ void build_process(const std::string &build_cmd, int build_event_fd,
     if (fds[0].revents & POLLIN) {
       uint64_t count;
       read(build_event_fd, &count, sizeof(count));
-      LOG_INFO("[INFO] Build event received; executing build command...");
+      CORE_INFO("[INFO] Build event received; executing build command...");
       int ret = std::system(build_cmd.c_str());
-      LOG_INFO("[INFO] Build command finished with exit code: {}", ret);
+      CORE_INFO("[INFO] Build command finished with exit code: {}", ret);
 
       SDL_Event sdl_event;
       SDL_zero(sdl_event);
       sdl_event.type = SDL_EVENT_USER;
       sdl_event.user.code = WV_EVENT_RELOAD_MODULE;
       if (!SDL_PushEvent(&sdl_event)) {
-        LOG_ERROR("[ERROR] SDL_PushEvent failed: {}", SDL_GetError());
+        CORE_ERROR("[ERROR] SDL_PushEvent failed: {}", SDL_GetError());
       }
     }
   }
-  LOG_INFO("[INFO] Exiting build_process thread.");
+  CORE_INFO("[INFO] Exiting build_process thread.");
 }
 wv::FileWatcher::FileWatcher(const std::string &targetDir,
                              const std::string &buildCommand)

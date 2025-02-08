@@ -23,7 +23,7 @@ class EventFd {
   void notify(uint64_t value = 1) {
     ssize_t s = write(fd_, &value, sizeof(value));
     if (s != sizeof(value)) {
-      LOG_ERROR("Failed to write to eventfd: {}", std::strerror(errno));
+      CORE_ERROR("Failed to write to eventfd: {}", std::strerror(errno));
     }
   }
   // Read (and reset) the eventfd.
@@ -31,7 +31,7 @@ class EventFd {
     uint64_t value = 0;
     ssize_t s = read(fd_, &value, sizeof(value));
     if (s != sizeof(value)) {
-      LOG_ERROR("Failed to read from eventfd: ", std::strerror(errno));
+      CORE_ERROR("Failed to read from eventfd: ", std::strerror(errno));
     }
     return value;
   }

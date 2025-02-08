@@ -18,11 +18,11 @@ auto AssetManager::load(const std::string &relative_path) -> uint64_t {
   }
   const auto p = asset_path_ / relative_path;
   WV_ASSERT(exists(p), "Asset does not exist: " + p.string());
-  LOG_INFO("Loading asset: {}", relative_path.c_str());
+  CORE_INFO("Loading asset: {}", relative_path.c_str());
   // TODO: use SDL_AsyncIOFromFile
   auto *texture = IMG_LoadTexture(renderer_, p.c_str());
   if (texture == nullptr) {
-    LOG_ERROR("Failed to load asset: {}", SDL_GetError());
+    CORE_ERROR("Failed to load asset: {}", SDL_GetError());
     return 0;
   }
 
@@ -34,7 +34,7 @@ auto AssetManager::load(const std::string &relative_path) -> uint64_t {
 // expensive. It's best to keep the assets loaded if possible.
 auto AssetManager::unload(uint64_t asset_id) -> void {
   if (const auto it = texture_map_.find(asset_id); it != texture_map_.end()) {
-    LOG_INFO("Unloading asset: {}", asset_id);
+    CORE_INFO("Unloading asset: {}", asset_id);
     SDL_DestroyTexture(it->second);
     texture_map_.erase(it);
   }
