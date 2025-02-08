@@ -1,4 +1,4 @@
-#include "WeevilEngine/weevil.h"
+#include <weevil/pch.h>
 
 namespace {
 SDL_FRect square = {100, 100, 50, 50};
@@ -10,7 +10,7 @@ extern "C" {
 void GameInit() { LOG_INFO("Game module initialized. :("); }
 
 void GameUpdate(SDL_Renderer* renderer, float deltaTime) {
-  square.x += 5;
+  square.x += 1;
   if (square.x > 1920) {
     square.x = 0;
   }

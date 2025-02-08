@@ -2,7 +2,7 @@
 #include <sys/eventfd.h>
 #include <unistd.h>
 
-#include "WeevilEngine/weevil.h"
+#include <weevil/pch.h>
 #ifdef WV_PLATFORM_LINUX
 
 class EventFd {

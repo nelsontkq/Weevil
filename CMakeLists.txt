@@ -4,37 +4,72 @@ project(Weevil LANGUAGES CXX)
 find_package(SDL3 REQUIRED)
 add_subdirectory(vendor)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-        add_compile_definitions(WV_HOT_RELOAD=1)
-        add_compile_definitions(WV_LOG_LEVEL=${WV_LOG_LEVEL})
-        add_compile_definitions(WV_ENABLE_ASSERTS=1)
+option(WV_HOT_RELOAD "Enable hot reload" OFF)
+option(WV_ENABLE_ASSERTS "Enable asserts" OFF)
+set(WV_LOG "info" CACHE STRING "Log level")
+set_property(CACHE WV_LOG PROPERTY STRINGS trace info warn error none)
+
+add_compile_definitions(WV_HOT_RELOAD=${WV_HOT_RELOAD})
+add_compile_definitions(WV_ENABLE_ASSERTS=${WV_ENABLE_ASSERTS})
+
+if(WV_LOG STREQUAL "trace")
+        add_compile_definitions(WV_LOG_TRACE=1)
+elseif(WV_LOG STREQUAL "info")
+        add_compile_definitions(WV_LOG_INFO=1)
+elseif(WV_LOG STREQUAL "warn")
+        add_compile_definitions(WV_LOG_WARN=1)
+elseif(WV_LOG STREQUAL "error")
+        add_compile_definitions(WV_LOG_ERROR=1)
+elseif(WV_LOG STREQUAL "none")
+        add_compile_definitions(WV_LOG_NONE=1)
 else()
-        set(WV_HOT_RELOAD OFF)
-        set(WV_LOG_LEVEL 2)
+        message(FATAL_ERROR "Invalid log level ${WV_LOG}")
+endif()
+
+if(WIN32)
+        add_compile_definitions(WV_PLATFORM_WINDOWS=1)
+        set(PLATFORM_NAME "windows")
+elseif(APPLE)
+        add_compile_definitions(WV_PLATFORM_APPLE=1)
+        set(PLATFORM_NAME "apple")
+elseif(UNIX)
+        # Assume support for non-linux unix platforms rather than erroring out
+        add_compile_definitions(WV_PLATFORM_LINUX=1)
+        set(PLATFORM_NAME "linux")
+else()
+        message(FATAL_ERROR "Unsupported platform")
 endif()
 
 add_library(WeevilEngine SHARED
-        src/Core/Application.cpp
-        src/Core/AppSettings.cpp
-        src/Core/GameModule.cpp
-        src/Core/Log.cpp
-        src/Core/UUID.cpp
-        src/HotReloading/FileWatcher.cpp
-        src/System/AssetManager.cpp
-        src/Engine/Engine.cpp
+        src/core/uuid.cpp
+        src/core/sdl_main.cpp
+        src/core/game_module.cpp
+        src/core/appsettings.cpp
+        src/core/application.cpp
 )
+
+if(NOT WV_LOG STREQUAL "none")
+        target_sources(WeevilEngine PRIVATE
+                src/core/log.cpp
+        )
+endif()
+
+if(WV_HOT_RELOAD)
+        target_sources(WeevilEngine PRIVATE
+                src/platform/${PLATFORM_NAME}/file_watcher.cpp
+        )
+endif()
 
 target_precompile_headers(WeevilEngine
         PRIVATE
-        include/WeevilEngine/weevil.h
+        include/weevil/pch.h
 )
 
 target_include_directories(WeevilEngine
         PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
         PRIVATE
-        src/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 target_compile_features(WeevilEngine PUBLIC cxx_std_20)
 target_compile_options(WeevilEngine PRIVATE -Wall -Wextra -Wpedantic -Wno-unknown-pragmas)
@@ -43,17 +78,15 @@ target_link_libraries(WeevilEngine
         PUBLIC
         SDL3_image::SDL3_image
         SDL3::SDL3
-        EnTT::EnTT
         spdlog::spdlog
         tomlplusplus::tomlplusplus
 )
 
-add_executable(WeevilApp src/main.cpp)
+add_executable(WeevilApp src/dummy.cpp)
 target_link_libraries(WeevilApp PRIVATE WeevilEngine)
 
-# Add the game module target.
 add_library(GameModule SHARED
-        Game/Game.cpp
+        game/game.cpp
 )
 target_compile_features(GameModule PUBLIC cxx_std_20)
 target_compile_options(GameModule PRIVATE -Wall -Wextra -Wpedantic -Wno-unknown-pragmas)
@@ -66,12 +99,10 @@ target_link_libraries(GameModule
         PRIVATE
         SDL3_image::SDL3_image
         SDL3::SDL3
-        EnTT::EnTT
         spdlog::spdlog
         tomlplusplus::tomlplusplus
 )
 
-# Place the resulting shared library in a “modules” folder (which your engine expects).
 set_target_properties(GameModule PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/modules
         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/modules

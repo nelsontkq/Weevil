@@ -1,7 +1,5 @@
 #pragma once
-#include <SDL3/SDL.h>
-
-#include "WeevilEngine/weevil.h"
+#include <weevil/pch.h>
 
 namespace wv {
 

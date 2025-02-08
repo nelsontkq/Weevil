@@ -1,5 +1,6 @@
-#include "WeevilEngine/UUID.h"
-#include <random>
+#include <weevil/core/uuid.h>
+
+#include <weevil/pch.h>
 
 wv::UUID::UUID() {
   static std::random_device rd;
@@ -9,7 +10,6 @@ wv::UUID::UUID() {
   uuid_ = distribution(generator);
 }
 
-wv::UUID::UUID(const uint64_t uuid)
-    : uuid_(uuid) {}
+wv::UUID::UUID(const uint64_t uuid) : uuid_(uuid) {}
 
 wv::UUID::UUID(const UUID &other) = default;

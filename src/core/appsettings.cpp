@@ -1,6 +1,5 @@
-#include "WeevilEngine/AppSettings.h"
-
-#include <filesystem>
+#include <weevil/core/app_settings.h>
+#include <weevil/pch.h>
 
 wv::AppSettings::AppSettings() {
   const std::string file_name = "weevil.toml";
@@ -19,7 +18,7 @@ wv::AppSettings::AppSettings() {
     table = toml::parse_file(file_name);
   } catch (const toml::parse_error& err) {
     CORE_ERROR("Failed to parse configuration at {0}: {1}", file_name,
-              err.description());
+               err.description());
     throw err;
   }
   title = table["window"]["title"].value_or("Weevil Game");
