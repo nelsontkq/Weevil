@@ -2,8 +2,8 @@
 #include <sys/eventfd.h>
 #include <unistd.h>
 
-
 #include "WeevilEngine/weevil.h"
+#ifdef WV_PLATFORM_LINUX
 
 class EventFd {
  public:
@@ -39,3 +39,4 @@ class EventFd {
  private:
   int fd_{-1};
 };
+#endif  // WV_PLATFORM_LINUX
