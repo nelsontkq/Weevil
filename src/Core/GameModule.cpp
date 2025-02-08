@@ -10,18 +10,16 @@ namespace fs = std::filesystem;
 namespace wv {
 
 GameModule::GameModule() {
-  module_path_ = std::string(SDL_GetBasePath()) +
-                           "modules/libGameModule" +
+  module_path_ = std::string(SDL_GetBasePath()) + "modules/libGameModule" +
 #if defined(_WIN32)
-                           ".dll";
+                 ".dll";
 #elif defined(__APPLE__)
-                           ".dylib";
+                 ".dylib";
 #else
-                           ".so";
+                 ".so";
 #endif
   if (exists(module_path_)) {
     last_write_time_ = last_write_time(module_path_);
-    trigger_reload();
   }
 }
 
@@ -57,9 +55,6 @@ auto GameModule::load() -> bool {
 
 void GameModule::unload() {
   if (handle_ != nullptr) {
-    if (game_shutdown_) {
-      game_shutdown_();
-    }
     SDL_UnloadObject(handle_);
     handle_ = nullptr;
     game_init_ = nullptr;
@@ -94,6 +89,15 @@ auto GameModule::needs_reload() const -> bool {
   return fileChanged || reload_requested_;
 }
 
-void GameModule::trigger_reload() { reload_requested_ = true; }
+void GameModule::trigger_reload(SDL_Renderer* renderer) {
+  LOG_INFO("Hot reloading game module...");
+  shutdown();
+  unload();
+  if (load()) {
+    init(renderer);
+  } else {
+    LOG_ERROR("Failed to reload game module.");
+  }
+}
 
 }  // namespace wv

@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.fastresume": "plaintext",
         "array": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
@@ -90,7 +91,9 @@
         "numeric": "cpp",
         "ranges": "cpp",
         "__tree": "cpp",
-        "expected": "cpp"
+        "expected": "cpp",
+        "valarray": "cpp",
+        "source_location": "cpp"
     },
     "files.exclude": {
         "**/.git": true,
@@ -100,7 +103,8 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
         ".idea": true,
-        ".cache": true
+        ".cache": true,
+        "vendor/*/*": true
     },
     "search.exclude": {
         "vendor": true

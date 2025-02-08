@@ -1,4 +1,5 @@
 #include <SDL3/SDL.h>
+
 #include "WeevilEngine/weevil.h"
 
 // Keep some module-local state.
@@ -9,15 +10,11 @@ SDL_Color squareColor = {0, 255, 0, 255};
 
 extern "C" {
 
-void GameInit(SDL_Renderer* renderer) {
-  LOG_INFO("Game module initialized.");
-  // (Optionally, use the renderer to create textures, etc.)
-}
+void GameInit() { LOG_INFO("Game module initialized. :()"); }
 
-void GameUpdate(SDL_Renderer* renderer, float dt) {
-  // For a simple animation, move the square to the right.
+void GameUpdate(SDL_Renderer* renderer, float deltaTime) {
   square.y += 1;
-  if (square.y > 640) {  // reset when offscreen (assuming window width ~640)
+  if (square.y > 640) {
     square.y = 0;
   }
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_MAX_UINT8);

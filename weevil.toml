@@ -1,0 +1,13 @@
+[window]
+title = "Weevil"
+width = 1_920
+height = 1_080
+resizable = false
+fullscreen = false
+
+[general]
+assets = "/home/nelson/Development/Weevil/assets"
+
+[development]
+module_path = "/home/nelson/Development/Weevil/Game"
+

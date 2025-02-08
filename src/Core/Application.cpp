@@ -1,10 +1,11 @@
 //
 // Created by nelson on 2/1/25.
 //
-#include "WeevilEngine/AppContext.h"
+#include "AppContext.h"
+#include "CustomEvents.h"
 #include "WeevilEngine/weevil.h"
-wv::Application::Application(const wv::AppSettings& settings)
-    : game_module_(new GameModule()) {
+
+wv::Application::Application(const wv::AppSettings& settings) {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     LOG_ERROR("Failed to initialize SDL" + std::string(SDL_GetError()));
     throw std::runtime_error("Failed to initialize SDL");
@@ -26,33 +27,42 @@ wv::Application::Application(const wv::AppSettings& settings)
     LOG_ERROR("Failed to create window and renderer");
     throw std::runtime_error("Failed to initialize SDL");
   }
+  // Vsync
+  if (!SDL_SetRenderVSync(sdl_renderer_, SDL_RENDERER_VSYNC_ADAPTIVE)) {
+    LOG_WARN("Failed to set adaptive vsync {}", SDL_GetError());
+    if (!SDL_SetRenderVSync(sdl_renderer_, 1)) {
+      LOG_ERROR("Failed to set vsync at all {}", SDL_GetError());
+    }
+  }
+#ifdef WV_HOT_RELOAD
+  file_watcher_ = new FileWatcher(settings.module_path, settings.build_command);
+  file_watcher_->start();
+  SDL_Event reload;
+  reload.type = SDL_EVENT_USER;
+  reload.user.code = WV_EVENT_RELOAD_MODULE;
+  SDL_PushEvent(&reload);
+#endif
 }
 SDL_AppResult wv::Application::process_event(SDL_Event& event) {
-  if (event.type == SDL_EVENT_KEY_DOWN &&
-      event.key.scancode == SDL_SCANCODE_F5) {
-    LOG_INFO("F5 pressed, toggling hot reload");
-    game_module_->trigger_reload();
+  if (event.type == SDL_EVENT_USER) {
+    switch (event.user.code) {
+      case WV_EVENT_RELOAD_MODULE:
+        game_module_.trigger_reload(sdl_renderer_);
+        break;
+      case WV_EVENT_REBUILD_MODULE:
+        file_watcher_->run_build_command();
+        break;
+      default:
+        break;
+    }
   }
   return SDL_APP_CONTINUE;
 }
 SDL_AppResult wv::Application::iterate() {
   const uint64_t currentTicks = SDL_GetTicks();
   delta_ticks_ = currentTicks - delta_ticks_;
-  if (game_module_ && game_module_->needs_reload()) {
-    LOG_INFO("Hot reloading game module...");
-    game_module_->shutdown();
-    game_module_->unload();
-    if (game_module_->load()) {
-      game_module_->init(sdl_renderer_);
-    } else {
-      LOG_ERROR("Failed to reload game module.");
-      return SDL_APP_FAILURE;
-    }
-  }
-  if (game_module_) {
-    game_module_->update(sdl_renderer_,
-                         static_cast<float>(delta_ticks_) / 1000.f);
-  }
+  game_module_.update(sdl_renderer_, static_cast<float>(delta_ticks_) / 1000.f);
+
   return SDL_APP_CONTINUE;
 }
 void wv::Application::shutdown() {

@@ -25,7 +25,7 @@ class GameModule {
   bool needs_reload() const;
 
   // Optionally trigger reload from inside the game code.
-  void trigger_reload();
+  void trigger_reload(SDL_Renderer* renderer);
 
  private:
   std::filesystem::path module_path_;
