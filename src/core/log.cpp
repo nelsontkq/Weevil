@@ -1,9 +1,12 @@
 
-#include "WeevilEngine/Log.h"
+#include <weevil/core/log.h>
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace wv {
+#ifdef WV_LOG_NONE
+void Log::Init() {}
+#else
 std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
 std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
 
@@ -16,19 +19,19 @@ void Log::Init() {
 
   // Initialize Client Logger
   s_ClientLogger = spdlog::stdout_color_mt("APP");
-#if WV_LOG_LEVEL == 4
+#ifdef WV_LOG_TRACE
   s_CoreLogger->set_level(spdlog::level::trace);
   s_ClientLogger->set_level(spdlog::level::trace);
-#elif WV_LOG_LEVEL == 3
+#elif defined(WV_LOG_INFO)
   s_CoreLogger->set_level(spdlog::level::info);
   s_ClientLogger->set_level(spdlog::level::info);
-#elif WV_LOG_LEVEL == 2
+#elif defined(WV_LOG_WARN)
   s_CoreLogger->set_level(spdlog::level::warn);
   s_ClientLogger->set_level(spdlog::level::warn);
-#elif WV_LOG_LEVEL == 1
+#elif defined(WV_LOG_ERROR)
   s_CoreLogger->set_level(spdlog::level::err);
   s_ClientLogger->set_level(spdlog::level::err);
 #endif
 }
-
+#endif
 }  // namespace wv

@@ -7,3 +7,4 @@ imgui.ini
 assets/**/*.png
 assets/**/*.mp3
 assets/**/*.ttf
+CMakeUserPresets.json

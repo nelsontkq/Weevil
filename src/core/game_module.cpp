@@ -1,9 +1,8 @@
 
-#include "GameModule.h"
-
-#include <SDL3/SDL.h>
+#include "game_module.h"
 
 #include "SDL3/SDL_loadso.h"
+#include <weevil/pch.h>
 
 namespace fs = std::filesystem;
 
@@ -29,7 +28,7 @@ auto GameModule::load() -> bool {
   handle_ = SDL_LoadObject(module_path_.c_str());
   if (!handle_) {
     CORE_ERROR("Failed to load module '{0}': {1}", module_path_.c_str(),
-              SDL_GetError());
+               SDL_GetError());
     return false;
   }
 
@@ -39,7 +38,7 @@ auto GameModule::load() -> bool {
 
   if (!game_init_ || !game_update_ || !game_shutdown_) {
     CORE_ERROR("Failed to load functions from module '{0}': {1}",
-              module_path_.c_str(), SDL_GetError());
+               module_path_.c_str(), SDL_GetError());
     SDL_UnloadObject(handle_);
     handle_ = nullptr;
     return false;

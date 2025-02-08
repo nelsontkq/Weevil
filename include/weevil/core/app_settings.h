@@ -3,7 +3,7 @@
 #include <string_view>
 #include <toml++/toml.hpp>
 
-#include "weevil.h"
+#include <weevil/pch.h>
 
 namespace wv {
 

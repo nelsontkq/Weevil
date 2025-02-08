@@ -1,7 +1,7 @@
 #pragma once
-#include "WeevilEngine/weevil.h"
+#include <weevil/pch.h>
 #ifdef WV_PLATFORM_LINUX
-#include "EventFd.h"
+#include "internal/event_fd.h"
 #endif
 namespace wv {
 

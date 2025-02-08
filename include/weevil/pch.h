@@ -1,34 +1,5 @@
 #pragma once
 
-// platform detection
-#ifdef _WIN32
-#ifdef _WIN64
-#define WV_PLATFORM_WINDOWS
-#else
-#error "x86 builds are not supported"
-#endif
-#elif defined(__APPLE__) || defined(__MACH__)
-#include <TargetConditionals.h>
-#if TARGET_IPHONE_SIMULATOR == 1
-#error "iOS simulator is not supported"
-#elif TARGET_OS_IPHONE == 1
-#define WV_PLATFORM_IOS
-#error "iOS is not supported"
-#elif TARGET_OS_MAC == 1
-#define WV_PLATFORM_MACOS
-#error "MacOS is not supported"
-#else
-#error "Unknown Apple platform"
-#endif
-#elif defined(__ANDROID__)
-#define WV_PLATFORM_ANDROID
-#error "Android is not supported"
-#elif defined(__linux__)
-#define WV_PLATFORM_LINUX
-#else
-#error "Unknown platform!"alignas
-#endif
-
 // Windows crap
 #ifdef WV_PLATFORM_WINDOWS
 #define NOMINMAX
@@ -50,18 +21,16 @@
 // Third-Party Libraries
 #include <SDL3/SDL.h>
 
-#include "entt/entt.hpp"
 #include "spdlog/fmt/ostr.h"
 #include "spdlog/spdlog.h"
 
 // Engine
-#include "AppSettings.h"
-#include "Log.h"
-#include "NoCopy.h"
-#include "UUID.h"
+#include "core/log.h"
+#include "core/uuid.h"
 
 // assertions
 
+#ifdef WV_ENABLE_ASSERTS
 inline void wvAssertImpl(const bool condition, const char* conditionStr,
                          const char* message) {
   if (condition) {
@@ -79,7 +48,6 @@ inline void wvAssertImpl(const bool condition, const char* conditionStr,
                          const std::string& message) {
   wvAssertImpl(condition, conditionStr, message.c_str());
 }
-#ifdef WV_ENABLE_ASSERTS
 #define WV_ASSERT(condition, message) \
   wvAssertImpl((condition), #condition, (message))
 #else

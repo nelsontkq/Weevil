@@ -1,16 +1,16 @@
-#include "FileWatcher.h"
-
-#include <SDL3/SDL.h>
+#include <internal/custom_events.h>
+#include <internal/event_fd.h>
+#include <internal/inotify_wrapper.h>
+#include <platform/common/filewatcher.h>
 #include <spawn.h>
 #include <sys/wait.h>
 
-#include "CustomEvents.h"
-#include "InotifyWrapper.h"
+#include <weevil/pch.h>
 namespace {
 int run_build_command(const std::string &cmd) {
   pid_t pid = vfork();
   if (pid < 0) {
-    // vfork() failed
+    // vfork() faciled
     std::cerr << "[ERROR] vfork failed: " << std::strerror(errno) << "\n";
     return errno;
   }

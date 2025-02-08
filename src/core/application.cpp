@@ -1,9 +1,11 @@
 //
 // Created by nelson on 2/1/25.
 //
-#include "AppContext.h"
-#include "CustomEvents.h"
-#include "WeevilEngine/weevil.h"
+#include "core/application.h"
+#include "weevil/core/app_settings.h"
+#include "internal/custom_events.h"
+
+#include <weevil/pch.h>
 
 wv::Application::Application(const wv::AppSettings& settings) {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -35,7 +37,8 @@ wv::Application::Application(const wv::AppSettings& settings) {
     }
   }
 #ifdef WV_HOT_RELOAD
-  file_watcher_ = new FileWatcher(settings.module_path, settings.cmake_build_args);
+  file_watcher_ =
+      new FileWatcher(settings.module_path, settings.cmake_build_args);
   file_watcher_->start();
   SDL_Event reload;
   reload.type = SDL_EVENT_USER;

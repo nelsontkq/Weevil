@@ -1,7 +1,8 @@
 #define SDL_MAIN_USE_CALLBACKS 1
-#include <AppContext.h>
 #include <SDL3/SDL_main.h>
-#include <WeevilEngine/Log.h>
+
+#include "core/application.h"
+#include <weevil/pch.h>
 extern "C" {
 /* This function runs once at startup. */
 auto SDL_AppInit(void **appstate, int argc, char *argv[]) -> SDL_AppResult {
