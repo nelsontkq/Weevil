@@ -20,7 +20,7 @@ class AppSettings {
   std::string asset_path;
   // Development settings
   std::string module_path;
-  std::string build_command;
+  std::string cmake_build_args;
 };
 
 }  // namespace wv

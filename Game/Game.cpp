@@ -1,21 +1,20 @@
 #include "WeevilEngine/weevil.h"
 
-// Keep some module-local state.
 namespace {
 SDL_FRect square = {100, 100, 50, 50};
 SDL_Color squareColor = {255, 0, 0, 255};
-}  // namespace
+}
 
 extern "C" {
 
-void GameInit() { LOG_INFO("Game module initialized. :)"); }
+void GameInit() { LOG_INFO("Game module initialized. :("); }
 
 void GameUpdate(SDL_Renderer* renderer, float deltaTime) {
-  square.x += 3;
+  square.x += 5;
   if (square.x > 1920) {
     square.x = 0;
   }
-  square.y += 4;
+  square.y += 1;
   if (square.y > 1080) {
     square.y = 0;
   }

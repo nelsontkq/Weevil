@@ -21,7 +21,6 @@ add_library(WeevilEngine SHARED
         src/Core/UUID.cpp
         src/HotReloading/FileWatcher.cpp
         src/System/AssetManager.cpp
-        src/System/SystemManager.cpp
         src/Engine/Engine.cpp
 )
 

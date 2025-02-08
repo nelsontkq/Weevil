@@ -35,7 +35,7 @@ wv::Application::Application(const wv::AppSettings& settings) {
     }
   }
 #ifdef WV_HOT_RELOAD
-  file_watcher_ = new FileWatcher(settings.module_path, settings.build_command);
+  file_watcher_ = new FileWatcher(settings.module_path, settings.cmake_build_args);
   file_watcher_->start();
   SDL_Event reload;
   reload.type = SDL_EVENT_USER;

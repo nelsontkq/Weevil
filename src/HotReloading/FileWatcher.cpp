@@ -1,61 +1,82 @@
-#include <SDL3/SDL.h>
-
 #include "FileWatcher.h"
+
+#include <SDL3/SDL.h>
+#include <spawn.h>
+#include <sys/wait.h>
+
 #include "CustomEvents.h"
 #include "InotifyWrapper.h"
+namespace {
+int run_build_command(const std::string &cmd) {
+  pid_t pid = vfork();
+  if (pid < 0) {
+    // vfork() failed
+    std::cerr << "[ERROR] vfork failed: " << std::strerror(errno) << "\n";
+    return errno;
+  }
 
+  if (pid == 0) {
+    execl("/bin/sh", "sh", "-c", cmd.c_str(), nullptr);
+    // If execl returns, an error occurred. Use _exit() to avoid flushing stdio
+    _exit(127);
+  }
+  int status = 0;
+  while (true) {
+    pid_t w = waitpid(pid, &status, 0);
+    if (w == -1) {
+      if (errno == EINTR) continue;
+      std::cerr << "[ERROR] waitpid failed: " << std::strerror(errno) << "\n";
+      break;
+    }
+    break;
+  }
+  return status;
+}
 void watch_directory(const std::string &directory, int build_event_fd,
                      int exit_event_fd) {
   try {
     InotifyWrapper inotify(directory);
     constexpr size_t event_buffer_size = 1024 * (sizeof(inotify_event) + 16);
     char buffer[event_buffer_size];
-
     // Set up poll on both inotify fd and the exit eventfd.
     struct pollfd fds[2];
     fds[0].fd = inotify.fd();
     fds[0].events = POLLIN;
     fds[1].fd = exit_event_fd;
     fds[1].events = POLLIN;
-
     while (true) {
       int poll_ret = poll(fds, 2, -1);  // blocking poll
       if (poll_ret < 0) {
         if (errno == EINTR) continue;
-        std::cerr << "[ERROR] poll() in watch_directory: "
-                  << std::strerror(errno) << "\n";
+        LOG_ERROR("[ERROR] poll() in watch_directory: ", std::strerror(errno));
         break;
       }
-
-      // Check if the exit event was signaled.
       if (fds[1].revents & POLLIN) {
         uint64_t dummy;
         read(exit_event_fd, &dummy, sizeof(dummy));
         break;
       }
 
-      // Process any inotify events.
       if (fds[0].revents & POLLIN) {
         ssize_t length = read(inotify.fd(), buffer, event_buffer_size);
         if (length < 0) {
           if (errno == EINTR) continue;
-          std::cerr << "[ERROR] inotify read: " << std::strerror(errno) << "\n";
+          LOG_ERROR("[ERROR] inotify read: {}", std::strerror(errno));
+          break;
+        } else if (length == 0) {
           break;
         }
-        // Walk through the events.
         for (ssize_t i = 0; i < length;) {
           inotify_event *event = reinterpret_cast<inotify_event *>(&buffer[i]);
           if (event->mask & (IN_CREATE | IN_MODIFY | IN_DELETE | IN_MOVED_FROM |
                              IN_MOVED_TO)) {
-            // Signal the build thread by writing to the build_event eventfd.
             uint64_t one = 1;
             ssize_t written = write(build_event_fd, &one, sizeof(one));
             if (written != sizeof(one)) {
-              std::cerr << "[ERROR] write to build eventfd failed: "
-                        << std::strerror(errno) << "\n";
+              LOG_ERROR("[ERROR] write to build eventfd failed: {}",
+                        std::strerror(errno));
             }
-            // (Optionally break after one event if you want to coalesce
-            // multiple events.)
+            break;
           }
           i += sizeof(inotify_event) + event->len;
         }
@@ -74,6 +95,7 @@ void build_process(const std::string &build_cmd, int build_event_fd,
   fds[1].fd = exit_event_fd;
   fds[1].events = POLLIN;
 
+  auto last_called = std::chrono::high_resolution_clock::now();
   while (true) {
     int poll_ret = poll(fds, 2, -1);
     if (poll_ret < 0) {
@@ -89,10 +111,28 @@ void build_process(const std::string &build_cmd, int build_event_fd,
     }
     if (fds[0].revents & POLLIN) {
       uint64_t count;
-      read(build_event_fd, &count, sizeof(count));
-      CORE_INFO("[INFO] Build event received; executing build command...");
-      int ret = std::system(build_cmd.c_str());
-      CORE_INFO("[INFO] Build command finished with exit code: {}", ret);
+      auto res = read(build_event_fd, &count, sizeof(count));
+      if (last_called + std::chrono::milliseconds(500) >
+          std::chrono::high_resolution_clock::now()) {
+        continue;
+      }
+      if (res == 0) {
+        break;
+      } else if (res < 0) {
+        if (errno == EINTR) continue;
+        CORE_ERROR("[ERROR] read from build eventfd failed: {}",
+                   std::strerror(errno));
+        break;
+      }
+
+      // log exact time for benchmarking
+      auto start = std::chrono::high_resolution_clock::now();
+      int ret = run_build_command(build_cmd);
+      last_called = std::chrono::high_resolution_clock::now();
+      CORE_INFO("[INFO] Build time: {} ms",
+                std::chrono::duration_cast<std::chrono::milliseconds>(
+                    last_called - start)
+                    .count());
 
       SDL_Event sdl_event;
       SDL_zero(sdl_event);
@@ -105,6 +145,8 @@ void build_process(const std::string &build_cmd, int build_event_fd,
   }
   CORE_INFO("[INFO] Exiting build_process thread.");
 }
+
+}  // namespace
 wv::FileWatcher::FileWatcher(const std::string &targetDir,
                              const std::string &buildCommand)
     : target_dir_(targetDir),
