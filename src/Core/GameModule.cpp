@@ -28,7 +28,7 @@ GameModule::~GameModule() { unload(); }
 auto GameModule::load() -> bool {
   handle_ = SDL_LoadObject(module_path_.c_str());
   if (!handle_) {
-    LOG_ERROR("Failed to load module '{0}': {1}", module_path_.c_str(),
+    CORE_ERROR("Failed to load module '{0}': {1}", module_path_.c_str(),
               SDL_GetError());
     return false;
   }
@@ -38,7 +38,7 @@ auto GameModule::load() -> bool {
   game_shutdown_ = SDL_LoadFunction(handle_, "GameShutdown");
 
   if (!game_init_ || !game_update_ || !game_shutdown_) {
-    LOG_ERROR("Failed to load functions from module '{0}': {1}",
+    CORE_ERROR("Failed to load functions from module '{0}': {1}",
               module_path_.c_str(), SDL_GetError());
     SDL_UnloadObject(handle_);
     handle_ = nullptr;
@@ -90,13 +90,13 @@ auto GameModule::needs_reload() const -> bool {
 }
 
 void GameModule::trigger_reload(SDL_Renderer* renderer) {
-  LOG_INFO("Hot reloading game module...");
+  CORE_INFO("Hot reloading game module...");
   shutdown();
   unload();
   if (load()) {
     init(renderer);
   } else {
-    LOG_ERROR("Failed to reload game module.");
+    CORE_ERROR("Failed to reload game module.");
   }
 }
 

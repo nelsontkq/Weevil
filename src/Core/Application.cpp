@@ -7,7 +7,7 @@
 
 wv::Application::Application(const wv::AppSettings& settings) {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
-    LOG_ERROR("Failed to initialize SDL" + std::string(SDL_GetError()));
+    CORE_ERROR("Failed to initialize SDL" + std::string(SDL_GetError()));
     throw std::runtime_error("Failed to initialize SDL");
   }
   SDL_SetAppMetadata(settings.title.c_str(), settings.version.c_str(),
@@ -24,14 +24,14 @@ wv::Application::Application(const wv::AppSettings& settings) {
   if (!SDL_CreateWindowAndRenderer(settings.title.c_str(), settings.width,
                                    settings.height, flags, &sdl_window_,
                                    &sdl_renderer_)) {
-    LOG_ERROR("Failed to create window and renderer");
+    CORE_ERROR("Failed to create window and renderer");
     throw std::runtime_error("Failed to initialize SDL");
   }
   // Vsync
   if (!SDL_SetRenderVSync(sdl_renderer_, SDL_RENDERER_VSYNC_ADAPTIVE)) {
-    LOG_WARN("Failed to set adaptive vsync {}", SDL_GetError());
+    CORE_WARN("Failed to set adaptive vsync {}", SDL_GetError());
     if (!SDL_SetRenderVSync(sdl_renderer_, 1)) {
-      LOG_ERROR("Failed to set vsync at all {}", SDL_GetError());
+      CORE_ERROR("Failed to set vsync at all {}", SDL_GetError());
     }
   }
 #ifdef WV_HOT_RELOAD

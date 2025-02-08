@@ -12,7 +12,7 @@ auto SDL_AppInit(void **appstate, int argc, char *argv[]) -> SDL_AppResult {
   try {
     context = new wv::Application(settings);
   } catch (const std::exception &ex) {
-    LOG_ERROR("Failed to initialize application: {}", ex.what());
+    CORE_ERROR("Failed to initialize application: {}", ex.what());
     return SDL_APP_FAILURE;
   }
   *appstate = context;

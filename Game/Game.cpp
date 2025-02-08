@@ -1,5 +1,3 @@
-#include <SDL3/SDL.h>
-
 #include "WeevilEngine/weevil.h"
 
 // Keep some module-local state.
@@ -13,7 +11,7 @@ extern "C" {
 void GameInit() { LOG_INFO("Game module initialized. :)"); }
 
 void GameUpdate(SDL_Renderer* renderer, float deltaTime) {
-  square.x += 4;
+  square.x += 3;
   if (square.x > 1920) {
     square.x = 0;
   }
