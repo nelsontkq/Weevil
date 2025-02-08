@@ -5,7 +5,7 @@
 // Keep some module-local state.
 namespace {
 SDL_FRect square = {100, 100, 50, 50};
-SDL_Color squareColor = {0, 255, 0, 255};
+SDL_Color squareColor = {255, 0, 0, 255};
 }  // namespace
 
 extern "C" {
@@ -13,9 +13,9 @@ extern "C" {
 void GameInit() { LOG_INFO("Game module initialized. :()"); }
 
 void GameUpdate(SDL_Renderer* renderer, float deltaTime) {
-  square.y += 1;
-  if (square.y > 640) {
-    square.y = 0;
+  square.x += 6;
+  if (square.x > 1920) {
+    square.x = 0;
   }
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_MAX_UINT8);
   SDL_RenderClear(renderer);
