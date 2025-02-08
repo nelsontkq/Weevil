@@ -3,6 +3,7 @@
 #include "WeevilEngine/AppSettings.h"
 #include "WeevilEngine/GameModule.h"
 #include "WeevilEngine/SystemManager.h"
+#include "WeevilEngine/FileWatcher.h"
 
 namespace wv {
 class Application {
@@ -17,6 +18,7 @@ class Application {
   SDL_Window *sdl_window_;
   SDL_Renderer *sdl_renderer_;
   uint64_t delta_ticks_ = 0;
-  GameModule *game_module_;
+  GameModule game_module_;
+  FileWatcher* file_watcher_;
 };
 }  // namespace wv

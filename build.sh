@@ -1,5 +1,0 @@
-#!/bin/bash
-CMAKE_FLAGS="-DWV_ENABLE_ASSERT=ON -DWV_LOG_LEVEL=4 -DCMAKE_BUILD_TYPE=Debug"
-BUILD_DIR=build
-cmake -S . $CMAKE_FLAGS -B $BUILD_DIR
-cmake --build $BUILD_DIR

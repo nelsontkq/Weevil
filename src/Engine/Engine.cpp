@@ -1,14 +1,13 @@
 #define SDL_MAIN_USE_CALLBACKS 1
+#include <AppContext.h>
 #include <SDL3/SDL_main.h>
-#include <WeevilEngine/AppContext.h>
 #include <WeevilEngine/Log.h>
 extern "C" {
 /* This function runs once at startup. */
 auto SDL_AppInit(void **appstate, int argc, char *argv[]) -> SDL_AppResult {
   wv::Log::Init();
   // TODO: setup a dev configuration otherwise load from preferred dir
-  const auto settings =
-      wv::AppSettings("/home/nelson/Development/Weevil/config/weevil.toml");
+  const wv::AppSettings settings{};
   wv::Application *context = nullptr;
   try {
     context = new wv::Application(settings);

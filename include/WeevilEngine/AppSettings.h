@@ -9,7 +9,7 @@ namespace wv {
 
 class AppSettings {
  public:
-  AppSettings(const std::string_view& file_name);
+  AppSettings();
   std::string title;
   std::string version;
   std::string app_identifier;
@@ -18,6 +18,9 @@ class AppSettings {
   bool fullscreen;
   bool resizable;
   std::string asset_path;
+  // Development settings
+  std::string module_path;
+  std::string build_command;
 };
 
 }  // namespace wv

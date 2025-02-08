@@ -60,9 +60,6 @@
 #include "NoCopy.h"
 #include "UUID.h"
 
-// macros
-#define BIT(x) (1 << x)
-
 // assertions
 
 inline void wvAssertImpl(const bool condition, const char* conditionStr,
@@ -82,7 +79,7 @@ inline void wvAssertImpl(const bool condition, const char* conditionStr,
                          const std::string& message) {
   wvAssertImpl(condition, conditionStr, message.c_str());
 }
-#if WV_ENABLE_ASSERTS
+#ifdef WV_ENABLE_ASSERTS
 #define WV_ASSERT(condition, message) \
   wvAssertImpl((condition), #condition, (message))
 #else

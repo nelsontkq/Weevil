@@ -1,9 +1,19 @@
 #include "WeevilEngine/AppSettings.h"
 
-#include "WeevilEngine/weevil.h"
-namespace fs = std::filesystem;
+#include <filesystem>
 
-wv::AppSettings::AppSettings(const std::string_view& file_name) {
+wv::AppSettings::AppSettings() {
+  const std::string file_name = "weevil.toml";
+  // recursively look up the directory tree for the configuration file
+  std::filesystem::path current_path = SDL_GetBasePath();
+  while (!std::filesystem::exists(current_path / file_name)) {
+    current_path = current_path.parent_path();
+    if (current_path.empty()) {
+      LOG_ERROR("Failed to find configuration file {0}", file_name);
+      throw std::runtime_error("Failed to find configuration file");
+    }
+  }
+
   toml::table table;
   try {
     table = toml::parse_file(file_name);
@@ -27,5 +37,8 @@ wv::AppSettings::AppSettings(const std::string_view& file_name) {
     throw std::runtime_error("Failed to load asset path");
   }
   asset_path = *res;
+  module_path = table["development"]["module_path"].value_or("");
+  build_command = table["development"]["build_command"].value_or("");
+
   LOG_INFO("Loaded settings from {0}", file_name);
-};
+}
