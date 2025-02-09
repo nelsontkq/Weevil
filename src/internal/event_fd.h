@@ -1,9 +1,9 @@
 #pragma once
+
+#ifdef WV_PLATFORM_LINUX
 #include <sys/eventfd.h>
 #include <unistd.h>
-
 #include <weevil/pch.h>
-#ifdef WV_PLATFORM_LINUX
 
 class EventFd {
  public:

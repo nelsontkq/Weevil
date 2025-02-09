@@ -7,7 +7,7 @@ SDL_Color squareColor = {255, 0, 0, 255};
 
 extern "C" {
 
-void GameInit() { LOG_INFO("Game module initialized. :("); }
+void GameInit() { LOG_INFO("Game module initialized."); }
 
 void GameUpdate(SDL_Renderer* renderer, float deltaTime) {
   square.x += 1;

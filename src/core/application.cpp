@@ -1,13 +1,16 @@
 //
 // Created by nelson on 2/1/25.
 //
-#include "core/application.h"
-#include "weevil/core/app_settings.h"
-#include "internal/custom_events.h"
 
+#include "core/application.h"
+
+#include <weevil/core/app_settings.h>
 #include <weevil/pch.h>
 
-wv::Application::Application(const wv::AppSettings& settings) {
+#include "internal/custom_events.h"
+#include "platform/common/filewatcher.h"
+
+wv::Application::Application(const AppSettings& settings) {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     CORE_ERROR("Failed to initialize SDL" + std::string(SDL_GetError()));
     throw std::runtime_error("Failed to initialize SDL");

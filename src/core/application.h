@@ -1,13 +1,14 @@
 #pragma once
-#include "weevil/core/app_settings.h"
-#include "platform/common/filewatcher.h"
-#include "core/game_module.h"
 #include <weevil/pch.h>
 
+#include "core/game_module.h"
+
 namespace wv {
+class AppSettings;
+class FileWatcher;
 class Application {
  public:
-  explicit Application(const wv::AppSettings &settings);
+  explicit Application(const AppSettings &settings);
   void shutdown();
   SDL_AppResult process_event(SDL_Event &event);
   SDL_AppResult iterate();

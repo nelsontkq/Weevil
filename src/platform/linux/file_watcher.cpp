@@ -129,7 +129,7 @@ void build_process(const std::string &build_cmd, int build_event_fd,
       auto start = std::chrono::high_resolution_clock::now();
       int ret = run_build_command(build_cmd);
       last_called = std::chrono::high_resolution_clock::now();
-      CORE_INFO("[INFO] Build time: {} ms",
+      CORE_TRACE("[INFO] Build time: {} ms",
                 std::chrono::duration_cast<std::chrono::milliseconds>(
                     last_called - start)
                     .count());

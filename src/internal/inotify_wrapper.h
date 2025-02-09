@@ -1,11 +1,10 @@
 #pragma once
-#include <weevil/pch.h>
-
 #ifdef WV_PLATFORM_LINUX
 #include <sys/eventfd.h>
 #include <sys/inotify.h>
 #include <sys/poll.h>
 #include <unistd.h>
+#include <weevil/pch.h>
 
 #include <cstdint>
 #include <stdexcept>
