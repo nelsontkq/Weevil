@@ -7,7 +7,4 @@ fullscreen = false
 
 [general]
 assets = "/home/nelson/Development/Weevil/assets"
-
-[development]
-module_path = "/home/nelson/Development/Weevil/game"
-cmake_build_args = "cmake --build --preset linux-debug --target GameModule"
+modules_dir = "/home/nelson/Development/Weevil/modules"

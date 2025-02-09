@@ -2,23 +2,15 @@
 #include <weevil/pch.h>
 
 wv::AppSettings::AppSettings() {
-  const std::string file_name = "weevil.toml";
-  // recursively look up the directory tree for the configuration file
-  std::filesystem::path current_path = SDL_GetBasePath();
-  while (!std::filesystem::exists(current_path / file_name)) {
-    current_path = current_path.parent_path();
-    if (current_path.empty()) {
-      CORE_ERROR("Failed to find configuration file {0}", file_name);
-      throw std::runtime_error("Failed to find configuration file");
-    }
-  }
+  const auto exe_dir = SDL_GetBasePath();
+  const std::string file_name = "app_settings.toml";
 
   toml::table table;
   try {
     table = toml::parse_file(file_name);
   } catch (const toml::parse_error& err) {
-    CORE_ERROR("Failed to parse configuration at {0}: {1}", file_name,
-               err.description());
+    LOG_ERROR("Failed to parse configuration at {0}: {1}", file_name,
+              err.description());
     throw err;
   }
   title = table["window"]["title"].value_or("Weevil Game");
@@ -32,12 +24,18 @@ wv::AppSettings::AppSettings() {
   const std::optional res =
       table["general"]["assets"].value<std::string_view>();
   if (!res.has_value()) {
-    CORE_ERROR("Failed to load asset path from {0}", file_name);
+    LOG_ERROR("Failed to load asset path from {0}", file_name);
     throw std::runtime_error("Failed to load asset path");
   }
   asset_path = *res;
-  module_path = table["development"]["module_path"].value_or("");
-  cmake_build_args = table["development"]["cmake_build_args"].value_or("");
+  const std::optional res2 =
+      table["general"]["modules_dir"].value<std::string_view>();
 
-  CORE_INFO("Loaded settings from {0}", file_name);
+  if (!res2.has_value()) {
+    LOG_ERROR("Failed to load modules directory from {0}", file_name);
+    throw std::runtime_error("Failed to load modules directory");
+  }
+  modules_dir = *res2;
+
+  LOG_INFO("Loaded settings from {0}", file_name);
 }

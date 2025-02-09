@@ -43,8 +43,7 @@ endif()
 add_library(WeevilEngine SHARED
         src/core/uuid.cpp
         src/core/sdl_main.cpp
-        src/core/game_module.cpp
-        src/core/appsettings.cpp
+        src/core/module_manager.cpp
         src/core/application.cpp
 )
 
@@ -85,25 +84,7 @@ target_link_libraries(WeevilEngine
 add_executable(WeevilApp src/dummy.cpp)
 target_link_libraries(WeevilApp PRIVATE WeevilEngine)
 
-add_library(GameModule SHARED
-        game/game.cpp
-)
-target_compile_features(GameModule PUBLIC cxx_std_20)
-target_compile_options(GameModule PRIVATE -Wall -Wextra -Wpedantic -Wno-unknown-pragmas)
+# modules
+add_subdirectory(modules)
 
-target_include_directories(GameModule PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-target_link_libraries(GameModule
-        PRIVATE
-        SDL3_image::SDL3_image
-        SDL3::SDL3
-        spdlog::spdlog
-        tomlplusplus::tomlplusplus
-)
-
-set_target_properties(GameModule PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/modules
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/modules
-)
+configure_file(app_settings.toml app_settings.toml COPYONLY)
