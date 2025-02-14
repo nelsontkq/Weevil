@@ -1,5 +1,6 @@
 #include <weevil/core/app_settings.h>
 #include <weevil/pch.h>
+#include <toml++/toml.hpp>
 
 wv::AppSettings::AppSettings() {
   const auto exe_dir = SDL_GetBasePath();

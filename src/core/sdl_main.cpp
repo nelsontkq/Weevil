@@ -6,14 +6,12 @@
 #include "core/application.h"
 extern "C" {
 
-constexpr wv::AppSettings settings;
-constexpr wv::Application context(settings);
 /* This function runs once at startup. */
 auto SDL_AppInit(void **appstate, int argc, char *argv[]) -> SDL_AppResult {
   wv::Log::Init();
-  // TODO: setup a dev configuration otherwise load from preferred dir
+  wv::Application *context = nullptr;
   try {
-    context = new wv::Application(settings);
+    context = new wv::Application();
   } catch (const std::exception &ex) {
     CORE_ERROR("Failed to initialize application: {}", ex.what());
     return SDL_APP_FAILURE;
@@ -25,7 +23,8 @@ auto SDL_AppEvent(void *appstate, SDL_Event *event) -> SDL_AppResult {
   if (event->type == SDL_EVENT_QUIT) {
     return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
   }
-  return context.process_event(*event);
+  const auto context = static_cast<wv::Application *>(appstate);
+  return context->process_event(*event);
 }
 
 /* This function runs once per frame, and is the heart of the program. */

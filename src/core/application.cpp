@@ -9,24 +9,25 @@
 
 #include "internal/custom_events.h"
 
-wv::Application::Application(AppSettings& settings)
-    : settings_(settings) {
+wv::Application::Application() : settings_() {}
+
+void wv::Application::init() {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     CORE_ERROR("Failed to initialize SDL" + std::string(SDL_GetError()));
     throw std::runtime_error("Failed to initialize SDL");
   }
-  SDL_SetAppMetadata(settings_->title.c_str(), settings_->version.c_str(),
-                     settings_->app_identifier.c_str());
+  SDL_SetAppMetadata(settings_.title.c_str(), settings_.version.c_str(),
+                     settings_.app_identifier.c_str());
   auto flags = 0;
-  if (settings_->fullscreen) {
+  if (settings_.fullscreen) {
     flags |= SDL_WINDOW_BORDERLESS;
-  } else if (settings_->resizable) {
+  } else if (settings_.resizable) {
     flags |= SDL_WINDOW_RESIZABLE;
   }
   sdl_renderer_ = nullptr;
   sdl_window_ = nullptr;
-  if (!SDL_CreateWindowAndRenderer(settings_->title.c_str(), settings_->width,
-                                   settings_->height, flags, &sdl_window_,
+  if (!SDL_CreateWindowAndRenderer(settings_.title.c_str(), settings_.width,
+                                   settings_.height, flags, &sdl_window_,
                                    &sdl_renderer_)) {
     CORE_ERROR("Failed to create window and renderer");
     throw std::runtime_error("Failed to initialize SDL");
@@ -40,24 +41,20 @@ wv::Application::Application(AppSettings& settings)
   // TODO: async
   module_manager_.load_modules();
 }
-void wv::Application::change_settings(AppSettings* settings) {
-  delete settings_;
-  settings_ = settings;
-  // TODO: update window settings
-}
+
 SDL_AppResult wv::Application::process_event(SDL_Event& event) {
   if (event.type == SDL_EVENT_USER) {
     if (event.user.code & wv::EngineEvent::WV_EVENT_RELOAD_MODULE) {
-      module_manager_.reload_module(event.user.data1);
+      module_manager_.reload_module((size_t)event.user.data1);
     }
   }
+  module_manager_.process_event(event);
   return SDL_APP_CONTINUE;
 }
 SDL_AppResult wv::Application::iterate() {
   const uint64_t currentTicks = SDL_GetTicks();
   delta_ticks_ = currentTicks - delta_ticks_;
-  module_manager_.update(sdl_renderer_,
-                         static_cast<float>(delta_ticks_) / 1000.f);
+  module_manager_.update(sdl_renderer_, (float)delta_ticks_ / 1000.f);
 
   return SDL_APP_CONTINUE;
 }
