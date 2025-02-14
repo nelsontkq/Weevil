@@ -13,9 +13,12 @@
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <mutex>
+#include <queue>
 #include <random>
 #include <stdexcept>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 // Third-Party Libraries
@@ -25,10 +28,11 @@
 #include "spdlog/spdlog.h"
 
 // Engine
+#include "core/imodule.h"
+#include "core/initmodule.h"
 #include "core/log.h"
 #include "core/uuid.h"
-
-// assertions
+#include "core/weevil_api.h"
 
 #ifdef WV_ENABLE_ASSERTS
 inline void wvAssertImpl(const bool condition, const char* conditionStr,
@@ -53,3 +57,9 @@ inline void wvAssertImpl(const bool condition, const char* conditionStr,
 #else
 #define WV_ASSERT(condition, message) ((void)0)
 #endif
+
+#define WV_MODULE(module)                               \
+  extern "C" {                                          \
+  wv::IModule* create_module() { return new module(); } \
+  const char* get_file_name() { return __FILE__; }      \
+  }

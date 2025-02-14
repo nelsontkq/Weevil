@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string_view>
-#include <toml++/toml.hpp>
-
 #include <weevil/pch.h>
 
 namespace wv {
@@ -18,9 +15,7 @@ class AppSettings {
   bool fullscreen;
   bool resizable;
   std::string asset_path;
-  // Development settings
-  std::string module_path;
-  std::string cmake_build_args;
+  std::string modules_dir;
 };
 
 }  // namespace wv
