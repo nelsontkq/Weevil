@@ -26,22 +26,22 @@ class Log {
   static std::shared_ptr<spdlog::logger> s_ClientLogger;
 
 };
-#ifdef WV_LOG_NONE
-// Core log macros
-#define CORE_TRACE(...) ((void)0)
-#define CORE_INFO(...) ((void)0)
-#define CORE_WARN(...) ((void)0)
-#define CORE_ERROR(...) ((void)0)
-#define CORE_CRITICAL(...) ((void)0)
+// #ifdef WV_LOG_NONE
+// // Core log macros
+// #define CORE_TRACE(...) ((void)0)
+// #define CORE_INFO(...) ((void)0)
+// #define CORE_WARN(...) ((void)0)
+// #define CORE_ERROR(...) ((void)0)
+// #define CORE_CRITICAL(...) ((void)0)
 
-// Client log macros
-#define LOG_TRACE(...) ((void)0)
-#define LOG_INFO(...) ((void)0)
-#define LOG_WARN(...) ((void)0)
-#define LOG_ERROR(...) ((void)0)
-#define LOG_CRITICAL(...) ((void)0)
+// // Client log macros
+// #define LOG_TRACE(...) ((void)0)
+// #define LOG_INFO(...) ((void)0)
+// #define LOG_WARN(...) ((void)0)
+// #define LOG_ERROR(...) ((void)0)
+// #define LOG_CRITICAL(...) ((void)0)
 
-#else
+// #else
 // Core log macros
 #define CORE_TRACE(...) ::wv::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define CORE_INFO(...) ::wv::Log::GetCoreLogger()->info(__VA_ARGS__)
@@ -55,7 +55,7 @@ class Log {
 #define LOG_WARN(...) ::wv::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define LOG_ERROR(...) ::wv::Log::GetClientLogger()->error(__VA_ARGS__)
 #define LOG_CRITICAL(...) ::wv::Log::GetClientLogger()->critical(__VA_ARGS__)
-#endif
+// #endif
 }  // namespace wv
 
 #pragma clang diagnostic pop

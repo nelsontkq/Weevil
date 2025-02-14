@@ -7,10 +7,11 @@ class IModule {
  public:
   virtual ~IModule() = default;
   virtual void init() {}
-  virtual void preupdate(float deltaTime) {}
-  virtual void update(float deltaTime) {}
-  virtual void render(SDL_Renderer* renderer, float deltaTime) {}
+  virtual void preupdate(float) {}
+  virtual void update(float) {}
+  virtual void render(SDL_Renderer*, float) {}
   virtual void shutdown() {}
+  virtual void process_event(SDL_Event&) {}
 };
 
 }  // namespace wv
