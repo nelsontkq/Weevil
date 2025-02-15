@@ -15,7 +15,8 @@ class AppSettings {
   bool fullscreen;
   bool resizable;
   std::string asset_path;
-  std::string modules_dir;
+  std::string src_dir;
+  std::string debug_preset; 
 };
 
 }  // namespace wv

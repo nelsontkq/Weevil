@@ -8,11 +8,11 @@ SDL_Color squareColor = {255, 0, 0, 255};
 class GameplayModule : public wv::IModule {
   void init() override { LOG_INFO("Gameplay system initialized."); }
   void update(float deltaTime) override {
-    square.x += 1;
+    square.x += 5;
     if (square.x > 1920) {
       square.x = 0;
     }
-    square.y += 1;
+    square.y += 6;
     if (square.y > 1080) {
       square.y = 0;
     }

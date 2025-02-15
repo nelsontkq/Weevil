@@ -17,6 +17,7 @@ void wv::HotReloader::stop() {
   }
   stop_flag_ = true;
   exit_event_.notify(1);
+  queue_cv_.notify_all();
 
   if (watcher_thread_.joinable()) {
     watcher_thread_.join();
@@ -26,13 +27,32 @@ void wv::HotReloader::stop() {
   }
 }
 
-void wv::HotReloader::start(const std::string &modules_dir) {
-  modules_dir_ = modules_dir;
+void wv::HotReloader::start(const std::filesystem::path &src_dir, std::string debug_preset) {
+  src_dir_ = src_dir;
+  debug_preset_ = debug_preset;
   watcher_thread_ = std::thread(&wv::HotReloader::watch_modules_src, this);
   worker_thread_ = std::thread(&wv::HotReloader::worker_loop, this);
 }
 void wv::HotReloader::worker_loop() {
-  
+  while (!stop_flag_) {
+    size_t key;
+    {
+      std::unique_lock<std::mutex> lock(queue_mutex_);
+      queue_cv_.wait(lock, [this] { return !build_queue_.empty() || stop_flag_; });
+      if (stop_flag_) break;
+      key = build_queue_.front();
+      build_queue_.pop();
+      int status = run_build_command(key);
+      if (status == 0) {
+        SDL_Event event;
+        SDL_zero(event);
+        event.type = SDL_EVENT_USER;
+        event.user.code = static_cast<int>(wv::EngineEvent::WV_EVENT_RELOAD_MODULE);
+        event.user.data1 = reinterpret_cast<void *>(key);
+        SDL_PushEvent(&event);
+      }
+    }
+  }
 }
 
 int wv::HotReloader::run_build_command(size_t key) {
@@ -43,7 +63,7 @@ int wv::HotReloader::run_build_command(size_t key) {
   target = it->second;
 
   // Construct the build command.
-  std::string cmd = "cmake --build . --target " + target;
+  std::string cmd = "cd " + src_dir_.string() + " && cmake --build --preset " + debug_preset_ + " --target " + target;
   CORE_INFO("[HotReloader] Running build command: {}", cmd);
 
   // Fork a new process to run the build.
@@ -53,9 +73,10 @@ int wv::HotReloader::run_build_command(size_t key) {
     return errno;
   }
   if (pid == 0) {
-    // In the child process, execute the build command.
-    execl("/usr/bin/sh", "sh", "-c", cmd.c_str(), nullptr);
-    _exit(127);  // If execl fails.
+    // Child process: execute the build command.
+    execl("/bin/sh", "sh", "-c", cmd.c_str(), nullptr);
+    CORE_ERROR("[HotReloader] execl failed: {}", std::strerror(errno));
+    exit(127);
   }
 
   int status = 0;
@@ -93,18 +114,18 @@ void wv::HotReloader::watch_modules_src() {
       }
     }
   };
+  const std::string modules_dir = (src_dir_ / "modules").string();
 
   // Add a watch on the base modules directory to detect new module directories.
-  int base_wd = inotify_add_watch(inotify_fd, modules_dir_.c_str(), IN_CREATE | IN_MOVED_TO | IN_DELETE);
+  int base_wd = inotify_add_watch(inotify_fd, modules_dir.c_str(), IN_CREATE | IN_MOVED_TO | IN_DELETE);
   if (base_wd < 0) {
-    CORE_ERROR("[HotReloader] inotify_add_watch failed for base directory {}: {}", modules_dir_, std::strerror(errno));
+    CORE_ERROR("[HotReloader] inotify_add_watch failed for base directory {}: {}", modules_dir, std::strerror(errno));
     close(inotify_fd);
     return;
   }
-  wd_to_path[base_wd] = modules_dir_;
+  wd_to_path[base_wd] = modules_dir;
 
-  // For each subdirectory in the base modules directory (i.e. each module), add recursive watches.
-  for (const auto &entry : std::filesystem::directory_iterator(modules_dir_)) {
+  for (const auto &entry : std::filesystem::directory_iterator(modules_dir)) {
     if (entry.is_directory()) {
       add_watch_recursive(entry.path().string());
     }
@@ -144,7 +165,7 @@ void wv::HotReloader::watch_modules_src() {
         std::string full_path = dir + "/" + event->name;
 
         // If the event occurred in the base modules directory, check for a new module.
-        if (dir == modules_dir_ && (event->mask & (IN_CREATE | IN_MOVED_TO))) {
+        if (dir == modules_dir && (event->mask & (IN_CREATE | IN_MOVED_TO))) {
           std::filesystem::path potential_module(full_path);
           if (std::filesystem::is_directory(potential_module)) {
             CORE_INFO("[HotReloader] New module directory detected: {}", full_path);
@@ -156,7 +177,7 @@ void wv::HotReloader::watch_modules_src() {
         if (!(event->mask & IN_ISDIR)) {
           std::string file_name(event->name);
           // Compute the relative path from the base modules directory.
-          std::filesystem::path rel_path = std::filesystem::relative(full_path, modules_dir_);
+          auto rel_path = std::filesystem::relative(full_path, modules_dir);
           std::string module_name;
           if (!rel_path.empty()) {
             // The module name is the first component of the relative path.
@@ -177,6 +198,7 @@ void wv::HotReloader::watch_modules_src() {
             CORE_INFO("[HotReloader] Change detected in module: {} (key: {})", module_name, key);
             build_queue_.push(key);
             keys_built.insert(key);
+            queue_cv_.notify_one();
           }
         }
 
