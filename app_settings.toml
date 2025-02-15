@@ -6,5 +6,5 @@ resizable = false
 fullscreen = false
 
 [general]
-assets = "/home/nelson/Development/Weevil/assets"
-modules_dir = "/home/nelson/Development/Weevil/modules"
+src_dir = "/home/nelson/Development/Weevil"
+debug_preset = "linux-debug"
