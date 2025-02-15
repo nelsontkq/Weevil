@@ -23,9 +23,10 @@
 
 // Third-Party Libraries
 #include <SDL3/SDL.h>
+#include <spdlog/fmt/ostr.h>
+#include <spdlog/spdlog.h>
 
-#include "spdlog/fmt/ostr.h"
-#include "spdlog/spdlog.h"
+#include <entt/entt.hpp>
 
 // Engine
 #include "core/app_settings.h"
@@ -39,7 +40,6 @@ inline void wvAssertImpl(const bool condition, const char* conditionStr, const c
   if (condition) {
     return;
   }
-
   const auto error = "Assertion failed: " + std::string(conditionStr) + "\n" + message;
   // TODO: text too small, use a custom dialog
   SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Assertion Failed", error.c_str(), nullptr);

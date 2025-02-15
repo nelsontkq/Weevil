@@ -81,6 +81,7 @@ target_link_libraries(WeevilEngine
         SDL3::SDL3
         spdlog::spdlog
         tomlplusplus::tomlplusplus
+        EnTT::EnTT
 )
 
 add_executable(WeevilApp src/dummy.cpp)
