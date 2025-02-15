@@ -2,16 +2,16 @@
 
 class SDL_Renderer;
 namespace wv {
-// This class is a module that can be loaded by the application.
+  enum class ModulePhase {
+    PREUPDATE,
+    UPDATE
+  };
 class IModule {
  public:
   virtual ~IModule() = default;
-  virtual void init() {}
-  virtual void preupdate(float) {}
-  virtual void update(float) {}
-  virtual void render(SDL_Renderer*, float) {}
-  virtual void shutdown() {}
-  virtual void process_event(SDL_Event&) {}
+  virtual void init(entt::registry& registry, entt::dispatcher& dispatcher) {}
+  virtual void update(entt::registry& registry, entt::dispatcher& dispatcher, float deltaTime) {}
+  
 };
 
 }  // namespace wv
