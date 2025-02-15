@@ -6,21 +6,23 @@
 namespace wv {
 class IModule;
 
-
-// Loads all modules in the modules directory. Throws an exception if there’s
-// not exactly 1 init module.
+struct ModuleData {
+  SDL_SharedObject* so;
+  IModule* mod;
+};
 class ModuleManager {
  public:
   ModuleManager();
   void load_modules();
-  void shutdown();
   void reload_module(size_t module);
-  void process_event(SDL_Event& event);
+
+  void init(std::string& file_watch_dir);
   void update(SDL_Renderer* renderer, float deltaTime);
+  void process_event(SDL_Event& event);
+  void shutdown();
 
  private:
-  std::vector<SDL_SharedObject*> modules_;
-  std::unordered_map<size_t, IModule*> active_modules_{};
+  std::unordered_map<size_t, ModuleData> modules_;
   wv::HotReloader hot_reloader_;
 };
 }  // namespace wv
