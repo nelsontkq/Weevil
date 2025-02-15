@@ -11,62 +11,36 @@ wv::HotReloader::HotReloader() : exit_event_(0), stop_flag_(false) {}
 
 wv::HotReloader::~HotReloader() { stop(); }
 
-void wv::HotReloader::rebuild_module(size_t key) {
-  {
-    std::lock_guard<std::mutex> lock(queue_mutex_);
-    build_queue_.push(key);
-  }
-  queue_cv_.notify_one();
-}
-
 void wv::HotReloader::stop() {
   if (stop_flag_) {
     return;
   }
   stop_flag_ = true;
   exit_event_.notify(1);
-  queue_cv_.notify_all();
 
   if (watcher_thread_.joinable()) {
     watcher_thread_.join();
   }
-  for (auto &thread : worker_threads_) {
-    if (thread.joinable()) {
-      thread.join();
-    }
+  if (worker_thread_.joinable()) {
+    worker_thread_.join();
   }
 }
 
 void wv::HotReloader::start(const std::string &modules_dir) {
   modules_dir_ = modules_dir;
   watcher_thread_ = std::thread(&wv::HotReloader::watch_modules_src, this);
-  const int num_workers = 4;
-  for (int i = 0; i < num_workers; ++i) {
-    worker_threads_.emplace_back(&wv::HotReloader::worker_loop, this);
-  }
+  worker_thread_ = std::thread(&wv::HotReloader::worker_loop, this);
 }
 void wv::HotReloader::worker_loop() {
-  while (!stop_flag_) {
-    size_t key;
-    {
-      std::unique_lock<std::mutex> lock(queue_mutex_);
-      queue_cv_.wait(lock, [this] { return !build_queue_.empty() || stop_flag_; });
-      if (stop_flag_) break;
-      key = build_queue_.front();
-      build_queue_.pop();
-    }
-    run_build_command(key);
-  }
+  
 }
 
 int wv::HotReloader::run_build_command(size_t key) {
   std::string target;
-  {
-    std::lock_guard<std::mutex> lock(modules_mutex_);
-    auto it = modules_map_.find(key);
-    WV_ASSERT(it != modules_map_.end(), "[HotReloader] Module with key not found!");
-    target = it->second;
-  }
+
+  auto it = modules_map_.find(key);
+  WV_ASSERT(it != modules_map_.end(), "[HotReloader] Module with key not found!");
+  target = it->second;
 
   // Construct the build command.
   std::string cmd = "cmake --build . --target " + target;
@@ -98,20 +72,45 @@ int wv::HotReloader::run_build_command(size_t key) {
   }
   return status;
 }
-
 void wv::HotReloader::watch_modules_src() {
   int inotify_fd = inotify_init();
   if (inotify_fd < 0) {
     CORE_ERROR("[HotReloader] inotify_init failed: {}", std::strerror(errno));
     return;
   }
-  int wd = inotify_add_watch(inotify_fd, modules_dir_.c_str(), IN_CREATE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO);
-  if (wd < 0) {
-    CORE_ERROR("[HotReloader] inotify_add_watch failed for {}: {}", modules_dir_, std::strerror(errno));
+  std::unordered_map<int, std::string> wd_to_path;
+  std::function<void(const std::string &)> add_watch_recursive = [&](const std::string &path) {
+    int wd =
+        inotify_add_watch(inotify_fd, path.c_str(), IN_CREATE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO | IN_DELETE);
+    if (wd < 0) {
+      CORE_ERROR("[HotReloader] inotify_add_watch failed for {}: {}", path, std::strerror(errno));
+      return;
+    }
+    wd_to_path[wd] = path;
+    for (const auto &entry : std::filesystem::directory_iterator(path)) {
+      if (entry.is_directory()) {
+        add_watch_recursive(entry.path().string());
+      }
+    }
+  };
+
+  // Add a watch on the base modules directory to detect new module directories.
+  int base_wd = inotify_add_watch(inotify_fd, modules_dir_.c_str(), IN_CREATE | IN_MOVED_TO | IN_DELETE);
+  if (base_wd < 0) {
+    CORE_ERROR("[HotReloader] inotify_add_watch failed for base directory {}: {}", modules_dir_, std::strerror(errno));
     close(inotify_fd);
     return;
   }
+  wd_to_path[base_wd] = modules_dir_;
 
+  // For each subdirectory in the base modules directory (i.e. each module), add recursive watches.
+  for (const auto &entry : std::filesystem::directory_iterator(modules_dir_)) {
+    if (entry.is_directory()) {
+      add_watch_recursive(entry.path().string());
+    }
+  }
+
+  // Setup polling on the inotify file descriptor and an exit event.
   constexpr size_t event_buffer_size = 1024 * (sizeof(inotify_event) + 16);
   char buffer[event_buffer_size];
   struct pollfd fds[2];
@@ -137,47 +136,58 @@ void wv::HotReloader::watch_modules_src() {
         CORE_ERROR("[HotReloader] read() in watch_modules_src: {}", std::strerror(errno));
         break;
       }
-      // Use a set to avoid duplicate build enqueues during this poll cycle.
+      // Use a set to avoid enqueueing multiple builds for the same module in one poll cycle.
       std::unordered_set<size_t> keys_built;
       for (char *ptr = buffer; ptr < buffer + len;) {
         inotify_event *event = reinterpret_cast<inotify_event *>(ptr);
-        if (event->mask & (IN_CREATE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO)) {
-          // event->name is relative to modules_dir_.
-          std::string relative_path(event->name);
-          // Determine the module name by taking the first path component.
-          std::string module_name;
-          size_t pos = relative_path.find('/');
-          if (pos != std::string::npos) {
-            module_name = relative_path.substr(0, pos);
-          } else {
-            module_name = relative_path;
+        std::string dir = wd_to_path[event->wd];
+        std::string full_path = dir + "/" + event->name;
+
+        // If the event occurred in the base modules directory, check for a new module.
+        if (dir == modules_dir_ && (event->mask & (IN_CREATE | IN_MOVED_TO))) {
+          std::filesystem::path potential_module(full_path);
+          if (std::filesystem::is_directory(potential_module)) {
+            CORE_INFO("[HotReloader] New module directory detected: {}", full_path);
+            add_watch_recursive(full_path);
           }
-          // Compute the key using a hash function.
+        }
+
+        // Only process file events (ignore directories) for source files.
+        if (!(event->mask & IN_ISDIR)) {
+          std::string file_name(event->name);
+          // Compute the relative path from the base modules directory.
+          std::filesystem::path rel_path = std::filesystem::relative(full_path, modules_dir_);
+          std::string module_name;
+          if (!rel_path.empty()) {
+            // The module name is the first component of the relative path.
+            module_name = rel_path.begin()->string();
+          } else {
+            module_name = file_name;
+          }
+
+          // Use a hash of the module name as a key.
           static const std::hash<std::string> hash_fn;
           size_t key = hash_fn(module_name);
 
-          // If this module is new, add it to our collection.
-          {
-            std::lock_guard<std::mutex> mod_lock(modules_mutex_);
-            if (modules_map_.find(key) == modules_map_.end()) {
-              CORE_INFO("[HotReloader] New module detected: {} (key: {})", module_name, key);
-              modules_map_[key] = module_name;
-            }
+          if (modules_map_.find(key) == modules_map_.end()) {
+            CORE_INFO("[HotReloader] New module detected: {} (key: {})", module_name, key);
+            modules_map_[key] = module_name;
           }
-          // Avoid duplicate build enqueues in the same poll cycle.
           if (keys_built.find(key) == keys_built.end()) {
             CORE_INFO("[HotReloader] Change detected in module: {} (key: {})", module_name, key);
-            {
-              std::lock_guard<std::mutex> lock(queue_mutex_);
-              build_queue_.push(key);
-            }
-            queue_cv_.notify_one();
+            build_queue_.push(key);
             keys_built.insert(key);
           }
         }
+
         ptr += sizeof(inotify_event) + event->len;
       }
     }
+  }
+
+  // Cleanup: remove all watches and close the inotify file descriptor.
+  for (const auto &entry : wd_to_path) {
+    inotify_rm_watch(inotify_fd, entry.first);
   }
   close(inotify_fd);
   CORE_INFO("[HotReloader] Exiting watch_modules_src thread.");

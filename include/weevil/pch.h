@@ -35,31 +35,25 @@
 #include "core/weevil_api.h"
 
 #ifdef WV_ENABLE_ASSERTS
-inline void wvAssertImpl(const bool condition, const char* conditionStr,
-                         const char* message) {
+inline void wvAssertImpl(const bool condition, const char* conditionStr, const char* message) {
   if (condition) {
     return;
   }
 
-  const auto error =
-      "Assertion failed: " + std::string(conditionStr) + "\n" + message;
+  const auto error = "Assertion failed: " + std::string(conditionStr) + "\n" + message;
   // TODO: text too small, use a custom dialog
-  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Assertion Failed",
-                           error.c_str(), nullptr);
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Assertion Failed", error.c_str(), nullptr);
   abort();
 }
-inline void wvAssertImpl(const bool condition, const char* conditionStr,
-                         const std::string& message) {
+inline void wvAssertImpl(const bool condition, const char* conditionStr, const std::string& message) {
   wvAssertImpl(condition, conditionStr, message.c_str());
 }
-#define WV_ASSERT(condition, message) \
-  wvAssertImpl((condition), #condition, (message))
+#define WV_ASSERT(condition, message) wvAssertImpl((condition), #condition, (message))
 #else
 #define WV_ASSERT(condition, message) ((void)0)
 #endif
-#define WV_MODULE(module)                                               \
-  extern "C" {                                                          \
-  wv::IModule* create_module() { return new module(); }                 \
-                                                                        \
-  const char* get_file_name() { return __FILE__; }                      \
+
+#define WV_MODULE(module)                               \
+  extern "C" {                                          \
+  wv::IModule* create_module() { return new module(); } \
   }

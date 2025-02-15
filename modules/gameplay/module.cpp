@@ -17,6 +17,7 @@ class GameplayModule : public wv::IModule {
       square.y = 0;
     }
   }
+
   void render(SDL_Renderer* renderer, float deltaTime) override {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_MAX_UINT8);
     SDL_RenderClear(renderer);

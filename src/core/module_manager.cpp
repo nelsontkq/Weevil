@@ -12,8 +12,8 @@ using GetModule = wv::IModule *(*)();
 
 }  // namespace
 
-wv::ModuleManager::ModuleManager(){
-}
+wv::ModuleManager::ModuleManager() {}
+
 void wv::ModuleManager::load_modules() {
   auto module_so_dir = std::filesystem::path(SDL_GetBasePath()) / "modules";
   auto files = std::filesystem::directory_iterator(module_so_dir);
@@ -28,76 +28,64 @@ void wv::ModuleManager::load_modules() {
       ".dylib";
 #endif
 
+  std::hash<std::string> hash_fn;
+
   for (const auto &file : files) {
     if (file.path().extension() == ext) {
-      modules_.push_back(SDL_LoadObject(file.path().c_str()));
+      // libmodule_name.so
+      auto module_name = hash_fn(file.path().stem().string().substr(3));
+      auto so = SDL_LoadObject(file.path().c_str());
+      if (!so) {
+        CORE_ERROR("Failed to load module: {}", SDL_GetError());
+        continue;
+      }
+      modules_[module_name] = {so, nullptr};
     }
   }
-  for (const auto &module : modules_) {
-    if (!module) {
-      CORE_ERROR("Failed to load module: {}", SDL_GetError());
-      continue;
+}
+void wv::ModuleManager::init(std::string &file_watch_dir) {
+  for (auto &[so, mod] : modules_ | std::views::values) {
+    if (!mod) {
+      auto create_module = reinterpret_cast<GetModule>(SDL_LoadFunction(so, "create_module"));
+      if (!create_module) {
+        CORE_ERROR("Failed to load create_module function: {}", SDL_GetError());
+        continue;
+      }
+      mod = create_module();
+      if (!mod) {
+        CORE_ERROR("Failed to load module: {}", SDL_GetError());
+        continue;
+      }
+      mod->init();
     }
-    auto get_module_name = (GetConstCharPtr)SDL_LoadFunction(module, "get_module_name");
-    if (!get_module_name) {
-      CORE_ERROR("Failed to load get_module_name: {}", SDL_GetError());
-      continue;
-    }
-    auto create_module = (GetModule)SDL_LoadFunction(module, "create_module");
-    if (!create_module) {
-      CORE_ERROR("Failed to load create_module: {}", SDL_GetError());
-      continue;
-    }
-    IModule *active_module = create_module();
-    if (!active_module) {
-      CORE_ERROR("Failed to create module: {}", SDL_GetError());
-      continue;
-    }
-    std::string module_name;
-    std::string relative_path = get_module_name();
-    size_t pos = relative_path.find('/');
-    if (pos != std::string::npos) {
-      module_name = relative_path.substr(0, pos);
-    } else {
-      module_name = relative_path;
-    }
-    // Compute the key using a hash function.
-    static const std::hash<std::string> hash_fn;
-    size_t key = hash_fn(module_name);
-    active_modules_[key] = active_module;
   }
-  for (const auto &active_module : active_modules_ | std::views::values) {
-    active_module->init();
-  }
+  hot_reloader_.start(file_watch_dir);
 }
 void wv::ModuleManager::shutdown() {
-  for (const auto &active_module : active_modules_ | std::views::values) {
-    active_module->shutdown();
-    delete active_module;
-  }
-  for (const auto &module : modules_) {
-    SDL_UnloadObject(module);
+  for (const auto &[so, mod] : modules_ | std::views::values) {
+    if (mod) {
+      mod->shutdown();
+      delete mod;
+    }
+    SDL_UnloadObject(so);
   }
   modules_.clear();
-  active_modules_.clear();
 }
 
-void wv::ModuleManager::reload_module(size_t module) { hot_reloader_.rebuild_module(module); }
-
 void wv::ModuleManager::update(SDL_Renderer *renderer, float deltaTime) {
-  for (const auto &active_module : active_modules_ | std::views::values) {
-    active_module->preupdate(deltaTime);
+  for (const auto &[so, mod] : modules_ | std::views::values) {
+    mod->preupdate(deltaTime);
   }
-  for (const auto &active_module : active_modules_ | std::views::values) {
-    active_module->update(deltaTime);
+  for (const auto &[so, mod] : modules_ | std::views::values) {
+    mod->update(deltaTime);
   }
-  for (const auto &active_module : active_modules_ | std::views::values) {
-    active_module->render(renderer, deltaTime);
+  for (const auto &[so, mod] : modules_ | std::views::values) {
+    mod->render(renderer, deltaTime);
   }
 }
 
 void wv::ModuleManager::process_event(SDL_Event &event) {
-  for (const auto &active_module : active_modules_ | std::views::values) {
-    active_module->process_event(event);
+  for (const auto &[_, mod] : modules_ | std::views::values) {
+    mod->process_event(event);
   }
 }
