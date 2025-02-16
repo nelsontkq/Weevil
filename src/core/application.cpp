@@ -38,7 +38,7 @@ void wv::Application::init() {
   }
   // TODO: async
   module_manager_.load_modules();
-  module_manager_.init(settings_);
+  module_manager_.init(settings_, sdl_renderer_);
 }
 
 SDL_AppResult wv::Application::process_event(SDL_Event& event) {

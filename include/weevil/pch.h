@@ -33,7 +33,6 @@
 #include "core/imodule.h"
 #include "core/log.h"
 #include "core/uuid.h"
-#include "core/weevil_api.h"
 
 #ifdef WV_ENABLE_ASSERTS
 inline void wvAssertImpl(const bool condition, const char* conditionStr, const char* message) {
@@ -52,8 +51,3 @@ inline void wvAssertImpl(const bool condition, const char* conditionStr, const s
 #else
 #define WV_ASSERT(condition, message) ((void)0)
 #endif
-
-#define WV_MODULE(module)                               \
-  extern "C" {                                          \
-  wv::IModule* create_module() { return new module(); } \
-  }

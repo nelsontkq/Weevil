@@ -1,31 +1,56 @@
-#include <weevil/core/app_settings.h>
-#include <weevil/pch.h>
-namespace {
-SDL_FRect square = {100, 100, 50, 50};
-SDL_Color squareColor = {255, 0, 0, 255};
-}  // namespace
+#include <weevil/weevil_api.h>
+
+struct Rectangle {};
 
 class GameplayModule : public wv::IModule {
-  void init() override { LOG_INFO("Gameplay system initialized."); }
-  void update(float deltaTime) override {
-    square.x += 5;
-    if (square.x > 1920) {
-      square.x = 0;
+ public:
+  void init(entt::registry& registry, entt::dispatcher& dispatcher) {
+    LOG_INFO("GameplayModule::init");
+    auto rend = registry.ctx().get<RenderingContext>();
+    width_ = rend.window_width;
+    height_ = rend.window_height;
+
+    auto rng = registry.ctx().get<Rngen>();
+    auto entity = registry.create();
+    registry.emplace<Rectangle>(entity);
+    registry.emplace<Transform>(entity, rng.random<Transform>(width_, height_, 10, 50));
+    registry.emplace<Color>(entity, rng.random<Color>());
+  }
+  void update(entt::registry& registry, entt::dispatcher& dispatcher, float dt) {
+    // spawn a new entity every 2 seconds
+    static float timer = 0;
+    timer += dt;
+    if (timer > 2) {
+      timer = 0;
+      auto entity = registry.create();
+      registry.emplace<Rectangle>(entity);
+      registry.emplace<Transform>(entity, registry.ctx().get<Rngen>().random<Transform>(width_, height_, 10, 50));
+      registry.emplace<Color>(entity, registry.ctx().get<Rngen>().random<Color>());
     }
-    square.y += 6;
-    if (square.y > 1080) {
-      square.y = 0;
+    auto view = registry.view<const Rectangle, Transform>();
+    auto rng = registry.ctx().get<Rngen>();
+    for (auto entity : view) {
+      auto& transform = view.get<Transform>(entity);
+      transform.position.x += rng.random<float>(-2.0, 2.0);
+      if (transform.position.x > width_) {
+        transform.position.x = 0;
+      } else if (transform.position.x < 0) {
+        transform.position.x = width_;
+      }
+      transform.position.y += rng.random<float>(-2.0, 2.0);
+      if (transform.position.y > height_) {
+        transform.position.y = 0;
+      } else if (transform.position.y < 0) {
+        transform.position.y = height_;
+      }
     }
   }
 
-  void render(SDL_Renderer* renderer, float deltaTime) override {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_MAX_UINT8);
-    SDL_RenderClear(renderer);
+  void shutdown(entt::registry& registry, entt::dispatcher& dispatcher) { LOG_INFO("GameplayModule::shutdown"); }
 
-    SDL_SetRenderDrawColor(renderer, squareColor.r, squareColor.g,
-                           squareColor.b, squareColor.a);
-    SDL_RenderFillRect(renderer, &square);
-    SDL_RenderPresent(renderer);
-  }
+ private:
+  int width_;
+  int height_;
 };
+
 WV_MODULE(GameplayModule)
