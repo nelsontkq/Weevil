@@ -28,6 +28,10 @@ struct Size {
   float width;
   float height;
 };
+struct Text {
+  std::string text;
+  int fontSize;
+};
 
 struct Transform {
   Vector2 position;

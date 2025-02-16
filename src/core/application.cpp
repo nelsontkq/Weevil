@@ -42,6 +42,9 @@ void wv::Application::init() {
 }
 
 SDL_AppResult wv::Application::process_event(SDL_Event& event) {
+  if (event.type == SDL_EVENT_QUIT) {
+    quitting_ = true;
+  }
   if (event.type == SDL_EVENT_USER) {
     if (event.user.code == static_cast<int>(EngineEvent::WV_EVENT_RELOAD_MODULE)) {
       size_t key = reinterpret_cast<size_t>(event.user.data1);
@@ -52,6 +55,10 @@ SDL_AppResult wv::Application::process_event(SDL_Event& event) {
   return SDL_APP_CONTINUE;
 }
 SDL_AppResult wv::Application::iterate() {
+  if (quitting_) {
+    module_manager_.shutdown();
+    return SDL_APP_SUCCESS;
+  }
   const uint64_t currentTicks = SDL_GetTicks();
   delta_ticks_ = currentTicks - delta_ticks_;
   module_manager_.update(sdl_renderer_, (float)delta_ticks_ / 1000.f);
