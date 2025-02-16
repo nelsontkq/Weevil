@@ -13,6 +13,7 @@ class Application {
   SDL_AppResult iterate();
 
  private:
+  bool quitting_ = false;
   SDL_Window *sdl_window_;
   SDL_Renderer *sdl_renderer_;
   uint64_t delta_ticks_ = 0;

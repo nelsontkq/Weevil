@@ -1,17 +1,13 @@
 #pragma once
-
-class SDL_Renderer;
+#include <entt/entt.hpp>
 namespace wv {
-  enum class ModulePhase {
-    PREUPDATE,
-    UPDATE
-  };
+
 class IModule {
  public:
   virtual ~IModule() = default;
   virtual void init(entt::registry& registry, entt::dispatcher& dispatcher) {}
-  virtual void update(entt::registry& registry, entt::dispatcher& dispatcher, float deltaTime) {}
-  
+  virtual void update(entt::registry& registry, entt::dispatcher& dispatcher, float dt) {}
+  virtual void shutdown(entt::registry& registry, entt::dispatcher& dispatcher) {}
 };
 
 }  // namespace wv
