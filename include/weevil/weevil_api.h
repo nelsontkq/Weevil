@@ -9,7 +9,7 @@
 
 #include <entt/entt.hpp>
 
-#define WV_MODULE(module)                               \
-  extern "C" {                                          \
-  wv::IModule* create_module() { return new module(); } \
+#define WV_MODULE(module)                                  \
+  extern "C" {                                             \
+  wv::IModule* wv_create_module() { return new module(); } \
   }
