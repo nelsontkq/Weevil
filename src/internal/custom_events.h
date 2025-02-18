@@ -1,7 +1,7 @@
 #pragma once
+#include <weevil/pch.h>
 
 namespace wv {
-struct EngineEvent {
-  static constexpr uint32_t WV_EVENT_RELOAD_MODULE = 1;
-};
+// Triggered when a module may need to be reloaded
+struct ReloadModuleEvent {};
 }  // namespace wv

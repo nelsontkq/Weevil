@@ -51,3 +51,15 @@ inline void wvAssertImpl(const bool condition, const char* conditionStr, const s
 #else
 #define WV_ASSERT(condition, message) ((void)0)
 #endif
+
+const auto WV_MODULE_CREATOR_FN_NAME = "wv_create_module";
+
+#ifdef WV_PLATFORM_WINDOWS
+constexpr auto WV_DYLIB_EXT = ".dll";
+#elif defined(WV_PLATFORM_LINUX)
+constexpr auto WV_DYLIB_EXT = ".so";
+#elif defined(WV_PLATFORM_MACOS)
+constexpr auto WV_DYLIB_EXT = ".dylib";
+#else
+#error "Unsupported platform"
+#endif

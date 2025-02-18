@@ -9,8 +9,6 @@
 
 #include "internal/custom_events.h"
 
-wv::Application::Application() {}
-
 void wv::Application::init() {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     CORE_ERROR("Failed to initialize SDL" + std::string(SDL_GetError()));
@@ -37,7 +35,6 @@ void wv::Application::init() {
     }
   }
   // TODO: async
-  module_manager_.load_modules();
   module_manager_.init(settings_, sdl_renderer_);
 }
 
@@ -45,13 +42,7 @@ SDL_AppResult wv::Application::process_event(SDL_Event& event) {
   if (event.type == SDL_EVENT_QUIT) {
     quitting_ = true;
   }
-  if (event.type == SDL_EVENT_USER) {
-    if (event.user.code == static_cast<int>(EngineEvent::WV_EVENT_RELOAD_MODULE)) {
-      size_t key = reinterpret_cast<size_t>(event.user.data1);
-      module_manager_.reload_module(key);
-    }
-  }
-  module_manager_.process_event(event);
+  module_manager_.process_system_event(event);
   return SDL_APP_CONTINUE;
 }
 SDL_AppResult wv::Application::iterate() {

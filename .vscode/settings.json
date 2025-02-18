@@ -105,9 +105,10 @@
         "**/Thumbs.db": true,
         ".idea": true,
         ".cache": true,
-        "vendor/*/*": true
+        "vendor/*/*": true,
     },
     "search.exclude": {
+        "build": true,
         "vendor": true
     },
     "C_Cpp.default.compilerPath": "/usr/bin/clang++"

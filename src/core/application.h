@@ -6,7 +6,6 @@
 namespace wv {
 class Application {
  public:
-  Application();
   void init();
   void shutdown();
   SDL_AppResult process_event(SDL_Event &event);

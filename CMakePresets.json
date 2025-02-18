@@ -1,31 +1,31 @@
 {
-    "version": 6,
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 30,
-        "patch": 0
-    },
-    "configurePresets": [
-        {
-            "name": "linux-debug",
-            "displayName": "Linux Debug",
-            "description": "Configure for a Linux debug build.",
-            "generator": "Ninja",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "WV_HOT_RELOAD": "ON",
-                "WV_ENABLE_ASSERTS": "ON",
-                "WV_LOG": "trace"
-            },
-            "binaryDir": "build/linux/debug"
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "linux-debug",
-            "displayName": "Linux Debug",
-            "description": "Build the Linux debug configuration.",
-            "configurePreset": "linux-debug"
-        }
-    ]
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 30,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "linux-debug",
+      "displayName": "Linux Debug",
+      "description": "Configure for a Linux debug build.",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "WV_HOT_RELOAD": "ON",
+        "WV_ENABLE_ASSERTS": "ON",
+        "WV_LOG": "trace"
+      },
+      "binaryDir": "build"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-debug",
+      "displayName": "Linux Debug",
+      "description": "Build the Linux debug configuration.",
+      "configurePreset": "linux-debug"
+    }
+  ]
 }

@@ -27,41 +27,33 @@ void wv::HotReloader::stop() {
   }
 }
 
-void wv::HotReloader::start(const std::filesystem::path &src_dir, std::string debug_preset) {
+void wv::HotReloader::start(const std::filesystem::path &src_dir, std::string debug_preset,
+                            entt::dispatcher *dispatcher) {
   src_dir_ = src_dir;
   debug_preset_ = debug_preset;
+  dispatcher_ = dispatcher;
   watcher_thread_ = std::thread(&wv::HotReloader::watch_modules_src, this);
   worker_thread_ = std::thread(&wv::HotReloader::worker_loop, this);
 }
 void wv::HotReloader::worker_loop() {
   while (!stop_flag_) {
-    size_t key;
     {
       std::unique_lock<std::mutex> lock(queue_mutex_);
       queue_cv_.wait(lock, [this] { return !build_queue_.empty() || stop_flag_; });
       if (stop_flag_) break;
-      key = build_queue_.front();
+      auto key = build_queue_.front();
       build_queue_.pop();
       int status = run_build_command(key);
       if (status == 0) {
-        SDL_Event event;
-        SDL_zero(event);
-        event.type = SDL_EVENT_USER;
-        event.user.code = static_cast<int>(wv::EngineEvent::WV_EVENT_RELOAD_MODULE);
-        event.user.data1 = reinterpret_cast<void *>(key);
-        SDL_PushEvent(&event);
+        dispatcher_->trigger(key);
+      } else {
+        CORE_ERROR("[HotReloader] Build failed for module: {}", key);
       }
     }
   }
 }
 
-int wv::HotReloader::run_build_command(size_t key) {
-  std::string target;
-
-  auto it = modules_map_.find(key);
-  WV_ASSERT(it != modules_map_.end(), "[HotReloader] Module with key not found!");
-  target = it->second;
-
+int wv::HotReloader::run_build_command(std::string &target) {
   // Construct the build command.
   std::string cmd = "cd " + src_dir_.string() + " && cmake --build --preset " + debug_preset_ + " --target " + target;
   CORE_INFO("[HotReloader] Running build command: {}", cmd);
@@ -158,13 +150,11 @@ void wv::HotReloader::watch_modules_src() {
         break;
       }
       // Use a set to avoid enqueueing multiple builds for the same module in one poll cycle.
-      std::unordered_set<size_t> keys_built;
+      std::unordered_set<std::string> keys_built;
       for (char *ptr = buffer; ptr < buffer + len;) {
-        inotify_event *event = reinterpret_cast<inotify_event *>(ptr);
+        auto event = (inotify_event *)(ptr);
         std::string dir = wd_to_path[event->wd];
         std::string full_path = dir + "/" + event->name;
-
-        // If the event occurred in the base modules directory, check for a new module.
         if (dir == modules_dir && (event->mask & (IN_CREATE | IN_MOVED_TO))) {
           std::filesystem::path potential_module(full_path);
           if (std::filesystem::is_directory(potential_module)) {
@@ -175,29 +165,15 @@ void wv::HotReloader::watch_modules_src() {
 
         // Only process file events (ignore directories) for source files.
         if (!(event->mask & IN_ISDIR)) {
-          std::string file_name(event->name);
           // Compute the relative path from the base modules directory.
           auto rel_path = std::filesystem::relative(full_path, modules_dir);
           std::string module_name;
-          if (!rel_path.empty()) {
-            // The module name is the first component of the relative path.
-            module_name = rel_path.begin()->string();
-          } else {
-            module_name = file_name;
-          }
-
-          // Use a hash of the module name as a key.
-          static const std::hash<std::string> hash_fn;
-          size_t key = hash_fn(module_name);
-
-          if (modules_map_.find(key) == modules_map_.end()) {
-            CORE_INFO("[HotReloader] New module detected: {} (key: {})", module_name, key);
-            modules_map_[key] = module_name;
-          }
-          if (keys_built.find(key) == keys_built.end()) {
-            CORE_INFO("[HotReloader] Change detected in module: {} (key: {})", module_name, key);
-            build_queue_.push(key);
-            keys_built.insert(key);
+          WV_ASSERT(!rel_path.empty(), "Invalid path");
+          module_name = rel_path.begin()->string();
+          if (keys_built.find(module_name) == keys_built.end()) {
+            CORE_INFO("[HotReloader] Change detected in module: {}", module_name);
+            build_queue_.push(module_name);
+            keys_built.insert(module_name);
             queue_cv_.notify_one();
           }
         }

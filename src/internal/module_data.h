@@ -1,0 +1,64 @@
+#pragma once
+#include <weevil/pch.h>
+namespace wv {
+struct ModuleData {
+  explicit ModuleData(const std::filesystem::path& filename) {
+    auto base = std::filesystem::path(SDL_GetBasePath());
+    std::error_code err;
+    auto unique_name = std::to_string(std::chrono::system_clock::now().time_since_epoch().count()) + WV_DYLIB_EXT;
+    auto output_path = base / "modules" / unique_name;
+    std::filesystem::rename(base / "prebuild" / filename, output_path, err);
+    if (err) {
+      CORE_ERROR("Failed to rename file: {}", err.message());
+      mod = new IModule();
+      return;
+    }
+    so = SDL_LoadObject(output_path.c_str());
+    if (!so) {
+      CORE_ERROR("Failed to load module: {}", SDL_GetError());
+      // dummy module to allow hot reloading
+      mod = new IModule();
+      return;
+    }
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
+    const auto create_module = (IModule * (*)()) SDL_LoadFunction(so, WV_MODULE_CREATOR_FN_NAME);
+    mod = create_module();
+    lib_path = SDL_strdup(output_path.c_str());
+  }
+  ModuleData(ModuleData&& other) noexcept {
+    so = other.so;
+    mod = other.mod;
+    lib_path = other.lib_path;
+    other.so = nullptr;
+    other.mod = nullptr;
+    other.lib_path = nullptr;
+  }
+  wv::ModuleData& operator=(ModuleData&& other) noexcept {
+    if (this != &other) {
+      so = other.so;
+      mod = other.mod;
+      lib_path = other.lib_path;
+      other.so = nullptr;
+      other.mod = nullptr;
+      other.lib_path = nullptr;
+    }
+    return *this;
+  }
+
+  ~ModuleData() {
+    if (lib_path) {
+      std::filesystem::remove(lib_path);
+      SDL_free(lib_path);
+    }
+    if (so) {
+      SDL_UnloadObject(so);
+    }
+    if (mod) {
+      delete mod;
+    }
+  }
+  SDL_SharedObject* so;
+  wv::IModule* mod;
+  char* lib_path;
+};
+}  // namespace wv
