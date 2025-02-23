@@ -8,8 +8,9 @@ class DebugModule : public wv::IModule {
     auto entity = registry.create();
     registry.emplace<FrameCounter>(entity);
     registry.emplace<wv::Transform>(entity, wv::Vector2{1, 1}, wv::Size{10, 10});
-    registry.emplace<wv::Color>(entity, 255, 255, 255, 255);
-    registry.emplace<wv::Text>(entity, "assets/fonts/Anybody-Medium.ttf", 16.0, "FPS: 0");
+    auto max_val = std::numeric_limits<uint8_t>::max();
+    registry.emplace<wv::Color>(entity, max_val, max_val, max_val, max_val);
+    registry.emplace<wv::Text>(entity, "assets/fonts/Anybody-Medium.ttf", 16.0f, "FPS: 0");
   }
 
   void update(entt::registry& registry, entt::dispatcher& dispatcher, float dt) {

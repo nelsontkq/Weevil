@@ -3,9 +3,9 @@
 #include <weevil/core/components.h>
 #include <weevil/core/imodule.h>
 #include <weevil/core/log.h>
-#include <weevil/core/rendering.h>
 #include <weevil/core/rngen.h>
 #include <weevil/core/uuid.h>
+#include <weevil/core/window.h>
 
 #include <entt/entt.hpp>
 

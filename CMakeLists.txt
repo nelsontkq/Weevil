@@ -47,6 +47,7 @@ add_library(WeevilEngine SHARED
         src/core/module_manager.cpp
         src/core/application.cpp
         src/core/app_settings.cpp
+        src/platform/common/platform.cpp
 )
 
 if(NOT WV_LOG STREQUAL "none")
@@ -74,7 +75,7 @@ target_include_directories(WeevilEngine
 )
 target_compile_features(WeevilEngine PUBLIC cxx_std_20)
 
-# target_compile_options(WeevilEngine PRIVATE -Wall -Wextra -Wpedantic -Wno-unknown-pragmas)
+target_compile_options(WeevilEngine PRIVATE -Wall -Wextra -Wpedantic -Wno-unknown-pragmas)
 target_link_libraries(WeevilEngine
         PUBLIC
         SDL3_image::SDL3_image

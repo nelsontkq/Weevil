@@ -8,17 +8,17 @@ extern "C" {
 
 /* This function runs once at startup. */
 auto SDL_AppInit(void **appstate, int argc, char *argv[]) -> SDL_AppResult {
-  wv::Log::Init();
   wv::Application *context = nullptr;
   try {
+    wv::Log::Init();
     context = new wv::Application();
-    context->init();
+    auto result = context->init();
+    *appstate = context;
+    return result;
   } catch (const std::exception &ex) {
     CORE_ERROR("Failed to initialize application: {}", ex.what());
     return SDL_APP_FAILURE;
   }
-  *appstate = context;
-  return SDL_APP_CONTINUE;
 }
 
 auto SDL_AppEvent(void *appstate, SDL_Event *event) -> SDL_AppResult {

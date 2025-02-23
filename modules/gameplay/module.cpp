@@ -6,9 +6,9 @@ class GameplayModule : public wv::IModule {
  public:
   void init(entt::registry& registry, entt::dispatcher& dispatcher) override {
     LOG_INFO("GameplayModule::init");
-    const auto rend = registry.ctx().get<wv::RenderingContext>();
-    width_ = rend.window_width;
-    height_ = rend.window_height;
+    const auto rend = registry.ctx().get<wv::Window>();
+    width_ = rend.width;
+    height_ = rend.height;
 
     add_random_rectangle(registry, 20000);
   }
