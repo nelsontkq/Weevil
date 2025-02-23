@@ -4,8 +4,7 @@
 #include <toml++/toml.hpp>
 
 wv::AppSettings::AppSettings() {
-  const auto exe_dir = SDL_GetBasePath();
-  const std::string file_name = "app_settings.toml";
+  const std::string file_name = std::filesystem::path(SDL_GetBasePath()) / "app_settings.toml";
 
   toml::table table;
   try {
@@ -24,12 +23,12 @@ wv::AppSettings::AppSettings() {
   const std::optional res = table["general"]["src_dir"].value<std::string_view>();
 
   if (!res.has_value()) {
-    LOG_ERROR("Failed to load modules directory from {0}", file_name);
+    LOG_ERROR("Failed to load modules directory from {}", file_name);
     throw std::runtime_error("Failed to load modules directory");
   }
   src_dir = *res;
 
   debug_preset = table["general"]["debug_preset"].value_or("linux-debug");
 
-  LOG_INFO("Loaded settings from {0}", file_name);
+  LOG_INFO("Loaded settings from {}", file_name);
 }

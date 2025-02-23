@@ -2,9 +2,9 @@
 #include "module_manager.h"
 
 #include <weevil/core/app_settings.h>
-#include <weevil/core/rendering.h>
 #include <weevil/core/rngen.h>
 #include <weevil/pch.h>
+#include <weevil/core/window.h>
 
 void wv::ModuleManager::load_modules() {
   auto module_so_dir = std::filesystem::path(SDL_GetBasePath()) / "prebuild";
@@ -29,7 +29,7 @@ void wv::ModuleManager::load_modules() {
 }
 void wv::ModuleManager::init(AppSettings &settings, SDL_Renderer *renderer) {
   renderer_ = renderer;
-  registry_.ctx().emplace<wv::RenderingContext>(renderer, settings.width, settings.height);
+  registry_.ctx().emplace<wv::Window>(settings.width, settings.height, renderer);
   registry_.ctx().emplace<Rngen>();
 
   load_modules();
