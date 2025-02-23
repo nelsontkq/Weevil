@@ -1,6 +1,6 @@
 #pragma once
 #include <random>
-
+namespace wv {
 struct Color {
   uint8_t r;
   uint8_t g;
@@ -29,8 +29,9 @@ struct Size {
   float height;
 };
 struct Text {
-  std::string text;
-  int fontSize;
+  std::string font_path;
+  float font_size;
+  std::string value;
 };
 
 struct Transform {
