@@ -1,12 +1,20 @@
 [submodule "vendor/SDL_image"]
 	path = vendor/SDL_image
 	url = https://github.com/libsdl-org/SDL_image.git
+	branch = release-3.2.0
 [submodule "vendor/entt"]
 	path = vendor/entt
 	url = https://github.com/skypjack/entt.git
+	branch = v3.14.0
 [submodule "vendor/spdlog"]
 	path = vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+	branch = v1.15.1
 [submodule "vendor/tomlplusplus"]
 	path = vendor/tomlplusplus
 	url = https://github.com/marzer/tomlplusplus.git
+	branch = v3.4.0
+[submodule "vendor/SDL_ttf"]
+	path = vendor/SDL_ttf
+	url = https://github.com/libsdl-org/SDL_ttf.git
+	branch = preview-3.1.0

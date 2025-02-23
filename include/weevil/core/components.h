@@ -46,3 +46,4 @@ struct Transform {
     return {pos, size};
   }
 };
+}  // namespace wv
