@@ -10,7 +10,7 @@
 #include "internal/custom_events.h"
 
 SDL_AppResult wv::Application::init() {
-  if  (!platform_.init(settings_)) {
+  if (!platform_.init(settings_)) {
     return SDL_APP_FAILURE;
   }
   // TODO: async
@@ -30,9 +30,11 @@ SDL_AppResult wv::Application::iterate() {
     module_manager_.shutdown();
     return SDL_APP_SUCCESS;
   }
-  const uint64_t currentTicks = SDL_GetTicks();
-  delta_ticks_ = currentTicks - delta_ticks_;
-  module_manager_.update(platform_.renderer(), (float)delta_ticks_ / 1000.f);
+  static auto last_ticks = SDL_GetTicks();
+  auto current_ticks = SDL_GetTicks();
+  auto delta_ticks = current_ticks - last_ticks;
+  last_ticks = current_ticks;
+  module_manager_.update(platform_.renderer(), (float)delta_ticks / 1000.f);
 
   return SDL_APP_CONTINUE;
 }

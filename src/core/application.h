@@ -15,7 +15,6 @@ class Application {
  private:
   bool quitting_ = false;
   wv::Platform platform_;
-  uint64_t delta_ticks_ = 0;
   ModuleManager module_manager_;
   wv::AppSettings settings_;
 };

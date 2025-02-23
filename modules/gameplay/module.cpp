@@ -21,7 +21,7 @@ class GameplayModule : public wv::IModule {
       add_random_rectangle(registry, 1);
     }
     auto view = registry.view<const Rectangle, wv::Transform>();
-    static auto rng = registry.ctx().get<Rngen>();
+    auto& rng = registry.ctx().get<Rngen>();
     for (auto entity : view) {
       auto& transform = view.get<wv::Transform>(entity);
       transform.position.x += rng.random<float>(-2.0, 2.0);
@@ -48,7 +48,8 @@ class GameplayModule : public wv::IModule {
     for (size_t i = 0; i < count; i++) {
       auto entity = registry.create();
       registry.emplace<Rectangle>(entity);
-      registry.emplace<wv::Transform>(entity, registry.ctx().get<Rngen>().random<wv::Transform>(width_, height_, 10, 50));
+      registry.emplace<wv::Transform>(entity,
+                                      registry.ctx().get<Rngen>().random<wv::Transform>(width_, height_, 10, 50));
       registry.emplace<wv::Color>(entity, registry.ctx().get<Rngen>().random<wv::Color>());
     }
   }

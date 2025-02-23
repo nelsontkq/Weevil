@@ -50,11 +50,11 @@ struct ModuleData {
       std::filesystem::remove(lib_path);
       SDL_free(lib_path);
     }
-    if (so) {
-      SDL_UnloadObject(so);
-    }
     if (mod) {
       delete mod;
+    }
+    if (so) {
+      SDL_UnloadObject(so);
     }
   }
   SDL_SharedObject* so;
