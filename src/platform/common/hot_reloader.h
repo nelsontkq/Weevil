@@ -1,6 +1,6 @@
 #pragma once
 #include <internal/custom_events.h>
-#include <weevil/pch.h>
+#include "pch.h"
 #ifdef WV_PLATFORM_LINUX
 #include "internal/event_fd.h"
 #endif

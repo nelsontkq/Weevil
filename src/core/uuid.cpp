@@ -1,6 +1,6 @@
 #include <weevil/core/uuid.h>
 
-#include <weevil/pch.h>
+#include "pch.h"
 
 wv::UUID::UUID() {
   static std::random_device rd;

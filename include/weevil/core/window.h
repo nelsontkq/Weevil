@@ -4,6 +4,5 @@ namespace wv {
 struct Window {
   int width;
   int height;
-  SDL_Renderer* renderer;
 };
 }  // namespace wv

@@ -1,5 +1,5 @@
 #pragma once
-#include <weevil/pch.h>
+#include "pch.h"
 namespace wv {
 struct ModuleData {
   explicit ModuleData(const std::filesystem::path& filename) {

@@ -1,6 +1,5 @@
 #pragma once
-
-#include <weevil/pch.h>
+#include <string>
 
 namespace wv {
 
@@ -16,7 +15,7 @@ class AppSettings {
   bool resizable;
   std::string asset_path;
   std::string src_dir;
-  std::string debug_preset; 
+  std::string debug_preset;
 };
 
 }  // namespace wv

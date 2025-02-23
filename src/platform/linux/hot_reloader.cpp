@@ -5,7 +5,7 @@
 #include <sys/inotify.h>
 #include <sys/poll.h>
 #include <sys/wait.h>
-#include <weevil/pch.h>
+#include "pch.h"
 
 wv::HotReloader::HotReloader() : exit_event_(0), stop_flag_(false) {}
 

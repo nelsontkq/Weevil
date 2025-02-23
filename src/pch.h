@@ -29,10 +29,10 @@
 #include <entt/entt.hpp>
 
 // Engine
-#include "core/app_settings.h"
-#include "core/imodule.h"
-#include "core/log.h"
-#include "core/uuid.h"
+#include <weevil/core/app_settings.h>
+#include <weevil/core/imodule.h>
+#include <weevil/core/log.h>
+#include <weevil/core/uuid.h>
 
 #ifdef WV_ENABLE_ASSERTS
 inline void wvAssertImpl(const bool condition, const char* conditionStr, const char* message) {

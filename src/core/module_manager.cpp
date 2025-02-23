@@ -3,8 +3,11 @@
 
 #include <weevil/core/app_settings.h>
 #include <weevil/core/rngen.h>
-#include <weevil/pch.h>
 #include <weevil/core/window.h>
+
+#include "pch.h"
+wv::ModuleManager::ModuleManager(entt::registry &registry, entt::dispatcher &dispatcher)
+    : registry_(registry), dispatcher_(dispatcher) {}
 
 void wv::ModuleManager::load_modules() {
   auto module_so_dir = std::filesystem::path(SDL_GetBasePath()) / "prebuild";
@@ -27,11 +30,7 @@ void wv::ModuleManager::load_modules() {
     mod.first->second.mod->init(registry_, dispatcher_);
   }
 }
-void wv::ModuleManager::init(AppSettings &settings, SDL_Renderer *renderer) {
-  renderer_ = renderer;
-  registry_.ctx().emplace<wv::Window>(settings.width, settings.height, renderer);
-  registry_.ctx().emplace<Rngen>();
-
+void wv::ModuleManager::init(AppSettings &settings) {
   load_modules();
   dispatcher_.sink<ReloadModuleEvent>().connect<&ModuleManager::load_modules>(*this);
   hot_reloader_.start(settings.src_dir, settings.debug_preset, &dispatcher_);
@@ -45,10 +44,8 @@ void wv::ModuleManager::shutdown() {
   modules_.clear();
 }
 
-void wv::ModuleManager::update(SDL_Renderer *renderer, float deltaTime) {
+void wv::ModuleManager::update(float deltaTime) {
   for (const auto &mod_data : modules_ | std::views::values) {
     mod_data.mod->update(registry_, dispatcher_, deltaTime);
   }
 }
-
-void wv::ModuleManager::process_system_event(SDL_Event &event) { dispatcher_.trigger(event); }

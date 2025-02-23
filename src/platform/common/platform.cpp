@@ -32,6 +32,8 @@ bool wv::Platform::init(wv::AppSettings& settings) {
   return true;
 }
 
+void wv::Platform::render(entt::registry& registry) { renderer_.run(registry, sdl_renderer_); }
+
 void wv::Platform::shutdown() {
   SDL_DestroyRenderer(sdl_renderer_);
   SDL_DestroyWindow(sdl_window_);

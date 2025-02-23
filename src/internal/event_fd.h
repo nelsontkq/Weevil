@@ -3,7 +3,7 @@
 #ifdef WV_PLATFORM_LINUX
 #include <sys/eventfd.h>
 #include <unistd.h>
-#include <weevil/pch.h>
+#include "pch.h"
 
 class EventFd {
  public:

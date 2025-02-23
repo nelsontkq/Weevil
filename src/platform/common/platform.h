@@ -1,19 +1,18 @@
 #pragma once
 
-#include <weevil/pch.h>
-
+#include "pch.h"
+#include "platform/common/rendering/renderer.h"
 namespace wv {
 class Platform {
  public:
   Platform();
   bool init(AppSettings& settings);
+  void render(entt::registry& registry);
   void shutdown();
-
-  SDL_Window* window() { return sdl_window_; }
-  SDL_Renderer* renderer() { return sdl_renderer_; }
 
  private:
   SDL_Renderer* sdl_renderer_;
   SDL_Window* sdl_window_;
+  wv::Renderer renderer_;
 };
 }  // namespace wv

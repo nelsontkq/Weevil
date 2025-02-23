@@ -42,12 +42,14 @@ else()
 endif()
 
 add_library(WeevilEngine SHARED
-        src/core/uuid.cpp
-        src/core/sdl_main.cpp
-        src/core/module_manager.cpp
-        src/core/application.cpp
         src/core/app_settings.cpp
+        src/core/application.cpp
+        src/core/asset_loader.cpp
+        src/core/module_manager.cpp
+        src/core/sdl_main.cpp
+        src/core/uuid.cpp
         src/platform/common/platform.cpp
+        src/platform/common/rendering/renderer.cpp
 )
 
 if(NOT WV_LOG STREQUAL "none")
@@ -64,7 +66,7 @@ endif()
 
 target_precompile_headers(WeevilEngine
         PRIVATE
-        include/weevil/pch.h
+        src/pch.h
 )
 
 target_include_directories(WeevilEngine

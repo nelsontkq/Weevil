@@ -1,7 +1,7 @@
 #define SDL_MAIN_USE_CALLBACKS 1
 #include <SDL3/SDL_main.h>
 #include <weevil/core/app_settings.h>
-#include <weevil/pch.h>
+#include "pch.h"
 
 #include "core/application.h"
 extern "C" {

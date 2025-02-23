@@ -1,5 +1,5 @@
 #include <weevil/core/app_settings.h>
-#include <weevil/pch.h>
+#include "pch.h"
 
 #include <toml++/toml.hpp>
 
