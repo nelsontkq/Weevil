@@ -6,7 +6,7 @@ class GameplayModule : public wv::IModule {
  public:
   void init(entt::registry& registry, entt::dispatcher& dispatcher) override {
     LOG_INFO("GameplayModule::init");
-    const auto rend = registry.ctx().get<RenderingContext>();
+    const auto rend = registry.ctx().get<wv::RenderingContext>();
     width_ = rend.window_width;
     height_ = rend.window_height;
 
@@ -20,10 +20,10 @@ class GameplayModule : public wv::IModule {
       timer = 0;
       add_random_rectangle(registry, 1);
     }
-    auto view = registry.view<const Rectangle, Transform>();
+    auto view = registry.view<const Rectangle, wv::Transform>();
     static auto rng = registry.ctx().get<Rngen>();
     for (auto entity : view) {
-      auto& transform = view.get<Transform>(entity);
+      auto& transform = view.get<wv::Transform>(entity);
       transform.position.x += rng.random<float>(-2.0, 2.0);
       if (transform.position.x > width_) {
         transform.position.x = 0;
@@ -48,8 +48,8 @@ class GameplayModule : public wv::IModule {
     for (size_t i = 0; i < count; i++) {
       auto entity = registry.create();
       registry.emplace<Rectangle>(entity);
-      registry.emplace<Transform>(entity, registry.ctx().get<Rngen>().random<Transform>(width_, height_, 10, 50));
-      registry.emplace<Color>(entity, registry.ctx().get<Rngen>().random<Color>());
+      registry.emplace<wv::Transform>(entity, registry.ctx().get<Rngen>().random<wv::Transform>(width_, height_, 10, 50));
+      registry.emplace<wv::Color>(entity, registry.ctx().get<Rngen>().random<wv::Color>());
     }
   }
   int width_;

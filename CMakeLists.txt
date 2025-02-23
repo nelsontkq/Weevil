@@ -78,6 +78,7 @@ target_compile_features(WeevilEngine PUBLIC cxx_std_20)
 target_link_libraries(WeevilEngine
         PUBLIC
         SDL3_image::SDL3_image
+        SDL3_ttf::SDL3_ttf
         SDL3::SDL3
         spdlog::spdlog
         tomlplusplus::tomlplusplus

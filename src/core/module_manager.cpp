@@ -29,7 +29,7 @@ void wv::ModuleManager::load_modules() {
 }
 void wv::ModuleManager::init(AppSettings &settings, SDL_Renderer *renderer) {
   renderer_ = renderer;
-  registry_.ctx().emplace<RenderingContext>(renderer, settings.width, settings.height);
+  registry_.ctx().emplace<wv::RenderingContext>(renderer, settings.width, settings.height);
   registry_.ctx().emplace<Rngen>();
 
   load_modules();
