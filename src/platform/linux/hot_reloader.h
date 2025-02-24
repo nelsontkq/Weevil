@@ -1,24 +1,20 @@
 #pragma once
-#include <internal/custom_events.h>
+#include "core/custom_events.h"
+#include "event_fd.h"
 #include "pch.h"
-#ifdef WV_PLATFORM_LINUX
-#include "internal/event_fd.h"
-#endif
 
 namespace wv {
 class HotReloader {
  public:
   HotReloader();
-
   ~HotReloader();
+
   void start(const std::filesystem::path& src_dir, std::string debug_preset, entt::dispatcher* dispatcher);
   void stop();
 
  private:
   std::filesystem::path src_dir_;
   std::string debug_preset_;
-  // might not need some of these on other platforms
-#ifdef WV_PLATFORM_LINUX
   void watch_modules_src();
   void worker_loop();
   auto run_build_command(std::string& target) -> int;
@@ -29,9 +25,6 @@ class HotReloader {
   std::thread watcher_thread_;
   std::thread worker_thread_;
   std::queue<std::string> build_queue_;
-#else
-#error "HotReloader not implemented for this platform!"
-#endif
   entt::dispatcher* dispatcher_;
 };
 

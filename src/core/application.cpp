@@ -8,7 +8,7 @@
 #include <weevil/core/rngen.h>
 #include <weevil/core/window.h>
 
-#include "internal/custom_events.h"
+#include "custom_events.h"
 #include "pch.h"
 
 wv::Application::Application() : module_manager_(registry_, dispatcher_) {}

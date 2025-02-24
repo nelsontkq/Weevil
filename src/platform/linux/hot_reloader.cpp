@@ -1,10 +1,11 @@
-#include <internal/custom_events.h>
-#include <internal/event_fd.h>
-#include <platform/common/hot_reloader.h>
 #include <spawn.h>
 #include <sys/inotify.h>
 #include <sys/poll.h>
 #include <sys/wait.h>
+
+#include "core/custom_events.h"
+#include "event_fd.h"
+#include "hot_reloader.h"
 #include "pch.h"
 
 wv::HotReloader::HotReloader() : exit_event_(0), stop_flag_(false) {}
@@ -28,7 +29,7 @@ void wv::HotReloader::stop() {
 }
 
 void wv::HotReloader::start(const std::filesystem::path &src_dir, std::string debug_preset,
-                            entt::dispatcher *dispatcher) {
+                                 entt::dispatcher *dispatcher) {
   src_dir_ = src_dir;
   debug_preset_ = debug_preset;
   dispatcher_ = dispatcher;
@@ -111,7 +112,8 @@ void wv::HotReloader::watch_modules_src() {
   // Add a watch on the base modules directory to detect new module directories.
   int base_wd = inotify_add_watch(inotify_fd, modules_dir.c_str(), IN_CREATE | IN_MOVED_TO | IN_DELETE);
   if (base_wd < 0) {
-    CORE_ERROR("[HotReloader] inotify_add_watch failed for base directory {}: {}", modules_dir, std::strerror(errno));
+    CORE_ERROR("[HotReloader] inotify_add_watch failed for base directory {}: {}", modules_dir,
+               std::strerror(errno));
     close(inotify_fd);
     return;
   }

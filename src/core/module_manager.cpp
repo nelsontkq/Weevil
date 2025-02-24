@@ -1,4 +1,3 @@
-// module_manager.cpp
 #include "module_manager.h"
 
 #include <weevil/core/app_settings.h>
@@ -6,6 +5,7 @@
 #include <weevil/core/window.h>
 
 #include "pch.h"
+
 wv::ModuleManager::ModuleManager(entt::registry &registry, entt::dispatcher &dispatcher)
     : registry_(registry), dispatcher_(dispatcher) {}
 

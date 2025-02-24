@@ -7,12 +7,12 @@
 extern "C" {
 
 /* This function runs once at startup. */
-auto SDL_AppInit(void **appstate, int argc, char *argv[]) -> SDL_AppResult {
-  wv::Application *context = nullptr;
+auto SDL_AppInit(void **appstate, [[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) -> SDL_AppResult {
   try {
+    wv::Application *context = nullptr;
     wv::Log::Init();
     context = new wv::Application();
-    auto result = context->init();
+    const auto result = context->init();
     *appstate = context;
     return result;
   } catch (const std::exception &ex) {
@@ -33,7 +33,7 @@ auto SDL_AppIterate(void *appstate) -> SDL_AppResult {
 }
 
 /* This function runs once at shutdown. */
-void SDL_AppQuit(void *appstate, SDL_AppResult result) {
+void SDL_AppQuit(void *appstate, [[maybe_unused]] SDL_AppResult result) {
   const auto context = reinterpret_cast<wv::Application *>(appstate);
   context->shutdown();
 }

@@ -8,7 +8,7 @@ class GameplayModule : public wv::IModule {
     width_ = rend.width;
     height_ = rend.height;
 
-    add_random_rectangle(registry, 20000);
+    add_random_rectangle(registry, 1);
   }
   void update(entt::registry& registry, entt::dispatcher& dispatcher, float dt) override {
     // spawn a new entity every 2 seconds
