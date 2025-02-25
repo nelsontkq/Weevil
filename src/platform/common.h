@@ -1,5 +1,5 @@
 #pragma once
-#include "common/rendering/renderer.h"
+#include "common/platform.h"
 #ifdef WV_PLATFORM_LINUX
 #include "linux/hot_reloader.h"
 #else

@@ -25,25 +25,6 @@ struct ModuleData {
     mod = create_module();
     lib_path = SDL_strdup(output_path.c_str());
   }
-  ModuleData(ModuleData&& other) noexcept {
-    so = other.so;
-    mod = other.mod;
-    lib_path = other.lib_path;
-    other.so = nullptr;
-    other.mod = nullptr;
-    other.lib_path = nullptr;
-  }
-  wv::ModuleData& operator=(ModuleData&& other) noexcept {
-    if (this != &other) {
-      so = other.so;
-      mod = other.mod;
-      lib_path = other.lib_path;
-      other.so = nullptr;
-      other.mod = nullptr;
-      other.lib_path = nullptr;
-    }
-    return *this;
-  }
 
   ~ModuleData() {
     if (lib_path) {

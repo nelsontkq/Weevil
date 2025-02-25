@@ -49,7 +49,6 @@ add_library(WeevilEngine SHARED
         src/core/sdl_main.cpp
         src/core/uuid.cpp
         src/platform/common/platform.cpp
-        src/platform/common/rendering/renderer.cpp
 )
 
 if(NOT WV_LOG STREQUAL "none")

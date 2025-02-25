@@ -13,3 +13,4 @@ wv::UUID::UUID() {
 wv::UUID::UUID(const uint64_t uuid) : uuid_(uuid) {}
 
 wv::UUID::UUID(const UUID &other) = default;
+

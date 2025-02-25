@@ -1,5 +1,7 @@
 #include "platform.h"
 
+#include <weevil/core/components.h>
+
 wv::Platform::Platform() : sdl_renderer_(nullptr), sdl_window_(nullptr) {}
 
 bool wv::Platform::init(wv::AppSettings& settings) {
@@ -32,7 +34,20 @@ bool wv::Platform::init(wv::AppSettings& settings) {
   return true;
 }
 
-void wv::Platform::render(entt::registry& registry) { renderer_.run(registry, sdl_renderer_); }
+void wv::Platform::render(const std::unordered_map<std::string, wv::ModuleData>& registries) {
+  // slow bad and dumb. Measure later and fix
+  SDL_SetRenderDrawColor(sdl_renderer_, 0, 0, 0, 255);
+  SDL_RenderClear(sdl_renderer_);
+  for (const auto& mod : registries | std::views::values)
+    for (const auto& [entity, transform, color] :
+         mod.mod->registry.view<const wv::Rectangle, const wv::Transform, const wv::Color>().each()) {
+      SDL_FRect rect = {transform.position.x, transform.position.y, transform.size.width, transform.size.height};
+
+      SDL_SetRenderDrawColor(sdl_renderer_, color.r, color.g, color.b, color.a);
+      SDL_RenderFillRect(sdl_renderer_, &rect);
+    }
+  SDL_RenderPresent(sdl_renderer_);
+}
 
 void wv::Platform::shutdown() {
   SDL_DestroyRenderer(sdl_renderer_);

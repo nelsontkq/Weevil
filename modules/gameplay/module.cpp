@@ -2,21 +2,20 @@
 
 class GameplayModule : public wv::IModule {
  public:
-  void init(entt::registry& registry, entt::dispatcher& dispatcher) override {
+  void init(entt::dispatcher& dispatcher) override {
     LOG_INFO("GameplayModule::init");
     const auto rend = registry.ctx().get<wv::Window>();
     width_ = rend.width;
     height_ = rend.height;
-
-    add_random_rectangle(registry, 1);
+    add_random_rectangle(1000);
   }
-  void update(entt::registry& registry, entt::dispatcher& dispatcher, float dt) override {
+  void update(entt::dispatcher& dispatcher, float dt) override {
     // spawn a new entity every 2 seconds
     static float timer = 0;
     timer += dt;
     if (timer > 2) {
       timer = 0;
-      add_random_rectangle(registry, 1);
+      add_random_rectangle(1);
     }
     auto view = registry.view<const wv::Rectangle, wv::Transform>();
     auto& rng = registry.ctx().get<Rngen>();
@@ -37,12 +36,12 @@ class GameplayModule : public wv::IModule {
     }
   }
 
-  void shutdown(entt::registry& registry, entt::dispatcher& dispatcher) override {
+  void shutdown(entt::dispatcher& dispatcher) override {
     LOG_INFO("GameplayModule::shutdown");
   }
 
  private:
-  void add_random_rectangle(entt::registry& registry, size_t count = 1) {
+  void add_random_rectangle(size_t count = 1) {
     for (size_t i = 0; i < count; i++) {
       auto entity = registry.create();
       registry.emplace<wv::Rectangle>(entity);

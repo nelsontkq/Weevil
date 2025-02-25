@@ -46,7 +46,7 @@ void wv::HotReloader::worker_loop() {
       build_queue_.pop();
       int status = run_build_command(key);
       if (status == 0) {
-        dispatcher_->trigger(key);
+        dispatcher_->trigger<ReloadModuleEvent>();
       } else {
         CORE_ERROR("[HotReloader] Build failed for module: {}", key);
       }
