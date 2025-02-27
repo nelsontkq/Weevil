@@ -1,0 +1,10 @@
+[window]
+title = "Weevil Game"
+width = 1_920
+height = 1_080
+resizable = false
+fullscreen = false
+
+[general]
+src_dir = "/your/src/dir"
+debug_preset = "linux-debug"
