@@ -11,13 +11,14 @@
 #include "custom_events.h"
 #include "pch.h"
 
-wv::Application::Application() : module_manager_(dispatcher_, settings_) {}
+wv::Application::Application() : settings_(), module_manager_(dispatcher_, settings_), asset_loader_(settings_.asset_path) {}
 
 SDL_AppResult wv::Application::init() {
-  if (!platform_.init(settings_)) {
+  if (!platform_.init(settings_, &asset_loader_)) {
     return SDL_APP_FAILURE;
   }
   module_manager_.init();
+  dispatcher_.sink<wv::LoadFont>().connect<&AssetLoader::load_font>(&asset_loader_);
   return SDL_APP_CONTINUE;
 }
 
@@ -37,8 +38,8 @@ SDL_AppResult wv::Application::iterate() {
   auto current_ticks = SDL_GetTicks();
   auto delta_ticks = current_ticks - last_ticks;
   last_ticks = current_ticks;
-  const auto &res = module_manager_.update((float)delta_ticks / 1000.f);
-  platform_.render(res);
+  auto& registries = module_manager_.update((float)delta_ticks / 1000.f);
+  platform_.render(registries);
 
   return SDL_APP_CONTINUE;
 }

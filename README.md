@@ -58,7 +58,7 @@ debug_preset = "linux-debug"      # CMake preset for hot reloading
 Modules are the primary building blocks of your game. Each module has its own entity registry and lifecycle:
 
 1. Create a new directory in the `modules` folder for your module
-2. Create a `module.cpp` file inside that directory
+2. Create any amount of source files in the directory, but one of the sources must define one WV_MODULE
 3. Implement your module class:
 
 ```cpp

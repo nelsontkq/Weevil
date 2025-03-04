@@ -1,12 +1,19 @@
 #pragma once
+#include <SDL3_ttf/SDL_ttf.h>
+#include <weevil/core/dispatchables.h>
+
 #include "pch.h"
 namespace wv {
-enum class AssetType { FONT, TEXTURE, AUDIO };
 class AssetLoader {
  public:
+  AssetLoader(const std::string asset_path);
+  ~AssetLoader();
   // Mark an asset for loading.
-  wv::UUID load_asset(std::filesystem::path asset_path, wv::AssetType type);
-  bool is_loaded(wv::UUID asset_id);
-  bool unload_asset(wv::UUID asset_id);
+  void load_font(wv::LoadFont& asset);
+  bool unload_asset(std::string& asset_name);
+
+ private:
+  entt::dense_map<std::string_view, TTF_Font*> fonts_;
+  std::filesystem::path asset_path_;
 };
 }  // namespace wv

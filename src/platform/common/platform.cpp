@@ -1,10 +1,11 @@
 #include "platform.h"
 
+#include <SDL3_ttf/SDL_ttf.h>
 #include <weevil/core/components.h>
 
-wv::Platform::Platform() : sdl_renderer_(nullptr), sdl_window_(nullptr) {}
+wv::Platform::Platform() : sdl_renderer_(nullptr), sdl_window_(nullptr), asset_loader_(nullptr) {}
 
-bool wv::Platform::init(wv::AppSettings& settings) {
+bool wv::Platform::init(wv::AppSettings& settings, wv::AssetLoader* asset_loader) {
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     CORE_ERROR("Failed to initialize SDL" + std::string(SDL_GetError()));
     return false;
@@ -29,27 +30,32 @@ bool wv::Platform::init(wv::AppSettings& settings) {
       CORE_ERROR("Failed to set vsync at all {}", SDL_GetError());
     }
   }
+  if (!TTF_Init()) {
+    CORE_ERROR("Failed to initialize TTF {}", SDL_GetError());
+  }
   sdl_window_ = window;
   sdl_renderer_ = renderer;
+  asset_loader_ = asset_loader;
   return true;
 }
 
-void wv::Platform::render(const std::unordered_map<std::string, wv::ModuleData>& registries) {
-  // slow bad and dumb. Measure later and fix
+void wv::Platform::render(const std::vector<entt::registry*>& registries) {
   SDL_SetRenderDrawColor(sdl_renderer_, 0, 0, 0, 255);
   SDL_RenderClear(sdl_renderer_);
-  for (const auto& mod : registries | std::views::values)
+  for (const auto registry : registries) {
     for (const auto& [entity, transform, color] :
-         mod.mod->registry.view<const wv::Rectangle, const wv::Transform, const wv::Color>().each()) {
+         registry->view<const wv::Rectangle, const wv::Transform, const wv::Color>().each()) {
       SDL_FRect rect = {transform.position.x, transform.position.y, transform.size.width, transform.size.height};
 
       SDL_SetRenderDrawColor(sdl_renderer_, color.r, color.g, color.b, color.a);
       SDL_RenderFillRect(sdl_renderer_, &rect);
     }
+  }
   SDL_RenderPresent(sdl_renderer_);
 }
 
 void wv::Platform::shutdown() {
+  TTF_Quit();
   SDL_DestroyRenderer(sdl_renderer_);
   SDL_DestroyWindow(sdl_window_);
 }

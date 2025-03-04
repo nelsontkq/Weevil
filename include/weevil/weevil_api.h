@@ -1,6 +1,7 @@
 #pragma once
 
 #include <weevil/core/components.h>
+#include <weevil/core/dispatchables.h>
 #include <weevil/core/imodule.h>
 #include <weevil/core/log.h>
 #include <weevil/core/rngen.h>

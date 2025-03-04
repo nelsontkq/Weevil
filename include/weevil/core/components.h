@@ -31,8 +31,7 @@ struct Size {
   float height;
 };
 struct Text {
-  std::string font_path;
-  float font_size;
+  std::string_view asset_name;
   std::string value;
 };
 

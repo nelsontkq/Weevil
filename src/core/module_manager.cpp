@@ -1,6 +1,8 @@
 #include "module_manager.h"
 
 #include <weevil/core/app_settings.h>
+#include <weevil/core/components.h>
+#include <weevil/core/dispatchables.h>
 #include <weevil/core/rngen.h>
 #include <weevil/core/window.h>
 
@@ -25,12 +27,20 @@ void wv::ModuleManager::load_modules() {
       modules_.erase(data);
     }
     if (const auto &[item, success] = modules_.emplace(basename, file); success) {
-      auto &mod = item->second.mod;
-      mod->registry.ctx().emplace<wv::Window>(settings_.width, settings_.height);
-      mod->registry.ctx().emplace<Rngen>();
-      mod->init(dispatcher_);
+      init_module(item->second);
+    } else {
+      LOG_ERROR("Failed to load module: {}", basename);
     }
   }
+  registries_.resize(modules_.size());
+  std::transform(modules_.begin(), modules_.end(), registries_.begin(),
+                 [](const auto &item) -> entt::registry * { return &item.second.mod->registry; });
+}
+
+void wv::ModuleManager::init_module(ModuleData &module_data) {
+  module_data.mod->registry.ctx().emplace<wv::Window>(settings_.width, settings_.height);
+  module_data.mod->registry.ctx().emplace<Rngen>();
+  module_data.mod->init(dispatcher_);
 }
 void wv::ModuleManager::init() {
   load_modules();
@@ -46,9 +56,9 @@ void wv::ModuleManager::shutdown() {
   modules_.clear();
 }
 
-std::unordered_map<std::string, wv::ModuleData> &wv::ModuleManager::update(float deltaTime) {
+std::vector<entt::registry *> &wv::ModuleManager::update(float deltaTime) {
   for (const auto &[key, val] : modules_) {
     val.mod->update(dispatcher_, deltaTime);
   }
-  return modules_;
+  return registries_;
 }

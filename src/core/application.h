@@ -13,10 +13,11 @@ class Application {
   void shutdown();
 
  private:
-  bool quitting_ = false;
+  wv::AppSettings settings_;
   wv::Platform platform_;
   entt::dispatcher dispatcher_;
   ModuleManager module_manager_;
-  wv::AppSettings settings_;
+  wv::AssetLoader asset_loader_;
+  bool quitting_ = false;
 };
 }  // namespace wv
