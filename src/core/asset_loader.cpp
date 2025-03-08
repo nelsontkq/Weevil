@@ -1,43 +1,53 @@
 #include "asset_loader.h"
-
-#include <SDL3_ttf/SDL_ttf.h>
-
+struct FontDeleter {
+  void operator()(TTF_Font* f) const { TTF_CloseFont(f); }
+};
 wv::AssetLoader::AssetLoader(const std::string asset_path) : asset_path_(asset_path) {}
 
 wv::AssetLoader::~AssetLoader() {
-  for (const auto& [name, font] : fonts_) {
-    TTF_CloseFont(font);
-  }
+  textures_.clear();
   fonts_.clear();
 }
-
-void wv::AssetLoader::load_font(wv::LoadFont& asset) {
-  auto p = asset_path_ / asset.asset_path;
+void wv::AssetLoader::load_font(wv::LoadFont& font_details) {
+  auto p = asset_path_ / font_details.asset_path;
   if (!std::filesystem::exists(p)) {
-    LOG_ERROR("Asset not found: {}", asset.asset_path);
+    LOG_ERROR("Asset not found: {}", font_details.asset_path);
     return;
   }
-  LOG_INFO("Loading font: {}", asset.asset_path);
-  if (fonts_.contains(asset.asset_name)) {
-    LOG_INFO("Font already loaded: {}", asset.asset_name);
-    return;
+  auto it = fonts_.find(font_details.asset_name);
+  std::shared_ptr<TTF_Font> font;
+  if (it != fonts_.end()) {
+    font = it->second;
+  } else {
+    font = std::shared_ptr<TTF_Font>(TTF_OpenFont(p.c_str(), font_details.font_size), FontDeleter());
+    if (!font) {
+      LOG_ERROR("Failed to load font: {}", SDL_GetError());
+      return;
+    }
+    fonts_[font_details.asset_name] = font;
   }
-  auto* font = TTF_OpenFont(asset.asset_path.c_str(), asset.font_size);
-  if (font == nullptr) {
-    LOG_ERROR("Failed to load font: {}", SDL_GetError());
-    return;
-  }
-  fonts_.emplace(asset.asset_name, font);
-  LOG_INFO("Font loaded: {}", asset.asset_name);
+
+  const auto& [_, success] = textures_.emplace(font_details.asset_name, std::make_unique<wv::TextTexture>(font));
+  WV_ASSERT(success, std::format("Texture for font {} being reinitialized", font_details.asset_name));
+
+  LOG_INFO("Font loaded: {}", font_details.asset_name);
 }
 
-bool wv::AssetLoader::unload_asset(std::string& asset_name) {
-  auto it = fonts_.find(asset_name);
-  if (it == fonts_.end()) {
-    // it's fine to call unload multiple times
+wv::TextTexture* wv::AssetLoader::get(std::string_view asset_name) {
+  auto it = textures_.find(asset_name);
+  WV_ASSERT(it != textures_.end(), "Attempted to get an unloaded text!");
+  return it->second.get();
+}
+
+bool wv::AssetLoader::unload_font(wv::UnloadFont& asset) {
+  auto it = textures_.find(asset.asset_name);
+  if (it == textures_.end()) {
     return false;
   }
-  TTF_CloseFont(it->second);
-  fonts_.erase(it);
+  textures_.erase(it);
+  auto font_it = fonts_.find(asset.asset_name);
+  if (font_it->second.use_count() == 1) {
+    fonts_.erase(font_it);
+  }
   return true;
 }

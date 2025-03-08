@@ -7,7 +7,7 @@
   },
   "configurePresets": [
     {
-      "name": "linux-debug",
+      "name": "linux",
       "displayName": "Linux Debug",
       "description": "Configure for a Linux debug build.",
       "generator": "Ninja",
@@ -22,10 +22,10 @@
   ],
   "buildPresets": [
     {
-      "name": "linux-debug",
+      "name": "linux",
       "displayName": "Linux Debug",
       "description": "Build the Linux debug configuration.",
-      "configurePreset": "linux-debug"
+      "configurePreset": "linux"
     }
   ]
 }

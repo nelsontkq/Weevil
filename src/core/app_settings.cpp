@@ -28,7 +28,7 @@ wv::AppSettings::AppSettings() {
   }
   src_dir = *res;
 
-  debug_preset = table["general"]["debug_preset"].value_or("linux-debug");
+  debug_preset = table["general"]["debug_preset"].value_or("linux");
 
   LOG_INFO("Loaded settings from {}", file_name);
 }

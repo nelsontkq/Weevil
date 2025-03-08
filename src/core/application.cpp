@@ -19,6 +19,7 @@ SDL_AppResult wv::Application::init() {
   }
   module_manager_.init();
   dispatcher_.sink<wv::LoadFont>().connect<&AssetLoader::load_font>(&asset_loader_);
+  dispatcher_.sink<wv::UnloadFont>().connect<&AssetLoader::unload_font>(&asset_loader_);
   return SDL_APP_CONTINUE;
 }
 
@@ -26,11 +27,12 @@ SDL_AppResult wv::Application::process_event(SDL_Event& event) {
   if (event.type == SDL_EVENT_QUIT) {
     quitting_ = true;
   }
-  dispatcher_.trigger<SDL_Event&>(event);
+  dispatcher_.enqueue<SDL_Event&>(event);
   return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult wv::Application::iterate() {
+  dispatcher_.update();
   if (quitting_) {
     return SDL_APP_SUCCESS;
   }

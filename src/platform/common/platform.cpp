@@ -3,6 +3,8 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <weevil/core/components.h>
 
+#include "rendering/text_texture.h"
+
 wv::Platform::Platform() : sdl_renderer_(nullptr), sdl_window_(nullptr), asset_loader_(nullptr) {}
 
 bool wv::Platform::init(wv::AppSettings& settings, wv::AssetLoader* asset_loader) {
@@ -49,6 +51,12 @@ void wv::Platform::render(const std::vector<entt::registry*>& registries) {
 
       SDL_SetRenderDrawColor(sdl_renderer_, color.r, color.g, color.b, color.a);
       SDL_RenderFillRect(sdl_renderer_, &rect);
+    }
+    for (const auto& [entity, transform, text] :
+         registry->view<const wv::Transform, const wv::Text>().each()) {
+      auto texture = asset_loader_->get(text.asset_name);
+      const wv::Clip* clip = registry->try_get<wv::Clip>(entity);
+      texture->render(sdl_renderer_, transform, text.value, clip);
     }
   }
   SDL_RenderPresent(sdl_renderer_);

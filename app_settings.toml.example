@@ -7,4 +7,4 @@ fullscreen = false
 
 [general]
 src_dir = "/your/src/dir"
-debug_preset = "linux-debug"
+debug_preset = "linux"

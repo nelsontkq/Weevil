@@ -27,13 +27,13 @@ Weevil is a modular, hot-reloadable game engine built with C++ and SDL, designed
 2. Configure the build using CMake presets:
 
 ```bash
-cmake --preset linux-debug
+cmake --preset linux
 ```
 
 3. Build the project:
 
 ```bash
-cmake --build --preset linux-debug
+cmake --build --preset linux
 ```
 
 ### Configuration
@@ -50,7 +50,7 @@ fullscreen = false
 
 [general]
 src_dir = "/path/to/your/project" # Path to your Weevil project directory
-debug_preset = "linux-debug"      # CMake preset for hot reloading
+debug_preset = "linux"      # CMake preset for hot reloading
 ```
 
 ## Creating Modules
