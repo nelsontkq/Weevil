@@ -1,10 +1,11 @@
 #include <weevil/core/app_settings.h>
-#include "pch.h"
 
 #include <toml++/toml.hpp>
 
+#include "pch.h"
+
 wv::AppSettings::AppSettings() {
-  const std::string file_name = std::filesystem::path(SDL_GetBasePath()) / "app_settings.toml";
+  const std::string file_name{std::filesystem::path(SDL_GetBasePath()) / "app_settings.toml"};
 
   toml::table table;
   try {

@@ -11,15 +11,24 @@
 #include "custom_events.h"
 #include "pch.h"
 
-wv::Application::Application() : settings_(), module_manager_(dispatcher_, settings_), asset_loader_(settings_.asset_path) {}
+wv::Application::Application()
+    : settings_{},
+      module_manager_(dispatcher_, settings_),
+      asset_loader_(settings_.asset_path),
+      platform_(&asset_loader_) {}
+
+wv::Application* wv::Application::create(SDL_AppResult& out_result) {
+  auto app = new wv::Application();
+  out_result = app->init();
+  return app;
+}
 
 SDL_AppResult wv::Application::init() {
-  if (!platform_.init(settings_, &asset_loader_)) {
+  if (!platform_.init(settings_)) {
     return SDL_APP_FAILURE;
   }
+  asset_loader_.register_dispatch_events(dispatcher_);
   module_manager_.init();
-  dispatcher_.sink<wv::LoadFont>().connect<&AssetLoader::load_font>(&asset_loader_);
-  dispatcher_.sink<wv::UnloadFont>().connect<&AssetLoader::unload_font>(&asset_loader_);
   return SDL_APP_CONTINUE;
 }
 

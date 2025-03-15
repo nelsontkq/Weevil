@@ -39,7 +39,7 @@ inline void wvAssertImpl(const bool condition, const char* conditionStr, const c
   if (condition) {
     return;
   }
-  const auto error = "Assertion failed: " + std::string(conditionStr) + "\n" + message;
+  const auto error{"Assertion failed: " + std::string(conditionStr) + "\n" + message};
   // TODO: text too small on high dpi screen, use a custom dialog
   SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Assertion Failed", error.c_str(), nullptr);
   abort();

@@ -6,18 +6,19 @@
 namespace wv {
 class Application {
  public:
-  Application();
-  SDL_AppResult init();
+  static Application* create(SDL_AppResult& out_result);
   SDL_AppResult process_event(SDL_Event& event);
   SDL_AppResult iterate();
   void shutdown();
 
  private:
-  wv::AppSettings settings_;
-  wv::Platform platform_;
+  Application();
+  SDL_AppResult init();
   entt::dispatcher dispatcher_;
-  ModuleManager module_manager_;
+  wv::AppSettings settings_;
+  wv::ModuleManager module_manager_;
   wv::AssetLoader asset_loader_;
-  bool quitting_ = false;
+  wv::Platform platform_;
+  bool quitting_{false};
 };
 }  // namespace wv

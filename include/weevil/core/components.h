@@ -38,16 +38,33 @@ struct Text {
   std::string_view asset_name;
   std::string value;
 };
-
+struct Sprite {
+  std::string asset_name;
+  // Which index of the spritesheet, if used.
+  int frame{-1};
+};
+struct Animation {
+  int start;
+  int end;
+  float frame_time;
+  float current{0.0f};
+};
+struct Velocity {
+  float x;
+  float y;
+  float target_x;
+  float target_y;
+};
 struct Transform {
   Vector2 position;
   Size size;
+  float rotation{0.0f};
 
   static Transform random(std::mt19937 &engine, float windowWidth, float windowHeight, float minSize, float maxSize) {
-    auto pos = Vector2::random(engine, windowWidth, windowHeight);
+    wv::Vector2 pos{Vector2::random(engine, windowWidth, windowHeight)};
 
-    std::uniform_real_distribution<float> distSize(minSize, maxSize);
-    auto size = Size{distSize(engine), distSize(engine)};
+    std::uniform_real_distribution<float> dist_size(minSize, maxSize);
+    wv::Size size{dist_size(engine), dist_size(engine)};
     return {pos, size};
   }
 
@@ -55,9 +72,7 @@ struct Transform {
 };
 
 struct Clip {
-  Vector2 position;
-  Size size;
-  operator SDL_FRect() const { return {.x = position.x, .y = position.y, .w = size.width, .h = size.height}; };
+  SDL_FRect rect;
 };
 
 }  // namespace wv

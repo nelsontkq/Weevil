@@ -50,6 +50,7 @@ add_library(WeevilEngine SHARED
         src/core/uuid.cpp
         src/platform/common/platform.cpp
         src/platform/common/rendering/text_texture.cpp
+        src/platform/common/rendering/sprite_texture.cpp
 )
 
 if(NOT WV_LOG STREQUAL "none")

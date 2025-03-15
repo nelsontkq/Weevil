@@ -7,8 +7,8 @@
 namespace wv {
 class Platform {
  public:
-  Platform();
-  bool init(AppSettings& settings, wv::AssetLoader* asset_loader);
+  Platform(wv::AssetLoader* asset_loader);
+  bool init(AppSettings& settings);
   void render(const std::vector<entt::registry*>& registries);
   void shutdown();
 
