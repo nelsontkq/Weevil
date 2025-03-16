@@ -37,40 +37,38 @@ bool wv::Platform::init(wv::AppSettings& settings) {
   return true;
 }
 
-void wv::Platform::render(const std::vector<entt::registry*>& registries) {
+void wv::Platform::render(entt::registry& registry) {
   SDL_SetRenderDrawColor(sdl_renderer_, 0, 0, 0, 255);
   SDL_RenderClear(sdl_renderer_);
-  for (const auto registry : registries) {
-    for (const auto& [entity, transform, color] :
-         registry->view<const wv::Rectangle, const wv::Transform, const wv::Color>().each()) {
-      SDL_FRect rect{transform.position.x, transform.position.y, transform.size.width, transform.size.height};
+  for (const auto& [entity, transform, color] :
+       registry.view<const wv::Rectangle, const wv::Transform, const wv::Color>().each()) {
+    SDL_FRect rect{transform.position.x, transform.position.y, transform.size.width, transform.size.height};
 
-      SDL_SetRenderDrawColor(sdl_renderer_, color.r, color.g, color.b, color.a);
-      SDL_RenderFillRect(sdl_renderer_, &rect);
-    }
-    for (const auto& [entity, transform, text] : registry->view<const wv::Transform, const wv::Text>().each()) {
-      auto texture = asset_loader_->get_text(text.asset_name);
-      wv::Clip* clip = registry->try_get<wv::Clip>(entity);
+    SDL_SetRenderDrawColor(sdl_renderer_, color.r, color.g, color.b, color.a);
+    SDL_RenderFillRect(sdl_renderer_, &rect);
+  }
+  for (const auto& [entity, transform, text] : registry.view<const wv::Transform, const wv::Text>().each()) {
+    auto texture = asset_loader_->get_text(text.asset_name);
+    wv::Clip* clip = registry.try_get<wv::Clip>(entity);
+    texture->set_clip(clip);
+    texture->set_text(sdl_renderer_, text.value);
+    texture->render(sdl_renderer_, transform);
+  }
+
+  for (const auto& [entity, transform, sprite] : registry.view<const wv::Transform, const wv::Sprite>().each()) {
+    auto texture = asset_loader_->get_sprite(sprite.asset_name);
+    if (texture) {
+      wv::Clip* clip = registry.try_get<wv::Clip>(entity);
       texture->set_clip(clip);
-      texture->set_text(sdl_renderer_, text.value);
-      texture->render(sdl_renderer_, transform);
-    }
 
-    for (const auto& [entity, transform, sprite] : registry->view<const wv::Transform, const wv::Sprite>().each()) {
-      auto texture = asset_loader_->get_sprite(sprite.asset_name);
-      if (texture) {
-        wv::Clip* clip = registry->try_get<wv::Clip>(entity);
-        texture->set_clip(clip);
-
-        if (sprite.frame >= 0) {
-          texture->set_frame(sprite.frame);
-        }
-        if (auto* color = registry->try_get<wv::Color>(entity)) {
-          texture->set_color(*color);
-        }
-
-        texture->render(sdl_renderer_, transform);
+      if (sprite.frame >= 0) {
+        texture->set_frame(sprite.frame);
       }
+      if (auto* color = registry.try_get<wv::Color>(entity)) {
+        texture->set_color(*color);
+      }
+
+      texture->render(sdl_renderer_, transform);
     }
   }
   SDL_RenderPresent(sdl_renderer_);

@@ -98,16 +98,19 @@ void wv::AssetLoader::load_sprite_sheet(wv::LoadSpriteSheet& asset) {
 }
 
 void wv::AssetLoader::unload_sprite_sheet(wv::UnloadSpriteSheet& asset) {
+  LOG_INFO("Unloading sprite sheet: {}", asset.asset_name);
+
   auto it = sprite_textures_.find(asset.asset_name);
-  if (it == sprite_textures_.end()) {
-    return;
+  if (it != sprite_textures_.end()) {
+    sprite_textures_.erase(it);
   }
-  sprite_textures_.erase(it);
 
   // Only remove the surface if no other textures are using it
   auto surface_it = surfaces_.find(asset.asset_name);
-  if (surface_it != surfaces_.end() && surface_it->second.use_count() == 1) {
-    surfaces_.erase(surface_it);
+  if (surface_it != surfaces_.end()) {
+    if (surface_it->second.use_count() == 1) {
+      surfaces_.erase(surface_it);
+    }
   }
 
   LOG_INFO("Sprite sheet unloaded: {}", asset.asset_name);

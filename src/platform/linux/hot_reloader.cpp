@@ -1,3 +1,5 @@
+#include "hot_reloader.h"
+
 #include <spawn.h>
 #include <sys/inotify.h>
 #include <sys/poll.h>
@@ -5,7 +7,6 @@
 
 #include "core/custom_events.h"
 #include "event_fd.h"
-#include "hot_reloader.h"
 #include "pch.h"
 
 wv::HotReloader::HotReloader() : exit_event_(0), stop_flag_(false) {}
@@ -29,7 +30,7 @@ void wv::HotReloader::stop() {
 }
 
 void wv::HotReloader::start(const std::filesystem::path &src_dir, std::string debug_preset,
-                                 entt::dispatcher *dispatcher) {
+                            entt::dispatcher *dispatcher) {
   src_dir_ = src_dir;
   debug_preset_ = debug_preset;
   dispatcher_ = dispatcher;
@@ -38,35 +39,37 @@ void wv::HotReloader::start(const std::filesystem::path &src_dir, std::string de
 }
 void wv::HotReloader::worker_loop() {
   while (!stop_flag_) {
+    std::string key;
     {
       std::unique_lock<std::mutex> lock(queue_mutex_);
       queue_cv_.wait(lock, [this] { return !build_queue_.empty() || stop_flag_; });
       if (stop_flag_) break;
-      auto key = build_queue_.front();
+
+      key = build_queue_.front();
       build_queue_.pop();
-      int status = run_build_command(key);
-      if (status == 0) {
-        dispatcher_->trigger<ReloadModuleEvent>();
-      } else {
-        CORE_ERROR("[HotReloader] Build failed for module: {}", key);
-      }
+    }
+
+    CORE_INFO("[HotReloader] Building module: {}", key);
+    int status = run_build_command(key);
+    if (status == 0) {
+      CORE_INFO("[HotReloader] Build successful, triggering reload for module: {}", key);
+      dispatcher_->trigger<ReloadModuleEvent>();
+    } else {
+      CORE_ERROR("[HotReloader] Build failed for module: {}", key);
     }
   }
 }
 
 int wv::HotReloader::run_build_command(std::string &target) {
-  // Construct the build command.
   std::string cmd = "cd " + src_dir_.string() + " && cmake --build --preset " + debug_preset_ + " --target " + target;
   CORE_INFO("[HotReloader] Running build command: {}", cmd);
 
-  // Fork a new process to run the build.
   pid_t pid = fork();
   if (pid < 0) {
     CORE_ERROR("[HotReloader] fork failed: {}", std::strerror(errno));
     return errno;
   }
   if (pid == 0) {
-    // Child process: execute the build command.
     execl("/bin/sh", "sh", "-c", cmd.c_str(), nullptr);
     CORE_ERROR("[HotReloader] execl failed: {}", std::strerror(errno));
     exit(127);
@@ -108,12 +111,9 @@ void wv::HotReloader::watch_modules_src() {
     }
   };
   const std::string modules_dir = (src_dir_ / "modules").string();
-
-  // Add a watch on the base modules directory to detect new module directories.
   int base_wd = inotify_add_watch(inotify_fd, modules_dir.c_str(), IN_CREATE | IN_MOVED_TO | IN_DELETE);
   if (base_wd < 0) {
-    CORE_ERROR("[HotReloader] inotify_add_watch failed for base directory {}: {}", modules_dir,
-               std::strerror(errno));
+    CORE_ERROR("[HotReloader] inotify_add_watch failed for base directory {}: {}", modules_dir, std::strerror(errno));
     close(inotify_fd);
     return;
   }
@@ -125,7 +125,6 @@ void wv::HotReloader::watch_modules_src() {
     }
   }
 
-  // Setup polling on the inotify file descriptor and an exit event.
   constexpr size_t event_buffer_size = 1024 * (sizeof(inotify_event) + 16);
   char buffer[event_buffer_size];
   struct pollfd fds[2];
@@ -165,9 +164,7 @@ void wv::HotReloader::watch_modules_src() {
           }
         }
 
-        // Only process file events (ignore directories) for source files.
         if (!(event->mask & IN_ISDIR)) {
-          // Compute the relative path from the base modules directory.
           auto rel_path = std::filesystem::relative(full_path, modules_dir);
           std::string module_name;
           WV_ASSERT(!rel_path.empty(), "Invalid path");
@@ -184,8 +181,6 @@ void wv::HotReloader::watch_modules_src() {
       }
     }
   }
-
-  // Cleanup: remove all watches and close the inotify file descriptor.
   for (const auto &entry : wd_to_path) {
     inotify_rm_watch(inotify_fd, entry.first);
   }

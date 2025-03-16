@@ -30,8 +30,8 @@
 
 // Engine
 #include <weevil/core/app_settings.h>
-#include <weevil/core/imodule.h>
 #include <weevil/core/log.h>
+#include <weevil/core/module.h>
 #include <weevil/core/uuid.h>
 
 #ifdef WV_ENABLE_ASSERTS

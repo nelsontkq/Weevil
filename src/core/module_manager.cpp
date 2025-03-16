@@ -9,7 +9,10 @@
 #include "pch.h"
 
 wv::ModuleManager::ModuleManager(entt::dispatcher &dispatcher, wv::AppSettings &settings)
-    : dispatcher_(dispatcher), settings_(settings) {}
+    : dispatcher_(dispatcher), settings_(settings) {
+  registry_.ctx().emplace<wv::Window>(settings_.width, settings_.height);
+  registry_.ctx().emplace<Rngen>();
+}
 
 void wv::ModuleManager::load_modules() {
   const auto module_so_dir = std::filesystem::path(SDL_GetBasePath()) / "prebuild";
@@ -21,25 +24,24 @@ void wv::ModuleManager::load_modules() {
     if (basename.starts_with("lib")) {
       basename = basename.substr(3);
     }
-    const auto &data = modules_.find(basename);
-    if (data != modules_.end()) {
-      data->second.mod->shutdown(dispatcher_);
-      modules_.erase(data);
+    const auto &it = modules_.find(basename);
+    if (it != modules_.end()) {
+      LOG_INFO("Reloading module: {}", basename);
+      it->second.mod->shutdown(dispatcher_);
+      dispatcher_.update();
     }
     if (const auto &[item, success] = modules_.emplace(basename, file); success) {
       init_module(item->second);
+      LOG_INFO("Module loaded successfully: {}", basename);
     } else {
       LOG_ERROR("Failed to load module: {}", basename);
     }
   }
-  registries_.resize(modules_.size());
-  std::transform(modules_.begin(), modules_.end(), registries_.begin(),
-                 [](const auto &item) -> entt::registry * { return &item.second.mod->registry; });
 }
 
 void wv::ModuleManager::init_module(ModuleData &module_data) {
-  module_data.mod->registry.ctx().emplace<wv::Window>(settings_.width, settings_.height);
-  module_data.mod->registry.ctx().emplace<Rngen>();
+  // might be able to create a wrapper for this so each module doesn't have to clean up
+  module_data.mod->registry = &registry_;
   module_data.mod->init(dispatcher_);
 }
 void wv::ModuleManager::init() {
@@ -56,9 +58,8 @@ void wv::ModuleManager::shutdown() {
   modules_.clear();
 }
 
-std::vector<entt::registry *> &wv::ModuleManager::update(float deltaTime) {
+void wv::ModuleManager::update(float deltaTime) {
   for (const auto &[key, val] : modules_) {
     val.mod->update(dispatcher_, deltaTime);
   }
-  return registries_;
 }

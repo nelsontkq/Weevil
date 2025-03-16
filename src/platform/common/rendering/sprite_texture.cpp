@@ -3,7 +3,7 @@
 wv::SpriteTexture::SpriteTexture(std::shared_ptr<SDL_Surface> surface) : surface_(surface), texture_(nullptr) {}
 
 void wv::SpriteTexture::render(SDL_Renderer* renderer, const wv::Transform& transform) {
-  if (!texture_) {
+  if (!texture_ && surface_) {
     texture_.reset(SDL_CreateTextureFromSurface(renderer, surface_.get()));
     if (!texture_) {
       LOG_ERROR("Failed to create texture from surface: {}", SDL_GetError());

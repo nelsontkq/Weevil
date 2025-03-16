@@ -9,7 +9,7 @@ class Platform {
  public:
   Platform(wv::AssetLoader* asset_loader);
   bool init(AppSettings& settings);
-  void render(const std::vector<entt::registry*>& registries);
+  void render(entt::registry& registry);
   void shutdown();
 
  private:

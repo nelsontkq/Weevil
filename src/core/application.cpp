@@ -49,8 +49,8 @@ SDL_AppResult wv::Application::iterate() {
   auto current_ticks = SDL_GetTicks();
   auto delta_ticks = current_ticks - last_ticks;
   last_ticks = current_ticks;
-  auto& registries = module_manager_.update((float)delta_ticks / 1000.f);
-  platform_.render(registries);
+  module_manager_.update((float)delta_ticks / 1000.f);
+  platform_.render(module_manager_.registry());
 
   return SDL_APP_CONTINUE;
 }

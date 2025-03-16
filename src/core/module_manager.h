@@ -1,18 +1,19 @@
 #pragma once
 
+#include "asset_loader.h"
 #include "module_data.h"
 #include "pch.h"
 #include "platform/common.h"
-#include "asset_loader.h"
 
 namespace wv {
-class IModule;
+class Module;
 class ModuleManager {
  public:
   ModuleManager(entt::dispatcher& dispatcher, wv::AppSettings& settings);
   auto init() -> void;
-  auto update(float deltaTime) -> std::vector<entt::registry*>&;
+  auto update(float deltaTime) -> void;
   auto shutdown() -> void;
+  auto registry() -> entt::registry& { return registry_; }
 
  private:
   void load_modules();
@@ -21,6 +22,6 @@ class ModuleManager {
   wv::AppSettings& settings_;
   wv::HotReloader hot_reloader_;
   std::unordered_map<std::string, ModuleData> modules_;
-  std::vector<entt::registry*> registries_;
+  entt::registry registry_;
 };
 }  // namespace wv

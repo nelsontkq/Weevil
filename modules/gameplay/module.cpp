@@ -1,6 +1,6 @@
 #include <weevil/weevil_api.h>
 
-class GameplayModule : public wv::IModule {
+class GameplayModule : public wv::Module {
  public:
   void init(entt::dispatcher& dispatcher) override {
     LOG_INFO("GameplayModule::init");
@@ -12,12 +12,12 @@ class GameplayModule : public wv::IModule {
     };
     dispatcher.enqueue<wv::LoadSpriteSheet>("ships", "assets/textures/ships.png", sprites);
 
-    const auto rend = registry.ctx().get<wv::Window>();
+    const auto rend = registry->ctx().get<wv::Window>();
     width_ = rend.width;
     height_ = rend.height;
 
     dispatcher.sink<wv::WindowChanged>().connect<&GameplayModule::window_changed>(*this);
-    add_random_ship(10);
+    add_random_ship(100);
   }
 
   void update(entt::dispatcher& dispatcher, float dt) override {
@@ -31,11 +31,15 @@ class GameplayModule : public wv::IModule {
     move_ships(dt);
   }
 
-  void shutdown(entt::dispatcher& dispatcher) override { LOG_INFO("GameplayModule::shutdown"); }
+  void shutdown(entt::dispatcher& dispatcher) override {
+    LOG_INFO("GameplayModule::shutdown");
+    dispatcher.enqueue<wv::UnloadSpriteSheet>("ships");
+    registry->clear();
+  }
 
  private:
   void animate_sprites(float dt) {
-    auto view = registry.view<wv::Sprite, wv::Animation>();
+    auto view = registry->view<wv::Sprite, wv::Animation>();
     for (auto [entity, sprite, anim] : view.each()) {
       anim.current += dt;
       if (anim.current > anim.frame_time) {
@@ -68,8 +72,8 @@ class GameplayModule : public wv::IModule {
   }
 
   void move_ships(float dt) {
-    auto view = registry.view<wv::Sprite, wv::Transform, wv::Velocity>();
-    auto& rng = registry.ctx().get<Rngen>();
+    auto view = registry->view<wv::Sprite, wv::Transform, wv::Velocity>();
+    auto& rng = registry->ctx().get<Rngen>();
 
     for (auto [entity, sprite, transform, velocity] : view.each()) {
       velocity.x = std::lerp(velocity.x, velocity.target_x, 0.5f * dt);
@@ -80,18 +84,17 @@ class GameplayModule : public wv::IModule {
 
       float speed = std::hypot(velocity.x, velocity.y);
       if (speed > 1.0f) {
-        float targetRotation = std::atan2(velocity.y, velocity.x) * (180.0f / 3.14159265f) - 90.0f;
-        transform.rotation = lerp_angle(transform.rotation, targetRotation, 1.5f * dt);
+        float rot = std::atan2(velocity.y, velocity.x) * (180.0f / M_PI) - 90.0f;
+        transform.rotation = lerp_angle(transform.rotation, rot, 1.5f * dt);
       }
 
       if (rng.random<float>(0.0f, 1.0f) < 0.002f) {
-        float currentAngle = std::atan2(velocity.target_y, velocity.target_x);
-        float angleChange = rng.random<float>(-0.7854f, 0.7854f);
-        float newAngle = currentAngle + angleChange;
+        float current = std::atan2(velocity.target_y, velocity.target_x);
+        float new_target = current + rng.random<float>(-0.7854f, 0.7854f);
 
-        float targetSpeed = rng.random<float>(40.0f, 80.0f);
-        velocity.target_x = std::cos(newAngle) * targetSpeed;
-        velocity.target_y = std::sin(newAngle) * targetSpeed;
+        float target_speed = rng.random<float>(40.0f, 80.0f);
+        velocity.target_x = std::cos(new_target) * target_speed;
+        velocity.target_y = std::sin(new_target) * target_speed;
       }
 
       transform.position.x = wrap_float(transform.position.x, 0.0f, static_cast<float>(width_));
@@ -106,23 +109,23 @@ class GameplayModule : public wv::IModule {
 
   void add_random_ship(size_t count = 1) {
     for (size_t i = 0; i < count; i++) {
-      auto entity = registry.create();
-      registry.emplace<wv::Sprite>(entity, "ships", 0);
-      registry.emplace<wv::Animation>(entity, 0, 4, 0.3f);
+      auto entity = registry->create();
+      registry->emplace<wv::Sprite>(entity, "ships", 0);
+      registry->emplace<wv::Animation>(entity, 0, 4, 0.3f);
 
-      auto transform = registry.ctx().get<Rngen>().random<wv::Transform>(width_, height_, 10, 50);
+      auto transform = registry->ctx().get<Rngen>().random<wv::Transform>(width_, height_, 10, 50);
       transform.size = {66.0f, 113.0f};
-      registry.emplace<wv::Transform>(entity, transform);
+      registry->emplace<wv::Transform>(entity, transform);
 
-      auto color = registry.ctx().get<Rngen>().random<wv::Color>();
+      auto color = registry->ctx().get<Rngen>().random<wv::Color>();
       color.a = 255;
-      registry.emplace<wv::Color>(entity, color);
+      registry->emplace<wv::Color>(entity, color);
 
-      float angle = registry.ctx().get<Rngen>().random<float>(0.0f, 2.0f * 3.14159265f);
-      float speed = registry.ctx().get<Rngen>().random<float>(30.0f, 70.0f);
+      float angle = registry->ctx().get<Rngen>().random<float>(0.0f, 2.0f * 3.14159265f);
+      float speed = registry->ctx().get<Rngen>().random<float>(30.0f, 70.0f);
       float vx = std::cos(angle) * speed;
       float vy = std::sin(angle) * speed;
-      registry.emplace<wv::Velocity>(entity, vx, vy, vx, vy);
+      registry->emplace<wv::Velocity>(entity, vx, vy, vx, vy);
     }
   }
 
